@@ -243,6 +243,7 @@ prereqs:["0.3"],forward:["0.12","0.16"],examRole:"QT2 §1.1, §1.2"},
 idea:"Scalar summaries of a distribution; covariance is signed, correlation is unitless and bounded.",
 formal:"$\\mathbb{E}X=\\sum xf_X(x)$ or $\\int xf_X(x)\\,dx$. $\\mathrm{var}(X)=\\mathbb{E}X^2-(\\mathbb{E}X)^2$. $\\mathrm{cov}(X,Y)=\\mathbb{E}XY-\\mathbb{E}X\\,\\mathbb{E}Y$. $\\mathrm{corr}(X,Y)=\\mathrm{cov}/(\\mathrm{sd}\\,\\mathrm{sd})\\in[-1,1]$.",
 visualise:"Bivariate scatter parameterised by $\\rho$; sliders for $\\rho$, marginal means and variances; live readout of computed sample moments.",
+widget:"corr-scatter",
 prereqs:["0.4"],forward:["0.7","0.8","1.4"]},
 
 {id:"0.7",m:0,title:"Properties of expectation, variance, covariance",
@@ -271,6 +272,7 @@ prereqs:["0.6","0.7"],forward:["0.10","0.13","1.6","4.3"]},
 idea:"Two ways for a sequence of random variables to settle down. Probability convergence pins values; distribution convergence pins shapes.",
 formal:"$X_n\\to^p X$ iff $\\mathbb{P}(|X_n-X|>\\varepsilon)\\to0$ for every $\\varepsilon>0$. $X_n\\to^d X$ iff $F_{X_n}\\to F_X$ at continuity points. <strong>Continuous Mapping</strong>: $g$ continuous, $X_n\\to^p X\\Rightarrow g(X_n)\\to^p g(X)$; same for $\\to^d$. <strong>Slutsky</strong>: $X_n\\to^d X$ and $Y_n\\to^p c$ then $X_n+Y_n\\to^d X+c$ and $X_n Y_n\\to^d cX$.",
 visualise:"Side-by-side panels: probability panel where the trajectory tightens around a constant; distribution panel where the histogram approaches a Normal but individual draws keep moving.",
+widget:"convergence-compare",
 prereqs:["0.6","0.9"],forward:["0.11","0.12","0.13","1.7","4.1"]},
 
 {id:"0.11",m:0,title:"Law of Large Numbers",
@@ -278,6 +280,7 @@ idea:"Averages of iid draws converge to the population mean.",
 formal:"$\\{X_i\\}$ iid, $\\mathbb{E}X_i=\\mu$, $\\mathrm{var}(X_i)<\\infty$. Then $\\overline X_n\\to^p \\mu$.",
 intuition:"The variance of the sample mean is $\\sigma^2/n$, which goes to zero; Chebyshev gives the probability bound. Each datapoint is a noisy report of $\\mu$; averaging cancels the noise.",
 visualise:"Animated running mean as $n$ grows from 1 to 10,000; user picks the underlying distribution; reference line at $\\mu$.",
+widget:"lln-running",
 prereqs:["0.10"],forward:["0.13","1.7","4.6"]},
 
 {id:"0.12",m:0,title:"Central Limit Theorem",
@@ -292,12 +295,14 @@ prereqs:["0.5","0.10"],forward:["0.13","0.14","1.7","2.1","3.14"],examRole:"QT2 
 idea:"A vocabulary for ranking estimators.",
 formal:"Bias $b(\\hat\\theta_n)=\\mathbb{E}\\hat\\theta_n-\\theta$. MSE $=\\mathrm{var}(\\hat\\theta_n)+b^2$. Consistency $\\hat\\theta_n\\to^p\\theta$. Asymptotic normality $\\sqrt n(\\hat\\theta_n-\\theta)\\to^d N(0,V)$.",
 visualise:"Dartboard widget: each dot is one simulated estimate; user toggles three competing estimators and reads off bias, sd, RMSE.",
+widget:"dartboard",
 prereqs:["0.10","0.11","0.12"],forward:["0.14","0.15","1.7","2.1","3.14","4.7"]},
 
 {id:"0.14",m:0,title:"Hypothesis testing skeleton",
 idea:"The seven-line ritual; everything in QE inference plugs into it.",
 formal:"$H_0$ vs $H_1$, test statistic $T$, distribution under $H_0$, decision rule (reject if $|T|>c_\\alpha$), critical value $c_\\alpha$, conclusion. Type I $\\alpha=\\mathbb{P}_{H_0}(\\text{reject})$. Type II $\\beta=\\mathbb{P}_{H_1}(\\text{fail to reject})$. Power $=1-\\beta$.",
 visualise:"Distribution-under-the-null with shaded rejection region; sliders for $\\alpha$, true $\\theta$, $n$; a power curve in the corner that updates as the user moves the true value.",
+widget:"ht-power",
 prereqs:["0.12","0.13"],forward:["0.15","0.16","2.4","2.7","3.15","3.16","4.11","4.12","4.13","4.18","4.19","4.21"],examRole:"Implicit in essentially every Part B sub-question"},
 
 {id:"0.15",m:0,title:"Standard errors, confidence intervals, p-values",
@@ -306,12 +311,14 @@ formal:"$\\mathrm{se}(\\hat\\theta)$ is an estimator of $\\mathrm{sd}(\\hat\\the
 derivation:"<strong>CI by test inversion.</strong> $\\mathcal{C}=\\{b:|t(b)|\\le c_\\alpha\\}=\\{b:|(\\hat\\theta-b)/\\mathrm{se}(\\hat\\theta)|\\le c_\\alpha\\}$. Solve: $-c_\\alpha\\le(\\hat\\theta-b)/\\mathrm{se}\\le c_\\alpha$ becomes $\\hat\\theta-c_\\alpha\\,\\mathrm{se}\\le b\\le\\hat\\theta+c_\\alpha\\,\\mathrm{se}$. Coverage: in repeated samples $\\mathcal{C}$ contains the true $\\theta$ with probability $1-\\alpha$.",
 intuition:"A CI is the set of nulls you cannot reject. The shaded tail of the test statistic is the p-value; if data and null disagree, the tail is small.",
 visualise:"Replication panel: each replication draws a CI; coverage counter approaches $1-\\alpha$. Separate p-value visualiser shades the area beyond the observed $t$.",
+widget:"ci-coverage",
 prereqs:["0.13","0.14"],forward:["0.16","2.5","2.6"]},
 
 {id:"0.16",m:0,title:"Two-sample comparisons",
 idea:"Comparing means or proportions across one or two samples; bedrock for RCT analysis.",
 formal:"<strong>Mean</strong>: $t(\\mu_0)=(\\overline X_n-\\mu_0)/(s_{n,X}/\\sqrt n)$. <strong>Diff of means, one sample</strong>: $\\overline D_n=\\overline X_n-\\overline Y_n$, $\\mathrm{se}=s_{n,D}/\\sqrt n$. <strong>Diff of means, two indep samples</strong>: $\\hat\\delta=\\overline X_{1,n_1}-\\overline X_{2,n_2}$, $\\mathrm{se}=\\sqrt{s_{1,n_1}^2/n_1+s_{2,n_2}^2/n_2}$. <strong>Proportion</strong>: $\\mathrm{se}(\\hat p_n)=\\sqrt{\\hat p(1-\\hat p)/n}$. <strong>Diff of proportions, two samples (pooled)</strong>: $\\hat\\pi=(n_1\\hat p_1+n_2\\hat p_2)/(n_1+n_2)$, $\\mathrm{se}=\\sqrt{\\hat\\pi(1-\\hat\\pi)(1/n_1+1/n_2)}$.",
 visualise:"Compare two groups: drag means and variances of two normal samples; watch $\\hat\\delta$, $\\mathrm{se}$, $t$, and $p$ update.",
+widget:"two-sample",
 prereqs:["0.14","0.15"],forward:["3.2","3.5"]},
 
 /* MODULE 1 */
@@ -350,6 +357,7 @@ formal:"$\\mathbb{E}[Y\\mid X]=\\arg\\min_m\\mathbb{E}[Y-m(X)]^2$ (proved in 0.8
 derivation:"<strong>MI implies linear CEF.</strong> From $Y=\\beta_0+\\beta_1X+u$, apply conditional expectation: $\\mathbb{E}[Y\\mid X]=\\beta_0+\\beta_1X+\\mathbb{E}[u\\mid X]$. Under MI, $\\mathbb{E}[u\\mid X]=0$, so $\\mathbb{E}[Y\\mid X]=\\beta_0+\\beta_1X$.<br><br><strong>CEF decomposition.</strong> Define $e=Y-\\mathbb{E}[Y\\mid X]$. By LIE $\\mathbb{E}e=0$. By conditioning rule and LIE: $\\mathbb{E}Xe=\\mathbb{E}[\\mathbb{E}[Xe\\mid X]]=\\mathbb{E}[X\\,\\mathbb{E}[e\\mid X]]=\\mathbb{E}[X\\cdot 0]=0$. So $e$ satisfies the same normal equations as the regression residual.",
 intuition:"CEF is the gold standard predictor; the regression is its best linear approximation. They coincide iff the CEF is linear.",
 visualise:"Stacked plots: true CEF, best linear fit, gap between them; user picks linear vs nonlinear underlying data.",
+widget:"cef-vs-linear",
 prereqs:["0.8","1.4"],forward:["2.10","2.11","3.2"],examRole:"QT1 §1.5"},
 
 {id:"1.6",m:1,title:"Sample regression: OLS estimators",
@@ -365,6 +373,7 @@ idea:"With iid sampling, OLS is consistent for population regression coefficient
 derivation:"<strong>Consistency.</strong> $\\hat\\beta_1=\\hat{\\mathrm{cov}}(X,Y)/\\hat{\\mathrm{var}}(X)$. By LLN, numerator $\\to^p\\mathrm{cov}(X,Y)$, denominator $\\to^p\\mathrm{var}(X)$. By Continuous Mapping, $\\hat\\beta_1\\to^p\\rho_1$. Under OR, $\\rho_1=\\beta_1$.<br><br><strong>Asymptotic normality.</strong> Substitute $Y_i=\\beta_0+\\beta_1X_i+u_i$ to get $\\hat\\beta_1-\\beta_1=\\hat{\\mathrm{cov}}(X,u)/\\hat{\\mathrm{var}}(X)$. Multiply by $\\sqrt n$: $\\sqrt n(\\hat\\beta_1-\\beta_1)=\\frac{n^{-1/2}\\sum(X_i-\\overline X)u_i}{n^{-1}\\sum(X_i-\\overline X)^2}$. Denominator $\\to^p\\sigma_X^2$. Numerator: $(X_i-\\mu_X)u_i$ are iid mean zero (by OR + LIE), variance $\\mathbb{E}(X-\\mu_X)^2u^2$. By CLT, numerator $\\to^d N(0,\\mathbb{E}(X-\\mu_X)^2u^2)$. By Slutsky: $$\\boxed{\\sqrt n(\\hat\\beta_1-\\beta_1)\\to^d N\\!\\Big(0,\\frac{\\mathbb{E}(X-\\mu_X)^2u^2}{[\\mathrm{var}(X)]^2}\\Big)=:N(0,\\omega_{\\beta_1}^2).}$$",
 intuition:"Each observation gives a noisy moment estimate; LLN tames denominators, CLT handles the numerator, Slutsky combines them. The $\\sqrt n$ scaling is exactly what makes the noise survive the limit.",
 visualise:"Replication panel: distribution of $\\hat\\beta_1$ shrinks toward $\\rho_1$ as $n$ grows and approaches a Normal shape.",
+widget:"ols-asymptotic",
 prereqs:["0.11","0.12","1.4","1.6"],forward:["2.1","2.2","2.4","3.14","4.1","4.6"]},
 
 {id:"1.8",m:1,title:"Multiple regression mechanics",
@@ -379,6 +388,7 @@ formal:"In $Y=\\beta_0+\\beta_1X_1+\\beta_2X_2+u$, let $\\tilde X_1=X_1-(\\pi_0+
 derivation:"Auxiliary regression $X_1=\\pi_0+\\pi_2X_2+\\tilde X_1$ has $\\mathbb{E}\\tilde X_1=0$ and $\\mathbb{E}X_2\\tilde X_1=0$ by construction. Substitute into the structural equation: $$Y=\\beta_0+\\beta_1(\\pi_0+\\pi_2X_2+\\tilde X_1)+\\beta_2X_2+u=(\\beta_0+\\beta_1\\pi_0)+\\beta_1\\tilde X_1+(\\beta_2+\\beta_1\\pi_2)X_2+u.$$ Take covariance with $\\tilde X_1$: $$\\mathrm{cov}(Y,\\tilde X_1)=\\beta_1\\mathrm{var}(\\tilde X_1)+(\\beta_2+\\beta_1\\pi_2)\\underbrace{\\mathrm{cov}(X_2,\\tilde X_1)}_{=0}+\\underbrace{\\mathrm{cov}(u,\\tilde X_1)}_{=0\\text{ under OR}}.$$ Hence $\\boxed{\\beta_1=\\mathrm{cov}(Y,\\tilde X_1)/\\mathrm{var}(\\tilde X_1)}$.",
 intuition:"Strip out the influence of the other regressors from $X_1$; the leftover variation gives an unconfounded view of how $Y$ moves with $X_1$. This is what multiple regression does internally.",
 visualise:"Animated two-step regression: residualise $X_1$ on $X_2$, then regress $Y$ on $\\tilde X_1$; final slope identical to multiple regression.",
+widget:"fwl-twostep",
 prereqs:["1.6","1.8"],forward:["2.2","3.6","3.13"],examRole:"QT2 §2.5"},
 
 {id:"1.10",m:1,title:"Confounding and Omitted Variable Bias",
@@ -430,6 +440,7 @@ formal:"Homoskedastic: $\\mathrm{se}(\\hat\\beta_l)=n^{-1/2}\\sqrt{\\hat{\\mathr
 derivation:"From 1.7, $\\omega_{\\beta_1}^2=\\mathbb{E}(X-\\mu_X)^2u^2/[\\mathrm{var}(X)]^2$. Under homoskedasticity $\\mathbb{E}[u^2\\mid X]=\\sigma_u^2$, so by LIE: $\\mathbb{E}(X-\\mu_X)^2u^2=\\mathbb{E}[(X-\\mu_X)^2\\mathbb{E}[u^2\\mid X]]=\\sigma_u^2\\mathrm{var}(X)$. Hence $\\omega_{\\beta_1}^2=\\sigma_u^2/\\mathrm{var}(X)$. Multivariate generalisation: by FWL, $\\hat\\beta_l=\\hat{\\mathrm{cov}}(Y,\\tilde X_l)/\\hat{\\mathrm{var}}(\\tilde X_l)$, so the formula carries over with $X$ replaced by $\\tilde X_l$.",
 intuition:"Homoskedastic formula assumes a single noise level $\\sigma_u^2$ everywhere. Robust formula keeps $u_i^2$ inside the average so the SE correctly weights each observation's contribution.",
 visualise:"Scatter where the user adds fanning-out variance; two SE bars (homo, robust) update; coverage tracker shows which delivers nominal coverage.",
+widget:"hetero-se",
 prereqs:["1.6","1.9","2.1"],forward:["2.3","2.15","3.6","3.14"],examRole:"QT2 §6"},
 
 {id:"2.3",m:2,title:"Heteroskedasticity: definition and consequences",
@@ -466,6 +477,7 @@ formal:"$F=\\frac{(SSR_r-SSR_u)/q}{SSR_u/(n-k-1)}$. Under $H_0$, $F\\to^d F_{q,\
 derivation:"Imposing $q$ restrictions cannot decrease $SSR$. Under $H_0$ the increase is statistical noise; the scaled difference is asymptotically $\\chi^2_q/q$, equal to $F_{q,\\infty}$ in the limit. Combined with $SSR_u/(n-k-1)\\to^p\\sigma_u^2$, the statistic is pivotal. Equivalence to $R^2$ form: $SSR=TSS(1-R^2)$.",
 intuition:"How much fit do you sacrifice imposing the restrictions? Big sacrifice $\\Rightarrow$ restrictions inconsistent with data $\\Rightarrow$ reject.",
 visualise:"Restricted vs unrestricted regression panels; SSR values feed into a live F formula; user adjusts $q$ and watches the critical value.",
+widget:"f-test",
 prereqs:["2.4","1.8","2.12"],forward:["3.15","3.16","4.11","4.12","4.13"],examRole:"QT2 §3.4, §3.7"},
 
 {id:"2.8",m:2,title:"Perfect multicollinearity and the dummy variable trap",
@@ -484,6 +496,7 @@ prereqs:["1.8","2.4","2.8"],forward:["2.10","2.11"],examRole:"QT1 §3.1 to §3.3
 idea:"Nonlinear specifications stay linear in parameters so OLS still applies.",
 formal:"Quadratic $Y=\\beta_0+\\beta_1X+\\beta_2X^2+u$. Log-log $\\ln Y=\\beta_0+\\beta_1\\ln X+u$ (elasticity $\\beta_1$). Log-linear $\\ln Y=\\beta_0+\\beta_1X+u$ (semi-elasticity). Linear-log $Y=\\beta_0+\\beta_1\\ln X+u$.",
 visualise:"Specification dropdown over a fixed scatter; live formula for the marginal effect at a chosen $X$.",
+widget:"spec-picker",
 prereqs:["1.8","2.9"],forward:["2.11"],examRole:"QT2 §5.1, §5.4"},
 
 {id:"2.11",m:2,title:"Marginal effects in nonlinear models",
@@ -491,6 +504,7 @@ idea:"In any nonlinear-in-$X$ specification the partial derivative depends on $X
 derivation:"For $Y=\\beta_0+\\beta_1X+\\beta_2X^2+u$: $\\partial Y/\\partial X=\\beta_1+2\\beta_2X$. Estimated effect at $X=x$: $\\hat\\beta_1+2\\hat\\beta_2x$. Test $H_0:\\beta_1+2\\beta_2x=b$ uses $$t=\\frac{\\hat\\beta_1+2\\hat\\beta_2x-b}{\\mathrm{se}(\\hat\\beta_1+2\\hat\\beta_2x)},\\quad\\mathrm{var}(\\hat\\beta_1+2\\hat\\beta_2x)=\\mathrm{var}(\\hat\\beta_1)+4x^2\\mathrm{var}(\\hat\\beta_2)+4x\\,\\mathrm{cov}(\\hat\\beta_1,\\hat\\beta_2).$$ CI for the marginal effect at $x$: $\\hat\\beta_1+2\\hat\\beta_2x\\pm c_\\alpha\\,\\mathrm{se}(\\hat\\beta_1+2\\hat\\beta_2x)$.",
 intuition:"In a quadratic the slope tilts with $X$; in an interaction it tilts with the other variable. Always evaluate at a meaningful value (mean, percentile, or specific case).",
 visualise:"At-a-point evaluator: pick $x^*$, the widget reports the marginal effect, its SE, and a 95% CI.",
+widget:"marginal-point",
 prereqs:["2.10","2.7"],forward:[],examRole:"QT2 §5.2, QT1 §3.2"},
 
 {id:"2.12",m:2,title:"Goodness of fit: $R^2$, adjusted $R^2$, SER",
@@ -499,12 +513,14 @@ formal:"$TSS=ESS+SSR$. $R^2=ESS/TSS=1-SSR/TSS\\in[0,1]$. $\\bar R^2=1-\\frac{n-1
 derivation:"$Y_i-\\overline Y=(Y_i-\\hat Y_i)+(\\hat Y_i-\\overline Y)=\\hat u_i+(\\hat Y_i-\\overline Y)$. Square and sum: $\\sum(Y_i-\\overline Y)^2=\\sum\\hat u_i^2+\\sum(\\hat Y_i-\\overline Y)^2+2\\sum\\hat u_i(\\hat Y_i-\\overline Y)$. The cross term vanishes because $\\sum\\hat u_i=0$ and $\\sum X_{l,i}\\hat u_i=0$ (so $\\sum\\hat Y_i\\hat u_i=0$ since $\\hat Y_i$ is a linear combination of regressors and $\\overline Y\\sum\\hat u_i=0$). Therefore $TSS=SSR+ESS$ and $R^2=ESS/TSS=1-SSR/TSS$.",
 intuition:"$R^2$ = share of variance the model explains. $\\bar R^2$ penalises adding regressors that do not pull their weight. SER tells you the typical residual in $Y$ units.",
 visualise:"Add-a-regressor sandbox: add noise variables one by one, watch $R^2$ creep up while $\\bar R^2$ falls and SER barely moves.",
+widget:"r2-creep",
 prereqs:["1.6","1.8"],forward:["2.7","2.13","2.14","4.9"],examRole:"QT2 §4"},
 
 {id:"2.13",m:2,title:"Model specification: overfitting and underfitting",
 idea:"Bias-variance tradeoff in linear modelling.",
 formal:"Overfit: low SER, high $R^2$, but generalises poorly. Underfit: systematic bias, high SER. Holdout error is U-shaped in model complexity.",
 visualise:"Training vs holdout error vs degree of polynomial; the U-shape of holdout error.",
+widget:"u-shape",
 prereqs:["2.12"],forward:["4.9"]},
 
 {id:"2.14",m:2,title:"Effect of data transformations",
@@ -527,6 +543,7 @@ formal:"$\\mathrm{cov}(X,u)\\ne 0$. Sources: omitted variables, simultaneity, me
 derivation:"$\\hat\\beta_1\\to^p\\mathrm{cov}(X,Y)/\\mathrm{var}(X)=\\beta_1+\\mathrm{cov}(X,u)/\\mathrm{var}(X)\\ne\\beta_1$. The bias is exactly $\\mathrm{cov}(X,u)/\\mathrm{var}(X)$ and persists in the limit.",
 intuition:"Bias is structural; more data shrinks variance but not the wrong centre.",
 visualise:"Menu of endogeneity: each source is a switch; flipping it on regenerates data and the OLS bias appears as a drift between $\\hat\\beta_1$ and the true $\\beta_1$.",
+widget:"endo-menu",
 prereqs:["1.4","1.10"],forward:["3.2","3.7","3.8","3.9","3.10"],examRole:"QT3 §1"},
 
 {id:"3.2",m:3,title:"Randomised Control Trials: identification",
@@ -535,6 +552,7 @@ formal:"With binary $D$ and $D\\perp u$, the OLS coefficient on $D$ in $Y=\\beta
 derivation:"For binary $D$: $\\mathbb{E}[Y\\mid D]=\\mathbb{E}[Y\\mid D=0]\\,(1-D)+\\mathbb{E}[Y\\mid D=1]\\,D=\\mathbb{E}[Y\\mid D=0]+(\\mathbb{E}[Y\\mid D=1]-\\mathbb{E}[Y\\mid D=0])D$. This is linear in $D$, so the population regression coincides with the CEF (1.5). Thus $\\rho_0=\\mathbb{E}[Y\\mid D=0]$ and $\\rho_1=\\mathbb{E}[Y\\mid D=1]-\\mathbb{E}[Y\\mid D=0]$. Under random assignment OR holds, so $\\beta_1=\\rho_1$.",
 intuition:"Without confounding, the only systematic difference between treated and control means is the treatment itself.",
 visualise:"Assignment simulator: shuffle button randomly assigns $D$; OLS estimate displays alongside true treatment effect; repeated shuffles centre on the true value.",
+widget:"rct-shuffle",
 prereqs:["0.16","1.4","1.5","3.1"],forward:["3.3","3.4","3.5","3.6","3.17"],examRole:"QT1 §2.1, §2.2"},
 
 {id:"3.3",m:3,title:"RCT internal validity threats",
@@ -554,6 +572,7 @@ idea:"With equal variance across arms, splitting $N$ in half minimises $\\mathrm
 derivation:"$\\mathrm{var}(\\hat\\tau)=\\sigma^2(1/n_T+1/n_C)$ s.t. $n_T+n_C=N$. Substitute $n_C=N-n_T$: $f(n_T)=\\sigma^2[1/n_T+1/(N-n_T)]$, $f'(n_T)=\\sigma^2[-1/n_T^2+1/(N-n_T)^2]=0$. So $(N-n_T)^2=n_T^2\\Rightarrow n_T=N/2$. Unequal variances $\\sigma_0^2\\ne\\sigma_1^2$: the same Lagrangian gives Neyman allocation $n_T/n_C=\\sigma_1/\\sigma_0$.",
 intuition:"The variance has a U-shape in the split; symmetry forces the minimum at the midpoint when both arms are equally noisy.",
 visualise:"Convex curve of $\\mathrm{var}(\\hat\\tau)$ vs $n_T$; user drags the split, the curve highlights the optimum.",
+widget:"alloc-curve",
 prereqs:["0.7","0.16","3.2"],forward:[],examRole:"QT1 §2.6"},
 
 {id:"3.6",m:3,title:"Conditional random assignment, balance, and pre-treatment controls",
@@ -576,6 +595,7 @@ idea:"Classical error in $X$ biases $\\hat\\beta_1$ toward zero.",
 derivation:"Causal $Y=\\beta_0+\\beta_1X+u$, OR. Observed $X^*=X+e_x$ with $e_x$ independent of $X,u$, mean zero. Substitute $X=X^*-e_x$: $Y=\\beta_0+\\beta_1X^*+(u-\\beta_1 e_x)=\\beta_0+\\beta_1X^*+\\varepsilon$. The error $\\varepsilon=u-\\beta_1e_x$ is correlated with $X^*$ because $\\mathrm{cov}(X^*,e_x)=\\mathrm{var}(e_x)\\ne 0$. The population regression slope: $$\\beta_1^*=\\frac{\\mathrm{cov}(Y,X^*)}{\\mathrm{var}(X^*)}.$$ Numerator: $\\mathrm{cov}(Y,X^*)=\\mathrm{cov}(\\beta_0+\\beta_1X+u,X+e_x)=\\beta_1\\mathrm{var}(X)$ (other terms zero by independence). Denominator: $\\mathrm{var}(X^*)=\\mathrm{var}(X)+\\mathrm{var}(e_x)$. Therefore $$\\boxed{\\beta_1^*=\\beta_1\\,\\frac{\\mathrm{var}(X)}{\\mathrm{var}(X)+\\mathrm{var}(e_x)}.}$$ The factor in $[0,1]$ gives attenuation.",
 intuition:"Only the signal part of $X^*$ moves with $Y$; the noise part dilutes the apparent slope.",
 visualise:"Noise slider on $X$; $\\hat\\beta_1$ visibly attenuates; a bar shows the reliability ratio $\\mathrm{var}(X)/\\mathrm{var}(X^*)$.",
+widget:"attenuation",
 prereqs:["0.7","3.1"],forward:["3.10"],examRole:"QT3 §2"},
 
 {id:"3.9",m:3,title:"Simultaneity bias",
@@ -596,6 +616,7 @@ idea:"Divide reduced form by first-stage to recover the structural effect.",
 derivation:"Structural $Y=\\beta_0+\\beta_1X+u$ with $\\mathrm{cov}(Z,u)=0$, $\\mathrm{cov}(X,Z)\\ne 0$. First stage $X=\\pi_0+\\pi_1Z+v$ with $\\pi_1\\ne 0$. Substitute first stage into structural: $$Y=(\\beta_0+\\beta_1\\pi_0)+\\beta_1\\pi_1Z+(\\beta_1v+u)=\\gamma_0+\\gamma_1Z+\\varepsilon.$$ By exogeneity $\\mathrm{cov}(Z,\\varepsilon)=\\beta_1\\mathrm{cov}(Z,v)+\\mathrm{cov}(Z,u)=0$, so OR holds and $\\hat\\gamma_1\\to^p\\gamma_1=\\beta_1\\pi_1$. Similarly $\\hat\\pi_1\\to^p\\pi_1$. Continuous mapping: $$\\boxed{\\hat\\beta_1^{ILS}:=\\frac{\\hat\\gamma_1}{\\hat\\pi_1}\\to^p\\beta_1=\\frac{\\mathrm{cov}(Y,Z)}{\\mathrm{cov}(X,Z)}.}$$",
 intuition:"$Z$ touches $Y$ only through $X$. Move $Z$ by 1, $X$ moves by $\\pi_1$, $Y$ moves by $\\beta_1\\pi_1$. Divide $Y$-effect by $X$-effect to recover $\\beta_1$.",
 visualise:"Side-by-side first-stage and reduced-form scatters; two slopes feed into a divisor; structural estimate appears.",
+widget:"ils-flow",
 prereqs:["3.10"],forward:["3.12"],examRole:"QT3 §3.2"},
 
 {id:"3.12",m:3,title:"Two-Stage Least Squares (2SLS)",
@@ -603,6 +624,7 @@ idea:"Replace $X$ with its projection on $Z$, then run OLS.",
 derivation:"Define $X^*=\\pi_0+\\pi_1Z$ and $v=X-X^*$. Substitute $X=X^*+v$ into the structural equation: $Y=\\beta_0+\\beta_1X^*+(u+\\beta_1v)=\\beta_0+\\beta_1X^*+\\varepsilon$. $X^*$ is a function of $Z$ alone, so $\\mathrm{cov}(X^*,\\varepsilon)=\\beta_1\\mathrm{cov}(X^*,v)+\\mathrm{cov}(X^*,u)=0$ (first term zero because $v\\perp X^*$ by construction; second by Z2). OR holds for the regression of $Y$ on $X^*$, so OLS of $Y$ on $\\hat X^*$ is consistent. With one instrument, 2SLS coincides with ILS numerically; with multiple instruments the same logic generalises.",
 intuition:"Stage 2 uses only the part of $X$ predicted by exogenous instruments; that part is by construction uncorrelated with the structural error.",
 visualise:"Two-stage flowchart: each stage has its own scatter; arrows connect them; final estimate at the bottom.",
+widget:"twosls-flow",
 prereqs:["3.10","3.11"],forward:["3.13","3.14","3.15","3.16"],examRole:"QT3 §3.3, §3.4"},
 
 {id:"3.13",m:3,title:"Multiple instruments and exogenous controls",
@@ -624,6 +646,7 @@ formal:"F-test of $H_0:\\pi_1=\\dots=\\pi_m=0$ in the first stage. Rule of thumb
 derivation:"With one instrument, the 2SLS asymptotic variance is $\\omega_{\\beta_1,IV}^2=\\sigma_u^2/[\\pi_1^2\\mathrm{var}(Z)]$. As $\\pi_1\\to 0$, $\\omega^2\\to\\infty$; the limiting Normal approximation breaks down.",
 intuition:"Weak instruments exploit almost no variation in $X$; everything is amplified noise.",
 visualise:"Instrument-strength dial: as user weakens it, the 2SLS sampling distribution becomes non-Normal and shifts; F falls below 10.",
+widget:"weak-iv",
 prereqs:["2.7","3.12","3.14"],forward:["3.16"],examRole:"QT3 §4.4"},
 
 {id:"3.16",m:3,title:"Test of exogeneity (overidentifying restrictions)",
@@ -657,12 +680,14 @@ prereqs:["0.10","1.7"],forward:["4.2"]},
 idea:"Weak stationarity: time-invariant first two moments and autocovariance.",
 formal:"$\\{Y_t\\}$ weakly stationary iff $\\mathbb{E}Y_t$, $\\mathrm{var}(Y_t)$, and $\\mathrm{cov}(Y_t,Y_{t-h})$ depend only on $h$, not $t$. Joint stationarity adds $\\mathrm{cov}(Y_t,X_{t-h})$. Strict stationarity is shift-invariant joint distribution.",
 visualise:"Rolling-window moments: stationary AR(1) vs unit-root process; rolling means/variances of the former hover, of the latter wander.",
+widget:"rolling-moments",
 prereqs:["4.1"],forward:["4.3","4.4","4.14"],examRole:"QT4 §1.2, §7.1, §7.4"},
 
 {id:"4.3",m:4,title:"Sample autocovariance and autocorrelation",
 idea:"Empirical analogues with denominator $T$ rather than $T-h$.",
 formal:"$\\hat\\gamma_h=\\frac{1}{T}\\sum_{t=h+1}^T(Y_t-\\overline Y_T)(Y_{t-h}-\\overline Y_T)$. $\\hat\\gamma_0=\\hat{\\mathrm{var}}(Y_t)$. Sample autocorrelation $\\hat\\rho_h=\\hat\\gamma_h/\\hat\\gamma_0$.",
 visualise:"ACF bar chart for a chosen process; user moves $h$, the highlighted bar updates beside the corresponding scatter of $Y_t$ vs $Y_{t-h}$.",
+widget:"acf-bars",
 prereqs:["0.9","4.2"],forward:["4.4","4.5"],examRole:"QT4 §1.4"},
 
 {id:"4.4",m:4,title:"AR(1) and AR(p) models",
@@ -693,6 +718,7 @@ idea:"Conditional expectation is the MSE-optimal forecast.",
 derivation:"<strong>Optimal forecast = CEF.</strong> See 0.8: $Y_{T+1\\mid T}=\\mathbb{E}[Y_{T+1}\\mid\\mathcal{Y}_T]$ minimises $\\mathbb{E}[Y_{T+1}-m(\\mathcal{Y}_T)]^2$.<br><br><strong>h-step AR(1) forecast.</strong> $Y_{T+h\\mid T}=\\beta_0+\\beta_1 Y_{T+h-1\\mid T}$. Subtract $\\mu=\\beta_0/(1-\\beta_1)$: $Y_{T+h\\mid T}-\\mu=\\beta_1(Y_{T+h-1\\mid T}-\\mu)$. Iterate to $Y_{T\\mid T}=Y_T$: $$\\boxed{Y_{T+h\\mid T}=\\mu+\\beta_1^h(Y_T-\\mu).}$$ As $h\\to\\infty$ with $|\\beta_1|<1$: $Y_{T+h\\mid T}\\to\\mu$.<br><br><strong>MSFE decomposition.</strong> $\\hat e_{T+1\\mid T}=u_{T+1}+(Y_{T+1\\mid T}-\\hat Y_{T+1\\mid T})$. The two parts are uncorrelated (one is independent of past data, the other depends only on past data). Therefore $\\mathrm{MSFE}=\\mathrm{var}(u)+\\mathbb{E}(\\hat Y_{T+1\\mid T}-Y_{T+1\\mid T})^2$.",
 intuition:"Short-horizon forecasts use recent values heavily; at long horizons the best forecast is the unconditional mean. MSFE = irreducible noise + parameter-estimation slack.",
 visualise:"Forecast fan: each horizon has a band of forecast uncertainty; user moves $h$, bands widen.",
+widget:"forecast-fan",
 prereqs:["0.8","4.5","4.6"],forward:["4.8","4.9","4.10"],examRole:"QT4 §2"},
 
 {id:"4.8",m:4,title:"Pseudo out-of-sample forecast evaluation",
@@ -707,6 +733,7 @@ idea:"Penalised model fit; AIC under-penalises, BIC consistent.",
 formal:"$AIC_m=\\ln(SSR_m/T)+2m/T$. $BIC_m=\\ln(SSR_m/T)+m\\ln T/T$. Minimise over $m$. BIC selects the true order with probability $\\to 1$ as $T\\to\\infty$; AIC may pick larger models.",
 intuition:"Adding parameters always reduces $SSR_m$. Information criteria penalise complexity. BIC's $\\ln T$ penalty dominates AIC's $2$ for $T>e^2\\approx 7.4$, so BIC tends to pick smaller models in big samples.",
 visualise:"Bar chart of AIC and BIC across orders; arrows mark each minimum; sample-size slider shows BIC convergence.",
+widget:"aic-bic",
 prereqs:["2.13","4.7"],forward:["4.19"],examRole:"QT4 §2.5"},
 
 {id:"4.10",m:4,title:"ADL(p,q) models",
@@ -742,6 +769,7 @@ formal:"AR(p) has a unit root iff $\\sum\\beta_i=1$. If so, $\\Delta Y_t$ is AR(
 derivation:"<strong>Random-walk decomposition.</strong> With $\\beta_1=1$ and drift $\\beta_0$, recursive substitution gives $$Y_t=Y_0+\\beta_0t+\\sum_{s=1}^t u_s=Y_0+\\beta_0t+U_t,$$ where $U_t=\\sum_{s=1}^t u_s$. Properties: $\\mathbb{E}U_t=0$, $\\mathrm{var}(U_t)=t\\sigma_u^2$, no mean reversion.",
 intuition:"Unit-root process permanently remembers shocks; each innovation joins a cumulative sum that never decays.",
 visualise:"Trajectory simulator with $\\beta_1\\in\\{0.5,0.95,1,1.05\\}$; their dispersion across many draws diverges visibly.",
+widget:"unitroot-trajectories",
 prereqs:["4.4","4.5"],forward:["4.15","4.16","4.17","4.18"],examRole:"QT4 §1.5, §3.5"},
 
 {id:"4.15",m:4,title:"Order of integration",
@@ -761,6 +789,7 @@ idea:"Regressing two independent $I(1)$ series often yields significant t-statis
 formal:"Stochastic trends generate matching swings by chance; $R^2$ can be high; standard t-statistics do not converge to $N(0,1)$ but to functionals of Brownian motion.",
 intuition:"Random walks take long excursions; two independent walks will, by chance, look like they trend together over any finite window.",
 visualise:"Simulate two independent random walks; show scatter and regression line; replication histogram of t-statistics has fat tails.",
+widget:"spurious",
 prereqs:["4.14"],forward:["4.20","4.21"],examRole:"QT4 §5"},
 
 {id:"4.18",m:4,title:"Dickey-Fuller (constant only) test",
@@ -769,6 +798,7 @@ formal:"t-test of $\\delta=0$ in $\\Delta Y_t=\\beta_0+\\delta Y_{t-1}+u_t$ wher
 derivation:"<strong>Transformation.</strong> Subtract $Y_{t-1}$ from both sides of $Y_t=\\beta_0+\\beta_1Y_{t-1}+u_t$: $\\Delta Y_t=\\beta_0+(\\beta_1-1)Y_{t-1}+u_t=\\beta_0+\\delta Y_{t-1}+u_t$.",
 intuition:"Under unit-root null, $Y_{t-1}$ has variance growing with $t$, so standard CLT and homoskedastic SE assumptions break. Limit is the Dickey-Fuller distribution, with critical values shifted left of $N(0,1)$. Using Normal CVs would over-reject. One-sided because economic series rarely explode; the relevant alternative is mean-reversion.",
 visualise:"DF distribution overlaid with $N(0,1)$; user sees how Normal CVs would over-reject.",
+widget:"df-vs-normal",
 prereqs:["2.4","4.14"],forward:["4.19","4.21"],examRole:"QT4 §3"},
 
 {id:"4.19",m:4,title:"Dickey-Fuller (constant and trend) and ADF tests",
@@ -783,6 +813,7 @@ idea:"Two $I(1)$ series share a stochastic trend if some linear combination is $
 formal:"$Y_t,X_t\\sim I(1)$ are cointegrated iff $\\exists\\theta$ with $\\xi_t=Y_t-\\theta X_t$ stationary; $\\theta$ is the cointegrating coefficient.",
 intuition:"Two random walks can wander, but cointegration says their gap is anchored. Examples: stock prices and dividends; log income and log consumption; spot and futures.",
 visualise:"Two series with shared trend; slider for $\\theta$; residual $\\xi_t$ becomes visibly stationary at the right $\\theta$.",
+widget:"cointegration",
 prereqs:["4.15","4.17"],forward:["4.21","4.22"],examRole:"QT4 §4"},
 
 {id:"4.21",m:4,title:"Cointegration test (Engle-Granger)",
@@ -1018,6 +1049,37 @@ function buildWidget(lessonId, kind){
   if(kind==='ols-line') return widgetOLS(target);
   if(kind==='ovb-direction') return widgetOVB(target);
   if(kind==='ar1-sim') return widgetAR1(target);
+  if(kind==='corr-scatter') return widgetCorrScatter(target);
+  if(kind==='convergence-compare') return widgetConvergence(target);
+  if(kind==='lln-running') return widgetLLN(target);
+  if(kind==='dartboard') return widgetDartboard(target);
+  if(kind==='ht-power') return widgetHTPower(target);
+  if(kind==='ci-coverage') return widgetCICoverage(target);
+  if(kind==='two-sample') return widgetTwoSample(target);
+  if(kind==='cef-vs-linear') return widgetCEFvsLinear(target);
+  if(kind==='ols-asymptotic') return widgetOLSAsymp(target);
+  if(kind==='fwl-twostep') return widgetFWL(target);
+  if(kind==='hetero-se') return widgetHeteroSE(target);
+  if(kind==='f-test') return widgetFTest(target);
+  if(kind==='spec-picker') return widgetSpecPicker(target);
+  if(kind==='marginal-point') return widgetMarginalPoint(target);
+  if(kind==='r2-creep') return widgetR2Creep(target);
+  if(kind==='u-shape') return widgetUShape(target);
+  if(kind==='endo-menu') return widgetEndoMenu(target);
+  if(kind==='rct-shuffle') return widgetRCTShuffle(target);
+  if(kind==='alloc-curve') return widgetAllocCurve(target);
+  if(kind==='attenuation') return widgetAttenuation(target);
+  if(kind==='ils-flow') return widgetILSFlow(target);
+  if(kind==='twosls-flow') return widget2SLSFlow(target);
+  if(kind==='weak-iv') return widgetWeakIV(target);
+  if(kind==='rolling-moments') return widgetRollingMoments(target);
+  if(kind==='acf-bars') return widgetACF(target);
+  if(kind==='forecast-fan') return widgetForecastFan(target);
+  if(kind==='aic-bic') return widgetAICBIC(target);
+  if(kind==='unitroot-trajectories') return widgetUnitRoot(target);
+  if(kind==='spurious') return widgetSpurious(target);
+  if(kind==='df-vs-normal') return widgetDFvsNormal(target);
+  if(kind==='cointegration') return widgetCointegration(target);
 }
 
 /* Distribution explorer */
@@ -1212,21 +1274,1036 @@ function widgetAR1(t){
     for(let i=0;i<T;i++){y=b0+b1*y+s*normal(); xs.push(i); ys.push(y);}
     const stationary=Math.abs(b1)<1;
     const mu=stationary?b0/(1-b1):null, sd=stationary?s/Math.sqrt(1-b1*b1):null;
-    const traces=[{x:xs,y:ys,mode:'lines',type:'scatter',name:'$Y_t$',line:{color:'#38a169',width:1.4}}];
+    const traces=[{x:xs,y:ys,mode:'lines',type:'scatter',name:'Y_t',line:{color:'#38a169',width:1.4}}];
     if(stationary){
-      traces.push({x:[0,T],y:[mu,mu],mode:'lines',type:'scatter',name:'$\\mu$',line:{color:'#c05621',dash:'dash'}});
+      traces.push({x:[0,T],y:[mu,mu],mode:'lines',type:'scatter',name:'mu',line:{color:'#c05621',dash:'dash'}});
     }
     Plotly.newPlot(t.querySelector('#ar-plot'),traces,{margin:{t:20,r:30,b:35,l:40},height:280,legend:{orientation:'h',y:-0.18}},{displayModeBar:false});
-    t.querySelector('#ar-stats').innerHTML=stationary?`
-      <div class="stat"><span class="stat-label">Stationary?</span><span class="stat-value" style="color:#38a169">yes</span></div>
-      <div class="stat"><span class="stat-label">$\\mu=\\beta_0/(1-\\beta_1)$</span><span class="stat-value">${mu.toFixed(3)}</span></div>
-      <div class="stat"><span class="stat-label">$\\sigma_Y$</span><span class="stat-value">${sd.toFixed(3)}</span></div>`
-      : `<div class="stat"><span class="stat-label">Stationary?</span><span class="stat-value" style="color:#c05621">no (|β₁|≥1)</span></div>
-      <div class="stat"><span class="stat-label">Behaviour</span><span class="stat-value">${Math.abs(b1)===1?'random walk':'explosive'}</span></div>`;
-    if(window.renderMathInElement) renderMathInElement(t.querySelector('#ar-stats'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+    t.querySelector('#ar-stats').innerHTML=stationary?`<div class="stat"><span class="stat-label">Stationary?</span><span class="stat-value" style="color:#38a169">yes</span></div><div class="stat"><span class="stat-label">mean</span><span class="stat-value">${mu.toFixed(3)}</span></div><div class="stat"><span class="stat-label">sd</span><span class="stat-value">${sd.toFixed(3)}</span></div>`
+      :`<div class="stat"><span class="stat-label">Stationary?</span><span class="stat-value" style="color:#c05621">no</span></div><div class="stat"><span class="stat-label">Behaviour</span><span class="stat-value">${Math.abs(b1)===1?'random walk':'explosive'}</span></div>`;
   };
   t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
   t.querySelector('#ar-resample').addEventListener('click',()=>{seed=Math.floor(Math.random()*99999); draw();});
+  draw();
+}
+
+/* ============================================================
+   SHARED HELPERS
+============================================================ */
+function makePRNG(seed){let s=seed||12345;return ()=>{s=(s*9301+49297)%233280;return s/233280;};}
+function normalDraw(rand){let u=0,v=0;while(!u)u=rand();while(!v)v=rand();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+function expDraw(rand){return -Math.log(rand()||0.0001);}
+function uniDraw(rand){return rand();}
+function bernDraw(p,rand){return rand()<p?1:0;}
+function chartLayout(extra){return Object.assign({margin:{t:20,r:30,b:35,l:40},height:280,legend:{orientation:'h',y:-0.18}},extra||{});}
+function noBar(){return {displayModeBar:false};}
+function rangeArr(a,b,step){const out=[];for(let x=a;x<=b+1e-9;x+=step)out.push(x);return out;}
+function sum(a){return a.reduce((s,x)=>s+x,0);}
+function mean(a){return sum(a)/a.length;}
+function variance(a){const m=mean(a);return mean(a.map(x=>(x-m)*(x-m)));}
+function olsSlope(xs,ys){const mx=mean(xs),my=mean(ys);let sxy=0,sxx=0;for(let i=0;i<xs.length;i++){sxy+=(xs[i]-mx)*(ys[i]-my);sxx+=(xs[i]-mx)*(xs[i]-mx);}return {b1:sxy/sxx,b0:my-(sxy/sxx)*mx};}
+function normalPDF(x,mu,s){return Math.exp(-((x-mu)*(x-mu))/(2*s*s))/(s*Math.sqrt(2*Math.PI));}
+function normalCDF(x){return 0.5*(1+erf(x/Math.sqrt(2)));}
+function erf(x){const a1=0.254829592,a2=-0.284496736,a3=1.421413741,a4=-1.453152027,a5=1.061405429,p=0.3275911;const sign=x<0?-1:1;x=Math.abs(x);const t=1/(1+p*x);const y=1-(((((a5*t+a4)*t)+a3)*t+a2)*t+a1)*t*Math.exp(-x*x);return sign*y;}
+
+/* ============================================================
+   MODULE 0 WIDGETS
+============================================================ */
+
+/* 0.6 Bivariate scatter parameterised by rho */
+function widgetCorrScatter(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>$\\rho$: <span class="val" id="cs-rv">0.5</span></label><input type="range" id="cs-r" min="-0.99" max="0.99" step=".01" value="0.5"></div>
+    <div class="ctrl"><label>n: <span class="val" id="cs-nv">200</span></label><input type="range" id="cs-n" min="20" max="2000" step="20" value="200"></div>
+    <button class="btn" id="cs-resample">Resample</button>
+  </div><div class="plot" id="cs-plot"></div><div class="stats" id="cs-stats"></div>`;
+  let rand=makePRNG(7);
+  const draw=()=>{
+    const r=+t.querySelector('#cs-r').value, n=+t.querySelector('#cs-n').value;
+    t.querySelector('#cs-rv').textContent=r.toFixed(2); t.querySelector('#cs-nv').textContent=n;
+    const xs=[],ys=[];
+    for(let i=0;i<n;i++){const z1=normalDraw(rand),z2=normalDraw(rand);xs.push(z1);ys.push(r*z1+Math.sqrt(1-r*r)*z2);}
+    const sxy=mean(xs.map((x,i)=>x*ys[i]))-mean(xs)*mean(ys);
+    const sxx=variance(xs), syy=variance(ys);
+    const sampleR=sxy/Math.sqrt(sxx*syy);
+    Plotly.newPlot(t.querySelector('#cs-plot'),[{x:xs,y:ys,type:'scatter',mode:'markers',marker:{color:'#2b6cb0',opacity:.5,size:5}}],chartLayout({xaxis:{title:'X'},yaxis:{title:'Y'},showlegend:false}),noBar());
+    t.querySelector('#cs-stats').innerHTML=`<div class="stat"><span class="stat-label">True $\\rho$</span><span class="stat-value">${r.toFixed(3)}</span></div><div class="stat"><span class="stat-label">Sample corr</span><span class="stat-value">${sampleR.toFixed(3)}</span></div><div class="stat"><span class="stat-label">$\\hat{\\mathrm{cov}}$</span><span class="stat-value">${sxy.toFixed(3)}</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#cs-stats'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  t.querySelector('#cs-resample').addEventListener('click',()=>{rand=makePRNG(Math.floor(Math.random()*99999));draw();});
+  draw();
+}
+
+/* 0.10 Convergence in probability vs distribution */
+function widgetConvergence(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>n: <span class="val" id="cv-nv">50</span></label><input type="range" id="cv-n" min="2" max="500" step="2" value="50"></div>
+    <div class="ctrl"><label>Replications</label><input type="range" id="cv-r" min="200" max="5000" step="100" value="2000"></div>
+  </div><div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem"><div class="plot" id="cv-p1"></div><div class="plot" id="cv-p2"></div></div>`;
+  const draw=()=>{
+    const n=+t.querySelector('#cv-n').value, R=+t.querySelector('#cv-r').value;
+    t.querySelector('#cv-nv').textContent=n;
+    let r=makePRNG(11);
+    const sampMeans=[],zs=[];
+    for(let i=0;i<R;i++){
+      let s=0;for(let j=0;j<n;j++)s+=expDraw(r);
+      sampMeans.push(s/n);
+      zs.push(((s/n)-1)/(1/Math.sqrt(n)));
+    }
+    Plotly.newPlot(t.querySelector('#cv-p1'),[{x:sampMeans,type:'histogram',histnorm:'probability density',marker:{color:'#805ad5',opacity:.7},nbinsx:40}],chartLayout({title:'$\\overline X_n\\to^p \\mu=1$',height:240}),noBar());
+    const xs=rangeArr(-4,4,.1);
+    Plotly.newPlot(t.querySelector('#cv-p2'),[{x:zs,type:'histogram',histnorm:'probability density',marker:{color:'#2b6cb0',opacity:.7},nbinsx:40,name:'$Z_n$'},{x:xs,y:xs.map(x=>normalPDF(x,0,1)),type:'scatter',mode:'lines',line:{color:'#c05621'},name:'$N(0,1)$'}],chartLayout({title:'$Z_n\\to^d N(0,1)$',height:240}),noBar());
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 0.11 LLN running mean */
+function widgetLLN(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>Source</label><select id="ll-s"><option>Exponential ($\\mu$=1)</option><option>Bernoulli (p=0.3)</option><option>Uniform (μ=0.5)</option></select></div>
+    <div class="ctrl"><label>Max n: <span class="val" id="ll-nv">2000</span></label><input type="range" id="ll-n" min="100" max="10000" step="100" value="2000"></div>
+    <button class="btn" id="ll-rs">Resample</button>
+  </div><div class="plot" id="ll-plot"></div>`;
+  let r=makePRNG(13);
+  const draw=()=>{
+    const src=t.querySelector('#ll-s').value;
+    const N=+t.querySelector('#ll-n').value;
+    t.querySelector('#ll-nv').textContent=N;
+    const mu = src.includes('Exp')?1:src.includes('Bern')?0.3:0.5;
+    const drawN=src.includes('Exp')?(()=>expDraw(r)):src.includes('Bern')?(()=>bernDraw(0.3,r)):(()=>uniDraw(r));
+    const xs=[],ys=[];let s=0;
+    for(let i=1;i<=N;i++){s+=drawN(); xs.push(i); ys.push(s/i);}
+    Plotly.newPlot(t.querySelector('#ll-plot'),[
+      {x:xs,y:ys,type:'scatter',mode:'lines',name:'$\\overline X_n$',line:{color:'#805ad5',width:1.5}},
+      {x:[1,N],y:[mu,mu],type:'scatter',mode:'lines',name:'$\\mu$',line:{color:'#c05621',dash:'dash'}}
+    ],chartLayout({xaxis:{type:'log',title:'n (log scale)'}}),noBar());
+  };
+  t.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',draw));
+  t.querySelector('#ll-rs').addEventListener('click',()=>{r=makePRNG(Math.floor(Math.random()*99999));draw();});
+  draw();
+}
+
+/* 0.13 Dartboard: bias vs variance comparison */
+function widgetDartboard(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>n: <span class="val" id="db-nv">30</span></label><input type="range" id="db-n" min="5" max="500" step="5" value="30"></div>
+    <div class="ctrl"><label>Replications</label><input type="range" id="db-r" min="50" max="2000" step="50" value="500"></div>
+  </div><div class="plot" id="db-plot"></div><div class="stats" id="db-stats"></div>`;
+  const draw=()=>{
+    const n=+t.querySelector('#db-n').value, R=+t.querySelector('#db-r').value;
+    t.querySelector('#db-nv').textContent=n;
+    const r=makePRNG(17);
+    // True mu=2; estimators: A=mean (unbiased), B=mean - 0.5 (biased), C=median (slightly biased, more variable)
+    const A=[],B=[],C=[];
+    for(let rep=0;rep<R;rep++){
+      const sample=[];for(let i=0;i<n;i++)sample.push(2+normalDraw(r));
+      const mn=mean(sample);
+      A.push(mn); B.push(mn-0.5);
+      const sorted=[...sample].sort((a,b)=>a-b);
+      C.push(sorted[Math.floor(n/2)]);
+    }
+    Plotly.newPlot(t.querySelector('#db-plot'),[
+      {x:A,y:Array(R).fill(0).map(()=>Math.random()*0.3),mode:'markers',type:'scatter',name:'A: unbiased mean',marker:{color:'#38a169',size:5,opacity:.5}},
+      {x:B,y:Array(R).fill(0).map(()=>Math.random()*0.3+1),mode:'markers',type:'scatter',name:'B: biased mean',marker:{color:'#c05621',size:5,opacity:.5}},
+      {x:C,y:Array(R).fill(0).map(()=>Math.random()*0.3+2),mode:'markers',type:'scatter',name:'C: median',marker:{color:'#805ad5',size:5,opacity:.5}},
+      {x:[2,2],y:[-.2,2.5],mode:'lines',type:'scatter',name:'True $\\mu=2$',line:{color:'#1a202c',dash:'dash'}}
+    ],chartLayout({yaxis:{showticklabels:false},height:300}),noBar());
+    const stats=(arr,truth)=>{const m=mean(arr),v=variance(arr);return {bias:(m-truth).toFixed(3),sd:Math.sqrt(v).toFixed(3),mse:((m-truth)*(m-truth)+v).toFixed(3)};};
+    const sA=stats(A,2),sB=stats(B,2),sC=stats(C,2);
+    t.querySelector('#db-stats').innerHTML=`<div class="stat"><span class="stat-label">A bias / sd / MSE</span><span class="stat-value">${sA.bias} / ${sA.sd} / ${sA.mse}</span></div><div class="stat"><span class="stat-label">B bias / sd / MSE</span><span class="stat-value">${sB.bias} / ${sB.sd} / ${sB.mse}</span></div><div class="stat"><span class="stat-label">C bias / sd / MSE</span><span class="stat-value">${sC.bias} / ${sC.sd} / ${sC.mse}</span></div>`;
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 0.14 HT rejection region with power */
+function widgetHTPower(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>$\\alpha$: <span class="val" id="hp-av">0.05</span></label><input type="range" id="hp-a" min=".01" max=".2" step=".01" value=".05"></div>
+    <div class="ctrl"><label>True $\\mu$ (null=0): <span class="val" id="hp-mv">0.5</span></label><input type="range" id="hp-m" min="-2" max="2" step=".1" value="0.5"></div>
+    <div class="ctrl"><label>n: <span class="val" id="hp-nv">30</span></label><input type="range" id="hp-n" min="5" max="500" step="5" value="30"></div>
+    <div class="ctrl"><label>Test</label><select id="hp-t"><option>Two-sided</option><option>Upper</option><option>Lower</option></select></div>
+  </div><div class="plot" id="hp-plot"></div><div class="stats" id="hp-stats"></div>`;
+  const draw=()=>{
+    const a=+t.querySelector('#hp-a').value;
+    const mu=+t.querySelector('#hp-m').value;
+    const n=+t.querySelector('#hp-n').value;
+    const test=t.querySelector('#hp-t').value;
+    t.querySelector('#hp-av').textContent=a.toFixed(2);
+    t.querySelector('#hp-mv').textContent=mu.toFixed(2);
+    t.querySelector('#hp-nv').textContent=n;
+    const sigma=1/Math.sqrt(n);
+    const xs=rangeArr(-1,1,.005);
+    const nullPDF=xs.map(x=>normalPDF(x,0,sigma));
+    const altPDF=xs.map(x=>normalPDF(x,mu,sigma));
+    let cv,cv2,power;
+    const cvT=test==='Two-sided'?1.96:1.645;
+    if(test==='Two-sided'){cv=cvT*sigma;cv2=-cvT*sigma;power=1-(normalCDF((cv-mu)/sigma)-normalCDF((cv2-mu)/sigma));}
+    else if(test==='Upper'){cv=cvT*sigma;cv2=null;power=1-normalCDF((cv-mu)/sigma);}
+    else {cv=null;cv2=-cvT*sigma;power=normalCDF((cv2-mu)/sigma);}
+    const traces=[
+      {x:xs,y:nullPDF,type:'scatter',mode:'lines',name:'Null $\\mu=0$',line:{color:'#2b6cb0'}},
+      {x:xs,y:altPDF,type:'scatter',mode:'lines',name:'Alt $\\mu$',line:{color:'#c05621',dash:'dash'}}
+    ];
+    if(cv!==null) traces.push({x:[cv,cv],y:[0,Math.max(...nullPDF)*1.05],mode:'lines',type:'scatter',name:`+CV`,line:{color:'#dd6b20',dash:'dot'},showlegend:false});
+    if(cv2!==null) traces.push({x:[cv2,cv2],y:[0,Math.max(...nullPDF)*1.05],mode:'lines',type:'scatter',name:`-CV`,line:{color:'#dd6b20',dash:'dot'},showlegend:false});
+    Plotly.newPlot(t.querySelector('#hp-plot'),traces,chartLayout(),noBar());
+    t.querySelector('#hp-stats').innerHTML=`<div class="stat"><span class="stat-label">Critical value $c_\\alpha$</span><span class="stat-value">${cvT.toFixed(3)}</span></div><div class="stat"><span class="stat-label">Power $1-\\beta$</span><span class="stat-value">${power.toFixed(3)}</span></div><div class="stat"><span class="stat-label">Type II $\\beta$</span><span class="stat-value">${(1-power).toFixed(3)}</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#hp-stats'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 0.15 CI coverage replication */
+function widgetCICoverage(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>n: <span class="val" id="ci-nv">25</span></label><input type="range" id="ci-n" min="5" max="200" step="5" value="25"></div>
+    <div class="ctrl"><label>$\\alpha$: <span class="val" id="ci-av">0.05</span></label><input type="range" id="ci-a" min=".01" max=".2" step=".01" value=".05"></div>
+    <div class="ctrl"><label>Replications</label><input type="range" id="ci-r" min="20" max="200" step="10" value="50"></div>
+    <button class="btn" id="ci-rs">Resample</button>
+  </div><div class="plot" id="ci-plot"></div><div class="stats" id="ci-stats"></div>`;
+  let rand=makePRNG(19);
+  const draw=()=>{
+    const n=+t.querySelector('#ci-n').value, a=+t.querySelector('#ci-a').value, R=+t.querySelector('#ci-r').value;
+    t.querySelector('#ci-nv').textContent=n; t.querySelector('#ci-av').textContent=a.toFixed(2);
+    const truth=2;const cv=a===0.01?2.576:a===0.05?1.96:a===0.1?1.645:1.96;
+    const lows=[],highs=[],centers=[],covers=[];
+    for(let r=0;r<R;r++){
+      const sample=[];for(let i=0;i<n;i++)sample.push(truth+normalDraw(rand));
+      const m=mean(sample);
+      const s=Math.sqrt(variance(sample)*n/(n-1));
+      const se=s/Math.sqrt(n);
+      lows.push(m-cv*se); highs.push(m+cv*se); centers.push(m);
+      covers.push(m-cv*se<=truth&&truth<=m+cv*se);
+    }
+    const cov=mean(covers.map(b=>b?1:0));
+    const traces=[];
+    for(let i=0;i<R;i++){
+      traces.push({x:[lows[i],highs[i]],y:[i,i],mode:'lines',type:'scatter',line:{color:covers[i]?'#38a169':'#c05621',width:1.5},showlegend:false});
+    }
+    traces.push({x:[truth,truth],y:[0,R],mode:'lines',type:'scatter',line:{color:'#1a202c',dash:'dash'},name:`True $\\mu$=${truth}`});
+    Plotly.newPlot(t.querySelector('#ci-plot'),traces,chartLayout({yaxis:{title:'replication',showticklabels:false},height:Math.max(280,R*4)}),noBar());
+    t.querySelector('#ci-stats').innerHTML=`<div class="stat"><span class="stat-label">Coverage</span><span class="stat-value">${(cov*100).toFixed(1)}%</span></div><div class="stat"><span class="stat-label">Target</span><span class="stat-value">${((1-a)*100).toFixed(0)}%</span></div>`;
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  t.querySelector('#ci-rs').addEventListener('click',()=>{rand=makePRNG(Math.floor(Math.random()*99999));draw();});
+  draw();
+}
+
+/* 0.16 Two-sample diff of means */
+function widgetTwoSample(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>$\\mu_1$: <span class="val" id="ts-m1v">2</span></label><input type="range" id="ts-m1" min="0" max="5" step=".1" value="2"></div>
+    <div class="ctrl"><label>$\\mu_2$: <span class="val" id="ts-m2v">2</span></label><input type="range" id="ts-m2" min="0" max="5" step=".1" value="2"></div>
+    <div class="ctrl"><label>$\\sigma$: <span class="val" id="ts-sv">1</span></label><input type="range" id="ts-s" min=".5" max="3" step=".1" value="1"></div>
+    <div class="ctrl"><label>n per group: <span class="val" id="ts-nv">50</span></label><input type="range" id="ts-n" min="5" max="500" step="5" value="50"></div>
+    <button class="btn" id="ts-rs">Resample</button>
+  </div><div class="plot" id="ts-plot"></div><div class="stats" id="ts-stats"></div>`;
+  let rand=makePRNG(23);
+  const draw=()=>{
+    const m1=+t.querySelector('#ts-m1').value,m2=+t.querySelector('#ts-m2').value;
+    const sigma=+t.querySelector('#ts-s').value, n=+t.querySelector('#ts-n').value;
+    t.querySelector('#ts-m1v').textContent=m1.toFixed(2);t.querySelector('#ts-m2v').textContent=m2.toFixed(2);
+    t.querySelector('#ts-sv').textContent=sigma.toFixed(2);t.querySelector('#ts-nv').textContent=n;
+    const g1=[],g2=[];for(let i=0;i<n;i++){g1.push(m1+sigma*normalDraw(rand));g2.push(m2+sigma*normalDraw(rand));}
+    const m1h=mean(g1),m2h=mean(g2);
+    const s1=Math.sqrt(variance(g1)*n/(n-1)),s2=Math.sqrt(variance(g2)*n/(n-1));
+    const dh=m1h-m2h;
+    const se=Math.sqrt(s1*s1/n+s2*s2/n);
+    const tv=dh/se;
+    const p=2*(1-normalCDF(Math.abs(tv)));
+    Plotly.newPlot(t.querySelector('#ts-plot'),[
+      {x:g1,type:'histogram',name:'Group 1',marker:{color:'#2b6cb0',opacity:.6},nbinsx:25,xbins:{start:Math.min(m1,m2)-3*sigma,end:Math.max(m1,m2)+3*sigma,size:.2}},
+      {x:g2,type:'histogram',name:'Group 2',marker:{color:'#c05621',opacity:.6},nbinsx:25,xbins:{start:Math.min(m1,m2)-3*sigma,end:Math.max(m1,m2)+3*sigma,size:.2}}
+    ],chartLayout({barmode:'overlay'}),noBar());
+    t.querySelector('#ts-stats').innerHTML=`<div class="stat"><span class="stat-label">$\\hat\\delta$</span><span class="stat-value">${dh.toFixed(3)}</span></div><div class="stat"><span class="stat-label">$\\mathrm{se}(\\hat\\delta)$</span><span class="stat-value">${se.toFixed(3)}</span></div><div class="stat"><span class="stat-label">t</span><span class="stat-value">${tv.toFixed(3)}</span></div><div class="stat"><span class="stat-label">p (two-sided)</span><span class="stat-value">${p.toFixed(3)}</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#ts-stats'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  t.querySelector('#ts-rs').addEventListener('click',()=>{rand=makePRNG(Math.floor(Math.random()*99999));draw();});
+  draw();
+}
+
+/* ============================================================
+   MODULE 1 WIDGETS
+============================================================ */
+
+/* 1.5 CEF vs best linear fit */
+function widgetCEFvsLinear(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>True CEF</label><select id="cl-f"><option>Linear</option><option>Quadratic</option><option>Cubic</option><option>Sin</option></select></div>
+    <div class="ctrl"><label>Noise $\\sigma$: <span class="val" id="cl-sv">0.5</span></label><input type="range" id="cl-s" min=".1" max="2" step=".05" value=".5"></div>
+    <div class="ctrl"><label>n: <span class="val" id="cl-nv">200</span></label><input type="range" id="cl-n" min="20" max="2000" step="20" value="200"></div>
+  </div><div class="plot" id="cl-plot"></div>`;
+  const draw=()=>{
+    const f=t.querySelector('#cl-f').value, s=+t.querySelector('#cl-s').value, n=+t.querySelector('#cl-n').value;
+    t.querySelector('#cl-sv').textContent=s.toFixed(2);t.querySelector('#cl-nv').textContent=n;
+    const fns={Linear:x=>1+0.7*x,Quadratic:x=>1+0.5*x*x-0.3,Cubic:x=>0.3*x*x*x-x,Sin:x=>2*Math.sin(x)};
+    const cef=fns[f];
+    const r=makePRNG(29);
+    const xs=[],ys=[];
+    for(let i=0;i<n;i++){const x=normalDraw(r)*1.5; xs.push(x); ys.push(cef(x)+s*normalDraw(r));}
+    const {b1,b0}=olsSlope(xs,ys);
+    const grid=rangeArr(-4,4,.05);
+    Plotly.newPlot(t.querySelector('#cl-plot'),[
+      {x:xs,y:ys,type:'scatter',mode:'markers',name:'Data',marker:{color:'#cbd5e0',size:5,opacity:.6}},
+      {x:grid,y:grid.map(cef),type:'scatter',mode:'lines',name:'True CEF',line:{color:'#2b6cb0',width:2}},
+      {x:grid,y:grid.map(x=>b0+b1*x),type:'scatter',mode:'lines',name:'Best linear fit',line:{color:'#c05621',dash:'dash',width:2}}
+    ],chartLayout(),noBar());
+  };
+  t.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 1.7 OLS asymptotic distribution */
+function widgetOLSAsymp(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>n: <span class="val" id="oa-nv">30</span></label><input type="range" id="oa-n" min="10" max="1000" step="10" value="30"></div>
+    <div class="ctrl"><label>Replications</label><input type="range" id="oa-r" min="200" max="5000" step="100" value="2000"></div>
+  </div><div class="plot" id="oa-plot"></div><div class="stats" id="oa-stats"></div>`;
+  const draw=()=>{
+    const n=+t.querySelector('#oa-n').value, R=+t.querySelector('#oa-r').value;
+    t.querySelector('#oa-nv').textContent=n;
+    const r=makePRNG(31);
+    const trueB1=1.5, sigma=1.0;
+    const ests=[];
+    for(let rep=0;rep<R;rep++){
+      const xs=[],ys=[];
+      for(let i=0;i<n;i++){const x=normalDraw(r); xs.push(x); ys.push(0.3+trueB1*x+sigma*normalDraw(r));}
+      ests.push(olsSlope(xs,ys).b1);
+    }
+    const m=mean(ests),v=variance(ests);
+    const xs2=rangeArr(trueB1-1,trueB1+1,.02);
+    Plotly.newPlot(t.querySelector('#oa-plot'),[
+      {x:ests,type:'histogram',histnorm:'probability density',marker:{color:'#2b6cb0',opacity:.7},nbinsx:40,name:'$\\hat\\beta_1$ across reps'},
+      {x:xs2,y:xs2.map(x=>normalPDF(x,trueB1,Math.sqrt(v))),type:'scatter',mode:'lines',line:{color:'#c05621'},name:'Normal fit'}
+    ],chartLayout(),noBar());
+    t.querySelector('#oa-stats').innerHTML=`<div class="stat"><span class="stat-label">Empirical mean</span><span class="stat-value">${m.toFixed(3)}</span></div><div class="stat"><span class="stat-label">True $\\beta_1$</span><span class="stat-value">${trueB1.toFixed(3)}</span></div><div class="stat"><span class="stat-label">Empirical sd</span><span class="stat-value">${Math.sqrt(v).toFixed(3)}</span></div><div class="stat"><span class="stat-label">Theoretical sd $\\sigma_u/\\sqrt{n\\sigma_X^2}$</span><span class="stat-value">${(sigma/Math.sqrt(n)).toFixed(3)}</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#oa-stats'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 1.9 FWL two-step */
+function widgetFWL(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>$\\beta_1$: <span class="val" id="fw-b1v">1</span></label><input type="range" id="fw-b1" min="-2" max="2" step=".1" value="1"></div>
+    <div class="ctrl"><label>$\\beta_2$: <span class="val" id="fw-b2v">1</span></label><input type="range" id="fw-b2" min="-2" max="2" step=".1" value="1"></div>
+    <div class="ctrl"><label>$\\rho(X_1,X_2)$: <span class="val" id="fw-rv">0.5</span></label><input type="range" id="fw-r" min="-0.95" max="0.95" step=".05" value="0.5"></div>
+  </div><div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem"><div class="plot" id="fw-p1"></div><div class="plot" id="fw-p2"></div></div><div class="stats" id="fw-s"></div>`;
+  const draw=()=>{
+    const b1=+t.querySelector('#fw-b1').value, b2=+t.querySelector('#fw-b2').value, rho=+t.querySelector('#fw-r').value;
+    t.querySelector('#fw-b1v').textContent=b1.toFixed(2);t.querySelector('#fw-b2v').textContent=b2.toFixed(2);t.querySelector('#fw-rv').textContent=rho.toFixed(2);
+    const r=makePRNG(37);
+    const n=200;
+    const X1=[],X2=[],Y=[];
+    for(let i=0;i<n;i++){const z1=normalDraw(r),z2=normalDraw(r);X1.push(z1);X2.push(rho*z1+Math.sqrt(1-rho*rho)*z2);Y.push(b1*X1[i]+b2*X2[i]+normalDraw(r)*0.5);}
+    // Simple regression of Y on X1
+    const naive=olsSlope(X1,Y).b1;
+    // Auxiliary X1 on X2
+    const aux=olsSlope(X2,X1);
+    const tildeX1=X1.map((x,i)=>x-(aux.b0+aux.b1*X2[i]));
+    const fwl=olsSlope(tildeX1,Y).b1;
+    Plotly.newPlot(t.querySelector('#fw-p1'),[{x:X1,y:Y,type:'scatter',mode:'markers',marker:{color:'#cbd5e0',size:4,opacity:.5},showlegend:false},{x:[Math.min(...X1),Math.max(...X1)],y:[Math.min(...X1)*naive,Math.max(...X1)*naive],type:'scatter',mode:'lines',line:{color:'#c05621'},name:'Naive simple regression'}],chartLayout({title:`Naive: ${naive.toFixed(2)}`,height:240,showlegend:false}),noBar());
+    Plotly.newPlot(t.querySelector('#fw-p2'),[{x:tildeX1,y:Y,type:'scatter',mode:'markers',marker:{color:'#cbd5e0',size:4,opacity:.5},showlegend:false},{x:[Math.min(...tildeX1),Math.max(...tildeX1)],y:[Math.min(...tildeX1)*fwl,Math.max(...tildeX1)*fwl],type:'scatter',mode:'lines',line:{color:'#38a169'},name:'FWL'}],chartLayout({title:`FWL on $\\tilde X_1$: ${fwl.toFixed(2)}`,height:240,showlegend:false}),noBar());
+    t.querySelector('#fw-s').innerHTML=`<div class="stat"><span class="stat-label">True $\\beta_1$</span><span class="stat-value">${b1.toFixed(3)}</span></div><div class="stat"><span class="stat-label">Naive (biased)</span><span class="stat-value">${naive.toFixed(3)}</span></div><div class="stat"><span class="stat-label">FWL = multiple-regression $\\hat\\beta_1$</span><span class="stat-value">${fwl.toFixed(3)}</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#fw-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* ============================================================
+   MODULE 2 WIDGETS
+============================================================ */
+
+/* 2.2 Hetero vs robust SE */
+function widgetHeteroSE(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>Heteroskedasticity: <span class="val" id="he-hv">1</span></label><input type="range" id="he-h" min="0" max="3" step=".1" value="1"></div>
+    <div class="ctrl"><label>n: <span class="val" id="he-nv">100</span></label><input type="range" id="he-n" min="20" max="2000" step="20" value="100"></div>
+  </div><div class="plot" id="he-plot"></div><div class="stats" id="he-s"></div>`;
+  const draw=()=>{
+    const h=+t.querySelector('#he-h').value, n=+t.querySelector('#he-n').value;
+    t.querySelector('#he-hv').textContent=h.toFixed(2);t.querySelector('#he-nv').textContent=n;
+    const r=makePRNG(41);
+    const xs=[],ys=[];
+    for(let i=0;i<n;i++){const x=normalDraw(r)*1.5;xs.push(x);ys.push(0.3+x+(1+h*Math.abs(x))*normalDraw(r));}
+    const {b1,b0}=olsSlope(xs,ys);
+    const resid=xs.map((x,i)=>ys[i]-b0-b1*x);
+    const mx=mean(xs);
+    const sxx=variance(xs);
+    // Homoskedastic SE
+    const sigma2=mean(resid.map(r=>r*r))*n/(n-2);
+    const seHomo=Math.sqrt(sigma2/(n*sxx));
+    // Robust SE
+    const num=mean(xs.map((x,i)=>(x-mx)*(x-mx)*resid[i]*resid[i]));
+    const seRob=Math.sqrt(num/(n*sxx*sxx));
+    Plotly.newPlot(t.querySelector('#he-plot'),[
+      {x:xs,y:ys,type:'scatter',mode:'markers',marker:{color:'#2b6cb0',size:5,opacity:.5},showlegend:false},
+      {x:[Math.min(...xs),Math.max(...xs)],y:[b0+b1*Math.min(...xs),b0+b1*Math.max(...xs)],type:'scatter',mode:'lines',line:{color:'#c05621',width:2},showlegend:false}
+    ],chartLayout(),noBar());
+    t.querySelector('#he-s').innerHTML=`<div class="stat"><span class="stat-label">$\\hat\\beta_1$</span><span class="stat-value">${b1.toFixed(3)}</span></div><div class="stat"><span class="stat-label">Homoskedastic SE</span><span class="stat-value">${seHomo.toFixed(3)}</span></div><div class="stat"><span class="stat-label">Robust SE</span><span class="stat-value">${seRob.toFixed(3)}</span></div><div class="stat"><span class="stat-label">Ratio robust/homo</span><span class="stat-value">${(seRob/seHomo).toFixed(2)}</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#he-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 2.7 F-test of joint restrictions */
+function widgetFTest(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>$\\beta_1$: <span class="val" id="ft-b1v">0.5</span></label><input type="range" id="ft-b1" min="-2" max="2" step=".05" value=".5"></div>
+    <div class="ctrl"><label>$\\beta_2$: <span class="val" id="ft-b2v">0.5</span></label><input type="range" id="ft-b2" min="-2" max="2" step=".05" value=".5"></div>
+    <div class="ctrl"><label>n: <span class="val" id="ft-nv">100</span></label><input type="range" id="ft-n" min="20" max="2000" step="20" value="100"></div>
+  </div><div class="stats" id="ft-s"></div>`;
+  const draw=()=>{
+    const b1=+t.querySelector('#ft-b1').value, b2=+t.querySelector('#ft-b2').value, n=+t.querySelector('#ft-n').value;
+    t.querySelector('#ft-b1v').textContent=b1.toFixed(2);t.querySelector('#ft-b2v').textContent=b2.toFixed(2);t.querySelector('#ft-nv').textContent=n;
+    const r=makePRNG(43);
+    const X1=[],X2=[],Y=[];
+    for(let i=0;i<n;i++){X1.push(normalDraw(r));X2.push(normalDraw(r));Y.push(0.3+b1*X1[i]+b2*X2[i]+normalDraw(r));}
+    const ssrR=Y.map(y=>(y-mean(Y))*(y-mean(Y))).reduce((s,v)=>s+v,0);
+    // Unrestricted: full model
+    // Use simple FWL approach: regress Y on residualized X1 then X2
+    const auxX1onX2=olsSlope(X2,X1);
+    const tX1=X1.map((x,i)=>x-(auxX1onX2.b0+auxX1onX2.b1*X2[i]));
+    const b1h=olsSlope(tX1,Y).b1;
+    // Now residualize Y on tX1, get residuals, regress on X2
+    const auxYontX1=olsSlope(tX1,Y);
+    const Yres=Y.map((y,i)=>y-(auxYontX1.b0+auxYontX1.b1*tX1[i]));
+    const auxX2ontX1=olsSlope(tX1,X2);
+    const X2res=X2.map((x,i)=>x-(auxX2ontX1.b0+auxX2ontX1.b1*tX1[i]));
+    const b2h=olsSlope(X2res,Yres).b1;
+    const Yhat=X1.map((x,i)=>mean(Y)+b1h*(X1[i]-mean(X1))+b2h*(X2[i]-mean(X2)));
+    const ssrU=Y.map((y,i)=>(y-Yhat[i])*(y-Yhat[i])).reduce((s,v)=>s+v,0);
+    const q=2,k=2;
+    const F=((ssrR-ssrU)/q)/(ssrU/(n-k-1));
+    const cv=3.0; // approx F(2,inf) at 5%
+    t.querySelector('#ft-s').innerHTML=`<div class="stat"><span class="stat-label">Restricted SSR (no $X$'s)</span><span class="stat-value">${ssrR.toFixed(2)}</span></div><div class="stat"><span class="stat-label">Unrestricted SSR</span><span class="stat-value">${ssrU.toFixed(2)}</span></div><div class="stat"><span class="stat-label">F-statistic</span><span class="stat-value">${F.toFixed(2)}</span></div><div class="stat"><span class="stat-label">$F_{2,\\infty}$ at 5%</span><span class="stat-value">${cv}</span></div><div class="stat"><span class="stat-label">Decision</span><span class="stat-value">${F>cv?'<span style="color:#38a169">Reject</span>':'<span style="color:#c05621">Fail to reject</span>'}</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#ft-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 2.10 Spec picker */
+function widgetSpecPicker(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>Specification</label><select id="sp-s"><option>Linear</option><option>Quadratic</option><option>Log-Log</option><option>Linear-Log</option><option>Log-Linear</option></select></div>
+    <div class="ctrl"><label>True curvature: <span class="val" id="sp-cv">0.5</span></label><input type="range" id="sp-c" min="0" max="1.5" step=".05" value=".5"></div>
+  </div><div class="plot" id="sp-plot"></div><div class="stats" id="sp-s"></div>`;
+  const draw=()=>{
+    const s=t.querySelector('#sp-s').value, c=+t.querySelector('#sp-c').value;
+    t.querySelector('#sp-cv').textContent=c.toFixed(2);
+    const r=makePRNG(47);
+    const n=200;
+    const xs=[],ys=[];
+    for(let i=0;i<n;i++){const x=Math.exp(normalDraw(r)*0.5+1);xs.push(x);ys.push(2+0.5*x+c*x*x*0.05+normalDraw(r)*1);}
+    let xt=[],yt=[],formula='';
+    if(s==='Linear'){xt=xs;yt=ys;formula='$Y=\\beta_0+\\beta_1 X$';}
+    else if(s==='Quadratic'){xt=xs;yt=ys;formula='$Y=\\beta_0+\\beta_1 X+\\beta_2 X^2$';}
+    else if(s==='Log-Log'){xt=xs.map(Math.log);yt=ys.map(y=>Math.log(Math.max(y,0.01)));formula='$\\ln Y=\\beta_0+\\beta_1\\ln X$ (elasticity $\\beta_1$)';}
+    else if(s==='Linear-Log'){xt=xs.map(Math.log);yt=ys;formula='$Y=\\beta_0+\\beta_1\\ln X$';}
+    else {xt=xs;yt=ys.map(y=>Math.log(Math.max(y,0.01)));formula='$\\ln Y=\\beta_0+\\beta_1 X$ (semi-elasticity)';}
+    const fit=olsSlope(xt,yt);
+    Plotly.newPlot(t.querySelector('#sp-plot'),[
+      {x:xt,y:yt,type:'scatter',mode:'markers',marker:{color:'#cbd5e0',size:5,opacity:.6},showlegend:false},
+      {x:[Math.min(...xt),Math.max(...xt)],y:[fit.b0+fit.b1*Math.min(...xt),fit.b0+fit.b1*Math.max(...xt)],type:'scatter',mode:'lines',line:{color:'#c05621',width:2},showlegend:false}
+    ],chartLayout(),noBar());
+    t.querySelector('#sp-s').innerHTML=`<div class="stat"><span class="stat-label">Form</span><span class="stat-value">${formula}</span></div><div class="stat"><span class="stat-label">$\\hat\\beta_1$</span><span class="stat-value">${fit.b1.toFixed(3)}</span></div><div class="stat"><span class="stat-label">$\\hat\\beta_0$</span><span class="stat-value">${fit.b0.toFixed(3)}</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#sp-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 2.11 Marginal effect at point */
+function widgetMarginalPoint(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>$\\beta_1$: <span class="val" id="mp-b1v">1</span></label><input type="range" id="mp-b1" min="-2" max="2" step=".1" value="1"></div>
+    <div class="ctrl"><label>$\\beta_2$: <span class="val" id="mp-b2v">0.3</span></label><input type="range" id="mp-b2" min="-1" max="1" step=".05" value=".3"></div>
+    <div class="ctrl"><label>$x^*$: <span class="val" id="mp-xv">1</span></label><input type="range" id="mp-x" min="-3" max="3" step=".1" value="1"></div>
+  </div><div class="plot" id="mp-plot"></div><div class="stats" id="mp-s"></div>`;
+  const draw=()=>{
+    const b1=+t.querySelector('#mp-b1').value, b2=+t.querySelector('#mp-b2').value, x=+t.querySelector('#mp-x').value;
+    t.querySelector('#mp-b1v').textContent=b1.toFixed(2);t.querySelector('#mp-b2v').textContent=b2.toFixed(2);t.querySelector('#mp-xv').textContent=x.toFixed(2);
+    const grid=rangeArr(-3,3,.05);
+    const ys=grid.map(g=>1+b1*g+b2*g*g);
+    const tangentSlope=b1+2*b2*x;
+    const tangentY=1+b1*x+b2*x*x;
+    const tline=grid.map(g=>tangentY+tangentSlope*(g-x));
+    Plotly.newPlot(t.querySelector('#mp-plot'),[
+      {x:grid,y:ys,type:'scatter',mode:'lines',name:'$Y=\\beta_0+\\beta_1 X+\\beta_2 X^2$',line:{color:'#2b6cb0'}},
+      {x:grid,y:tline,type:'scatter',mode:'lines',name:'Tangent at $x^*$',line:{color:'#c05621',dash:'dash'}},
+      {x:[x],y:[tangentY],type:'scatter',mode:'markers',marker:{color:'#c05621',size:10},name:'$x^*$'}
+    ],chartLayout(),noBar());
+    t.querySelector('#mp-s').innerHTML=`<div class="stat"><span class="stat-label">$\\partial Y/\\partial X = \\beta_1+2\\beta_2 X$</span><span class="stat-value">${tangentSlope.toFixed(3)}</span></div><div class="stat"><span class="stat-label">At $x^*$ = ${x.toFixed(2)}</span><span class="stat-value">slope = ${tangentSlope.toFixed(3)}</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#mp-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 2.12 R^2 creep with noise regressors */
+function widgetR2Creep(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>n: <span class="val" id="rc-nv">100</span></label><input type="range" id="rc-n" min="30" max="500" step="10" value="100"></div>
+    <div class="ctrl"><label>True regressors</label><input type="number" id="rc-k" min="1" max="5" value="2" style="width:60px"></div>
+  </div><div class="plot" id="rc-plot"></div>`;
+  const draw=()=>{
+    const n=+t.querySelector('#rc-n').value, kT=+t.querySelector('#rc-k').value;
+    t.querySelector('#rc-nv').textContent=n;
+    const r=makePRNG(53);
+    const KMAX=Math.min(n-2,30);
+    // Build X matrix and Y
+    const X=[];const Y=[];
+    for(let i=0;i<n;i++){const row=[];for(let j=0;j<KMAX;j++)row.push(normalDraw(r));X.push(row);
+      let y=1;for(let j=0;j<kT;j++)y+=row[j];y+=normalDraw(r);Y.push(y);
+    }
+    const yMean=mean(Y);const TSS=Y.reduce((s,y)=>s+(y-yMean)*(y-yMean),0);
+    const r2s=[],adj=[];
+    // Compute R^2 with first k regressors using simple sequential FWL approximation
+    const include=Array(n).fill(0).map(()=>[1]);
+    let resid=Y.slice();
+    for(let k=0;k<KMAX;k++){
+      // residualize current X_k+1 on prior columns by subtracting their mean projection (approx)
+      const xk=X.map(row=>row[k]);
+      const mxk=mean(xk);const xc=xk.map(x=>x-mxk);
+      const resmean=mean(resid);
+      const yc=resid.map(y=>y-resmean);
+      let sxy=0,sxx=0;for(let i=0;i<n;i++){sxy+=xc[i]*yc[i];sxx+=xc[i]*xc[i];}
+      const slope=sxy/sxx;
+      resid=resid.map((y,i)=>y-slope*xc[i]);
+      const SSR=resid.reduce((s,e)=>s+e*e,0);
+      const r2=1-SSR/TSS;
+      r2s.push(r2);
+      adj.push(1-((n-1)/(n-(k+1)-1))*(SSR/TSS));
+    }
+    Plotly.newPlot(t.querySelector('#rc-plot'),[
+      {x:rangeArr(1,KMAX,1),y:r2s,type:'scatter',mode:'lines+markers',name:'$R^2$',line:{color:'#2b6cb0'}},
+      {x:rangeArr(1,KMAX,1),y:adj,type:'scatter',mode:'lines+markers',name:'$\\bar R^2$',line:{color:'#c05621'}},
+      {x:[kT,kT],y:[0,1],type:'scatter',mode:'lines',name:'True k',line:{color:'#1a202c',dash:'dash'}}
+    ],chartLayout({xaxis:{title:'# regressors'},yaxis:{title:'fit'}}),noBar());
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 2.13 U-shape over/underfit */
+function widgetUShape(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>Noise $\\sigma$: <span class="val" id="us-sv">1</span></label><input type="range" id="us-s" min=".2" max="2" step=".05" value="1"></div>
+    <div class="ctrl"><label>n: <span class="val" id="us-nv">50</span></label><input type="range" id="us-n" min="15" max="500" step="5" value="50"></div>
+  </div><div class="plot" id="us-plot"></div>`;
+  const draw=()=>{
+    const s=+t.querySelector('#us-s').value, n=+t.querySelector('#us-n').value;
+    t.querySelector('#us-sv').textContent=s.toFixed(2);t.querySelector('#us-nv').textContent=n;
+    const r=makePRNG(59);
+    const trueF=x=>1+0.5*x-0.3*x*x;
+    const xs=[],ys=[],xt=[],yt=[];
+    for(let i=0;i<n;i++){const x=normalDraw(r)*1.5;xs.push(x);ys.push(trueF(x)+s*normalDraw(r));}
+    for(let i=0;i<n*3;i++){const x=normalDraw(r)*1.5;xt.push(x);yt.push(trueF(x)+s*normalDraw(r));}
+    const ks=[1,2,3,4,5,6,7,8,9,10];
+    const trainErr=[],testErr=[];
+    for(const k of ks){
+      // Fit polynomial degree k: build X matrix manually
+      const fit=fitPoly(xs,ys,k);
+      const trainE=mean(xs.map((x,i)=>(ys[i]-evalPoly(fit,x))**2));
+      const testE=mean(xt.map((x,i)=>(yt[i]-evalPoly(fit,x))**2));
+      trainErr.push(trainE);testErr.push(testE);
+    }
+    Plotly.newPlot(t.querySelector('#us-plot'),[
+      {x:ks,y:trainErr,type:'scatter',mode:'lines+markers',name:'Training MSE',line:{color:'#2b6cb0'}},
+      {x:ks,y:testErr,type:'scatter',mode:'lines+markers',name:'Holdout MSE',line:{color:'#c05621'}}
+    ],chartLayout({xaxis:{title:'polynomial degree'},yaxis:{title:'MSE'}}),noBar());
+  };
+  // Fit polynomial via normal equations (small k, OK)
+  function fitPoly(xs,ys,k){
+    const n=xs.length;
+    const X=xs.map(x=>{const r=[1];for(let j=1;j<=k;j++)r.push(Math.pow(x,j));return r;});
+    // Compute X^T X (k+1 x k+1)
+    const m=k+1;const XtX=[];for(let i=0;i<m;i++){const row=[];for(let j=0;j<m;j++){let s=0;for(let t=0;t<n;t++)s+=X[t][i]*X[t][j];row.push(s);}XtX.push(row);}
+    const Xty=[];for(let i=0;i<m;i++){let s=0;for(let t=0;t<n;t++)s+=X[t][i]*ys[t];Xty.push(s);}
+    return solve(XtX,Xty);
+  }
+  function evalPoly(c,x){let s=0;for(let i=0;i<c.length;i++)s+=c[i]*Math.pow(x,i);return s;}
+  function solve(A,b){const n=A.length;const M=A.map((r,i)=>[...r,b[i]]);
+    for(let i=0;i<n;i++){let p=i;for(let k=i+1;k<n;k++)if(Math.abs(M[k][i])>Math.abs(M[p][i]))p=k;[M[i],M[p]]=[M[p],M[i]];
+      for(let k=i+1;k<n;k++){const f=M[k][i]/M[i][i];for(let j=i;j<=n;j++)M[k][j]-=f*M[i][j];}}
+    const x=Array(n);for(let i=n-1;i>=0;i--){let s=M[i][n];for(let j=i+1;j<n;j++)s-=M[i][j]*x[j];x[i]=s/M[i][i];}return x;}
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* ============================================================
+   MODULE 3 WIDGETS
+============================================================ */
+
+/* 3.1 Endogeneity menu */
+function widgetEndoMenu(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>Source</label><select id="em-s"><option>None (exogenous X)</option><option>Omitted variable</option><option>Reverse causality</option><option>Measurement error in X</option></select></div>
+    <div class="ctrl"><label>Strength: <span class="val" id="em-tv">0.5</span></label><input type="range" id="em-t" min="0" max="1.5" step=".05" value=".5"></div>
+    <div class="ctrl"><label>n: <span class="val" id="em-nv">200</span></label><input type="range" id="em-n" min="50" max="2000" step="50" value="200"></div>
+  </div><div class="plot" id="em-plot"></div><div class="stats" id="em-s"></div>`;
+  const draw=()=>{
+    const src=t.querySelector('#em-s').value, k=+t.querySelector('#em-t').value, n=+t.querySelector('#em-n').value;
+    t.querySelector('#em-tv').textContent=k.toFixed(2);t.querySelector('#em-nv').textContent=n;
+    const r=makePRNG(61);
+    const trueB1=1.0;
+    const xs=[],ys=[];
+    for(let i=0;i<n;i++){
+      let X,Y;const u=normalDraw(r);
+      if(src.includes('None')){X=normalDraw(r);Y=0.3+trueB1*X+u;}
+      else if(src.includes('Omitted')){const W=normalDraw(r);X=normalDraw(r)+k*W;Y=0.3+trueB1*X+k*W+u;}
+      else if(src.includes('Reverse')){X=normalDraw(r);Y=0.3+trueB1*X+u;X+=k*Y;}
+      else {const Xtrue=normalDraw(r);X=Xtrue+k*normalDraw(r);Y=0.3+trueB1*Xtrue+u;}
+      xs.push(X);ys.push(Y);
+    }
+    const {b1,b0}=olsSlope(xs,ys);
+    Plotly.newPlot(t.querySelector('#em-plot'),[
+      {x:xs,y:ys,type:'scatter',mode:'markers',marker:{color:'#cbd5e0',size:5,opacity:.5},showlegend:false},
+      {x:[Math.min(...xs),Math.max(...xs)],y:[b0+b1*Math.min(...xs),b0+b1*Math.max(...xs)],type:'scatter',mode:'lines',line:{color:'#c05621'},name:'OLS'},
+      {x:[Math.min(...xs),Math.max(...xs)],y:[0.3+trueB1*Math.min(...xs),0.3+trueB1*Math.max(...xs)],type:'scatter',mode:'lines',line:{color:'#38a169',dash:'dash'},name:'True'}
+    ],chartLayout(),noBar());
+    t.querySelector('#em-s').innerHTML=`<div class="stat"><span class="stat-label">True $\\beta_1$</span><span class="stat-value">${trueB1.toFixed(3)}</span></div><div class="stat"><span class="stat-label">$\\hat\\beta_1$</span><span class="stat-value">${b1.toFixed(3)}</span></div><div class="stat"><span class="stat-label">Bias</span><span class="stat-value">${(b1-trueB1).toFixed(3)}</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#em-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 3.2 RCT shuffle */
+function widgetRCTShuffle(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>True effect $\\tau$: <span class="val" id="rs-tv">1</span></label><input type="range" id="rs-t" min="-2" max="2" step=".1" value="1"></div>
+    <div class="ctrl"><label>n per group: <span class="val" id="rs-nv">50</span></label><input type="range" id="rs-n" min="10" max="500" step="10" value="50"></div>
+    <button class="btn" id="rs-go">Shuffle</button>
+    <button class="btn" id="rs-reset">Reset</button>
+  </div><div class="plot" id="rs-plot"></div><div class="stats" id="rs-s"></div>`;
+  let rand=makePRNG(67);
+  let estimates=[];
+  const shuffle=()=>{
+    const tau=+t.querySelector('#rs-t').value, n=+t.querySelector('#rs-n').value;
+    t.querySelector('#rs-tv').textContent=tau.toFixed(2);t.querySelector('#rs-nv').textContent=n;
+    const Y0=[],Y1=[];
+    for(let i=0;i<n;i++)Y0.push(2+normalDraw(rand));
+    for(let i=0;i<n;i++)Y1.push(2+tau+normalDraw(rand));
+    estimates.push(mean(Y1)-mean(Y0));
+    const ks=Array.from({length:estimates.length},(_,i)=>i+1);
+    Plotly.newPlot(t.querySelector('#rs-plot'),[
+      {x:ks,y:estimates,type:'scatter',mode:'lines+markers',name:'$\\hat\\tau$',line:{color:'#dd6b20'}},
+      {x:[1,Math.max(estimates.length,1)],y:[tau,tau],type:'scatter',mode:'lines',name:'True $\\tau$',line:{color:'#1a202c',dash:'dash'}}
+    ],chartLayout({xaxis:{title:'shuffle #'},yaxis:{title:'$\\hat\\tau=\\overline Y_1-\\overline Y_0$'}}),noBar());
+    t.querySelector('#rs-s').innerHTML=`<div class="stat"><span class="stat-label">Last estimate</span><span class="stat-value">${estimates[estimates.length-1].toFixed(3)}</span></div><div class="stat"><span class="stat-label">Mean of estimates</span><span class="stat-value">${mean(estimates).toFixed(3)}</span></div><div class="stat"><span class="stat-label">N shuffles</span><span class="stat-value">${estimates.length}</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#rs-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelector('#rs-go').addEventListener('click',shuffle);
+  t.querySelector('#rs-reset').addEventListener('click',()=>{estimates=[];rand=makePRNG(Math.floor(Math.random()*99999));shuffle();});
+  shuffle();
+}
+
+/* 3.5 Allocation curve */
+function widgetAllocCurve(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>$N$: <span class="val" id="ac-nv">100</span></label><input type="range" id="ac-n" min="20" max="500" step="10" value="100"></div>
+    <div class="ctrl"><label>$\\sigma_0$: <span class="val" id="ac-s0v">1</span></label><input type="range" id="ac-s0" min=".5" max="3" step=".1" value="1"></div>
+    <div class="ctrl"><label>$\\sigma_1$: <span class="val" id="ac-s1v">1</span></label><input type="range" id="ac-s1" min=".5" max="3" step=".1" value="1"></div>
+  </div><div class="plot" id="ac-plot"></div><div class="stats" id="ac-s"></div>`;
+  const draw=()=>{
+    const N=+t.querySelector('#ac-n').value, s0=+t.querySelector('#ac-s0').value, s1=+t.querySelector('#ac-s1').value;
+    t.querySelector('#ac-nv').textContent=N;t.querySelector('#ac-s0v').textContent=s0.toFixed(2);t.querySelector('#ac-s1v').textContent=s1.toFixed(2);
+    const xs=rangeArr(1,N-1,1);
+    const v=xs.map(nT=>s1*s1/nT+s0*s0/(N-nT));
+    let minIdx=0;for(let i=1;i<v.length;i++)if(v[i]<v[minIdx])minIdx=i;
+    const optEqual=N/2;
+    const optNeyman=(s1/(s0+s1))*N;
+    Plotly.newPlot(t.querySelector('#ac-plot'),[
+      {x:xs,y:v,type:'scatter',mode:'lines',line:{color:'#dd6b20',width:2},name:'$\\mathrm{var}(\\hat\\tau)$'},
+      {x:[xs[minIdx]],y:[v[minIdx]],type:'scatter',mode:'markers',marker:{color:'#c05621',size:12},name:'optimum'},
+      {x:[N/2,N/2],y:[Math.min(...v)*0.95,Math.max(...v)*1.05],type:'scatter',mode:'lines',line:{color:'#1a202c',dash:'dash'},name:'$N/2$'}
+    ],chartLayout({xaxis:{title:'$n_T$'},yaxis:{title:'variance'}}),noBar());
+    t.querySelector('#ac-s').innerHTML=`<div class="stat"><span class="stat-label">Equal-variance optimum</span><span class="stat-value">$N/2$ = ${optEqual.toFixed(0)}</span></div><div class="stat"><span class="stat-label">Neyman optimum</span><span class="stat-value">${optNeyman.toFixed(1)}</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#ac-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 3.8 Attenuation slider */
+function widgetAttenuation(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>$\\sigma_{e_x}/\\sigma_X$: <span class="val" id="at-rv">0.5</span></label><input type="range" id="at-r" min="0" max="3" step=".05" value=".5"></div>
+    <div class="ctrl"><label>True $\\beta_1$: <span class="val" id="at-bv">1</span></label><input type="range" id="at-b" min="-2" max="2" step=".1" value="1"></div>
+  </div><div class="plot" id="at-plot"></div><div class="stats" id="at-s"></div>`;
+  const draw=()=>{
+    const ratio=+t.querySelector('#at-r').value, b1=+t.querySelector('#at-b').value;
+    t.querySelector('#at-rv').textContent=ratio.toFixed(2);t.querySelector('#at-bv').textContent=b1.toFixed(2);
+    const factor=1/(1+ratio*ratio);
+    const biased=b1*factor;
+    const r=makePRNG(71);const n=300;
+    const xs=[],ys=[];for(let i=0;i<n;i++){const X=normalDraw(r);const Xst=X+ratio*normalDraw(r);xs.push(Xst);ys.push(0.3+b1*X+normalDraw(r)*0.5);}
+    const {b1:bh,b0:b0h}=olsSlope(xs,ys);
+    Plotly.newPlot(t.querySelector('#at-plot'),[
+      {x:xs,y:ys,type:'scatter',mode:'markers',marker:{color:'#cbd5e0',size:4,opacity:.5},showlegend:false},
+      {x:[Math.min(...xs),Math.max(...xs)],y:[b0h+bh*Math.min(...xs),b0h+bh*Math.max(...xs)],type:'scatter',mode:'lines',line:{color:'#c05621',width:2},name:'OLS'}
+    ],chartLayout(),noBar());
+    t.querySelector('#at-s').innerHTML=`<div class="stat"><span class="stat-label">Reliability $\\frac{\\mathrm{var}(X)}{\\mathrm{var}(X^*)}$</span><span class="stat-value">${factor.toFixed(3)}</span></div><div class="stat"><span class="stat-label">True $\\beta_1$</span><span class="stat-value">${b1.toFixed(3)}</span></div><div class="stat"><span class="stat-label">Theoretical $\\beta_1^*$</span><span class="stat-value">${biased.toFixed(3)}</span></div><div class="stat"><span class="stat-label">Sample $\\hat\\beta_1$</span><span class="stat-value">${bh.toFixed(3)}</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#at-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 3.11 ILS dual scatter */
+function widgetILSFlow(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>True $\\beta_1$: <span class="val" id="if-b1v">1</span></label><input type="range" id="if-b1" min="-2" max="2" step=".1" value="1"></div>
+    <div class="ctrl"><label>$\\pi_1$ (instrument strength): <span class="val" id="if-p1v">1</span></label><input type="range" id="if-p1" min="0.05" max="2" step=".05" value="1"></div>
+    <div class="ctrl"><label>n: <span class="val" id="if-nv">200</span></label><input type="range" id="if-n" min="50" max="1000" step="50" value="200"></div>
+  </div><div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem"><div class="plot" id="if-fs"></div><div class="plot" id="if-rf"></div></div><div class="stats" id="if-s"></div>`;
+  const draw=()=>{
+    const b1=+t.querySelector('#if-b1').value, p1=+t.querySelector('#if-p1').value, n=+t.querySelector('#if-n').value;
+    t.querySelector('#if-b1v').textContent=b1.toFixed(2);t.querySelector('#if-p1v').textContent=p1.toFixed(2);t.querySelector('#if-nv').textContent=n;
+    const r=makePRNG(73);
+    const Z=[],X=[],Y=[];
+    for(let i=0;i<n;i++){const z=normalDraw(r),u=normalDraw(r);Z.push(z);
+      const x=p1*z+0.5*u+0.5*normalDraw(r);X.push(x);
+      Y.push(0.3+b1*x+u*0.7);
+    }
+    const fs=olsSlope(Z,X);
+    const rf=olsSlope(Z,Y);
+    const ils=rf.b1/fs.b1;
+    Plotly.newPlot(t.querySelector('#if-fs'),[{x:Z,y:X,type:'scatter',mode:'markers',marker:{color:'#cbd5e0',size:4,opacity:.5},showlegend:false},{x:[Math.min(...Z),Math.max(...Z)],y:[fs.b0+fs.b1*Math.min(...Z),fs.b0+fs.b1*Math.max(...Z)],type:'scatter',mode:'lines',line:{color:'#dd6b20'},showlegend:false}],chartLayout({title:`First stage: ${fs.b1.toFixed(2)}`,height:240}),noBar());
+    Plotly.newPlot(t.querySelector('#if-rf'),[{x:Z,y:Y,type:'scatter',mode:'markers',marker:{color:'#cbd5e0',size:4,opacity:.5},showlegend:false},{x:[Math.min(...Z),Math.max(...Z)],y:[rf.b0+rf.b1*Math.min(...Z),rf.b0+rf.b1*Math.max(...Z)],type:'scatter',mode:'lines',line:{color:'#805ad5'},showlegend:false}],chartLayout({title:`Reduced form: ${rf.b1.toFixed(2)}`,height:240}),noBar());
+    const ols=olsSlope(X,Y).b1;
+    t.querySelector('#if-s').innerHTML=`<div class="stat"><span class="stat-label">First-stage $\\hat\\pi_1$</span><span class="stat-value">${fs.b1.toFixed(3)}</span></div><div class="stat"><span class="stat-label">Reduced-form $\\hat\\gamma_1$</span><span class="stat-value">${rf.b1.toFixed(3)}</span></div><div class="stat"><span class="stat-label">ILS $=\\hat\\gamma_1/\\hat\\pi_1$</span><span class="stat-value">${ils.toFixed(3)}</span></div><div class="stat"><span class="stat-label">OLS (biased)</span><span class="stat-value">${ols.toFixed(3)}</span></div><div class="stat"><span class="stat-label">True $\\beta_1$</span><span class="stat-value">${b1.toFixed(3)}</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#if-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 3.12 2SLS flow */
+function widget2SLSFlow(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>True $\\beta_1$: <span class="val" id="ts-b1v">1</span></label><input type="range" id="ts-b1" min="-2" max="2" step=".1" value="1"></div>
+    <div class="ctrl"><label>$\\pi_1$: <span class="val" id="ts-p1v">1</span></label><input type="range" id="ts-p1" min="0.05" max="2" step=".05" value="1"></div>
+    <div class="ctrl"><label>Confounder strength: <span class="val" id="ts-cv">1</span></label><input type="range" id="ts-c" min="0" max="2" step=".1" value="1"></div>
+  </div><div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem"><div class="plot" id="ts-s1"></div><div class="plot" id="ts-s2"></div></div><div class="stats" id="ts-st"></div>`;
+  const draw=()=>{
+    const b1=+t.querySelector('#ts-b1').value, p1=+t.querySelector('#ts-p1').value, c=+t.querySelector('#ts-c').value;
+    t.querySelector('#ts-b1v').textContent=b1.toFixed(2);t.querySelector('#ts-p1v').textContent=p1.toFixed(2);t.querySelector('#ts-cv').textContent=c.toFixed(2);
+    const r=makePRNG(79);const n=300;
+    const Z=[],X=[],Y=[];
+    for(let i=0;i<n;i++){const z=normalDraw(r),u=normalDraw(r);Z.push(z);const x=p1*z+c*u+0.5*normalDraw(r);X.push(x);Y.push(0.3+b1*x+u);}
+    const fs=olsSlope(Z,X);
+    const Xhat=Z.map(z=>fs.b0+fs.b1*z);
+    const stage2=olsSlope(Xhat,Y);
+    const ols=olsSlope(X,Y);
+    Plotly.newPlot(t.querySelector('#ts-s1'),[{x:Z,y:X,type:'scatter',mode:'markers',marker:{color:'#cbd5e0',size:4,opacity:.5},showlegend:false},{x:[Math.min(...Z),Math.max(...Z)],y:[fs.b0+fs.b1*Math.min(...Z),fs.b0+fs.b1*Math.max(...Z)],type:'scatter',mode:'lines',line:{color:'#dd6b20'},showlegend:false}],chartLayout({title:`Stage 1: $X$ on $Z$`,height:240}),noBar());
+    Plotly.newPlot(t.querySelector('#ts-s2'),[{x:Xhat,y:Y,type:'scatter',mode:'markers',marker:{color:'#cbd5e0',size:4,opacity:.5},showlegend:false},{x:[Math.min(...Xhat),Math.max(...Xhat)],y:[stage2.b0+stage2.b1*Math.min(...Xhat),stage2.b0+stage2.b1*Math.max(...Xhat)],type:'scatter',mode:'lines',line:{color:'#38a169'},showlegend:false}],chartLayout({title:`Stage 2: $Y$ on $\\hat X$`,height:240}),noBar());
+    t.querySelector('#ts-st').innerHTML=`<div class="stat"><span class="stat-label">True $\\beta_1$</span><span class="stat-value">${b1.toFixed(3)}</span></div><div class="stat"><span class="stat-label">2SLS $\\hat\\beta_1$</span><span class="stat-value">${stage2.b1.toFixed(3)}</span></div><div class="stat"><span class="stat-label">OLS (biased)</span><span class="stat-value">${ols.b1.toFixed(3)}</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#ts-st'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 3.15 Weak instruments */
+function widgetWeakIV(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>$\\pi_1$: <span class="val" id="wi-pv">0.5</span></label><input type="range" id="wi-p" min="0.01" max="2" step=".01" value="0.5"></div>
+    <div class="ctrl"><label>n: <span class="val" id="wi-nv">200</span></label><input type="range" id="wi-n" min="50" max="2000" step="50" value="200"></div>
+    <div class="ctrl"><label>Replications</label><input type="range" id="wi-r" min="100" max="2000" step="100" value="500"></div>
+  </div><div class="plot" id="wi-plot"></div><div class="stats" id="wi-s"></div>`;
+  const draw=()=>{
+    const p=+t.querySelector('#wi-p').value, n=+t.querySelector('#wi-n').value, R=+t.querySelector('#wi-r').value;
+    t.querySelector('#wi-pv').textContent=p.toFixed(2);t.querySelector('#wi-nv').textContent=n;
+    const r=makePRNG(83);
+    const ests=[];const fs=[];
+    const trueB=1.0;
+    for(let rep=0;rep<R;rep++){
+      const Z=[],X=[],Y=[];
+      for(let i=0;i<n;i++){const z=normalDraw(r),u=normalDraw(r);Z.push(z);const x=p*z+0.7*u+0.5*normalDraw(r);X.push(x);Y.push(trueB*x+u);}
+      const stg=olsSlope(Z,X);
+      const Xh=Z.map(z=>stg.b0+stg.b1*z);
+      const ils=olsSlope(Xh,Y).b1;
+      ests.push(ils);
+      // F-stat approx: (SSR_r-SSR_u)/(SSR_u/(n-2))
+      const Xmean=mean(X);
+      const SSRr=X.reduce((s,x)=>s+(x-Xmean)*(x-Xmean),0);
+      const SSRu=X.reduce((s,x,i)=>{const xh=stg.b0+stg.b1*Z[i];return s+(x-xh)*(x-xh);},0);
+      fs.push(((SSRr-SSRu))/(SSRu/(n-2)));
+    }
+    Plotly.newPlot(t.querySelector('#wi-plot'),[
+      {x:ests,type:'histogram',histnorm:'probability density',marker:{color:'#dd6b20',opacity:.7},nbinsx:50,name:'$\\hat\\beta_1^{2SLS}$'},
+      {x:[trueB,trueB],y:[0,1],type:'scatter',mode:'lines',line:{color:'#1a202c',dash:'dash'},name:'True',yaxis:'y2'}
+    ],chartLayout({yaxis:{title:'density'}}),noBar());
+    t.querySelector('#wi-s').innerHTML=`<div class="stat"><span class="stat-label">Mean F-stat</span><span class="stat-value" style="color:${mean(fs)<10?'#c05621':'#38a169'}">${mean(fs).toFixed(1)}</span></div><div class="stat"><span class="stat-label">Mean $\\hat\\beta_1$</span><span class="stat-value">${mean(ests).toFixed(3)}</span></div><div class="stat"><span class="stat-label">SD of $\\hat\\beta_1$</span><span class="stat-value">${Math.sqrt(variance(ests)).toFixed(3)}</span></div><div class="stat"><span class="stat-label">Verdict</span><span class="stat-value">${mean(fs)<10?'<span style="color:#c05621">weak instrument</span>':'<span style="color:#38a169">OK</span>'}</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#wi-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* ============================================================
+   MODULE 4 WIDGETS
+============================================================ */
+
+/* 4.2 Rolling moments */
+function widgetRollingMoments(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>$\\beta_1$: <span class="val" id="rm-bv">0.7</span></label><input type="range" id="rm-b" min="-1.05" max="1.05" step=".01" value="0.7"></div>
+    <div class="ctrl"><label>Window: <span class="val" id="rm-wv">50</span></label><input type="range" id="rm-w" min="10" max="200" step="5" value="50"></div>
+    <div class="ctrl"><label>T: <span class="val" id="rm-tv">500</span></label><input type="range" id="rm-t" min="100" max="2000" step="50" value="500"></div>
+  </div><div class="plot" id="rm-plot"></div>`;
+  const draw=()=>{
+    const b1=+t.querySelector('#rm-b').value, w=+t.querySelector('#rm-w').value, T=+t.querySelector('#rm-t').value;
+    t.querySelector('#rm-bv').textContent=b1.toFixed(2);t.querySelector('#rm-wv').textContent=w;t.querySelector('#rm-tv').textContent=T;
+    const r=makePRNG(89);const ys=[];let y=0;
+    for(let i=0;i<T;i++){y=b1*y+normalDraw(r);ys.push(y);}
+    const xs=[],means=[],vars=[];
+    for(let i=w;i<T;i++){const win=ys.slice(i-w,i);xs.push(i);means.push(mean(win));vars.push(variance(win));}
+    Plotly.newPlot(t.querySelector('#rm-plot'),[
+      {x:rangeArr(0,T-1,1),y:ys,type:'scatter',mode:'lines',name:'$Y_t$',line:{color:'#cbd5e0',width:1}},
+      {x:xs,y:means,type:'scatter',mode:'lines',name:'rolling mean',line:{color:'#2b6cb0'}},
+      {x:xs,y:vars,type:'scatter',mode:'lines',name:'rolling var',line:{color:'#c05621'},yaxis:'y2'}
+    ],chartLayout({yaxis2:{overlaying:'y',side:'right',title:'var'}}),noBar());
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 4.3 ACF bars */
+function widgetACF(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>$\\beta_1$: <span class="val" id="ac-bv">0.7</span></label><input type="range" id="ac-b" min="-0.99" max="0.99" step=".01" value=".7"></div>
+    <div class="ctrl"><label>T: <span class="val" id="ac-tv">300</span></label><input type="range" id="ac-t" min="50" max="2000" step="50" value="300"></div>
+    <div class="ctrl"><label>Max lag: <span class="val" id="ac-lv">20</span></label><input type="range" id="ac-l" min="5" max="50" step="1" value="20"></div>
+  </div><div class="plot" id="ac-plot"></div>`;
+  const draw=()=>{
+    const b=+t.querySelector('#ac-b').value, T=+t.querySelector('#ac-t').value, L=+t.querySelector('#ac-l').value;
+    t.querySelector('#ac-bv').textContent=b.toFixed(2);t.querySelector('#ac-tv').textContent=T;t.querySelector('#ac-lv').textContent=L;
+    const r=makePRNG(97);const y=[];let yt=0;for(let i=0;i<T;i++){yt=b*yt+normalDraw(r);y.push(yt);}
+    const m=mean(y);
+    const g0=mean(y.map(v=>(v-m)*(v-m)));
+    const lags=rangeArr(0,L,1);
+    const rho=lags.map(h=>{if(h===0)return 1;let s=0;for(let i=h;i<T;i++)s+=(y[i]-m)*(y[i-h]-m);return (s/T)/g0;});
+    const theory=lags.map(h=>Math.pow(b,h));
+    const ci=1.96/Math.sqrt(T);
+    Plotly.newPlot(t.querySelector('#ac-plot'),[
+      {x:lags,y:rho,type:'bar',name:'sample $\\hat\\rho_h$',marker:{color:'#2b6cb0'}},
+      {x:lags,y:theory,type:'scatter',mode:'lines+markers',name:'theory $\\beta_1^h$',line:{color:'#c05621'}},
+      {x:lags,y:Array(L+1).fill(ci),type:'scatter',mode:'lines',line:{color:'#a0aec0',dash:'dash'},showlegend:false},
+      {x:lags,y:Array(L+1).fill(-ci),type:'scatter',mode:'lines',line:{color:'#a0aec0',dash:'dash'},showlegend:false}
+    ],chartLayout({xaxis:{title:'lag h'},yaxis:{title:'autocorrelation',range:[-1,1.05]}}),noBar());
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 4.7 Forecast fan */
+function widgetForecastFan(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>$\\beta_0$: <span class="val" id="ff-b0v">0</span></label><input type="range" id="ff-b0" min="-1" max="1" step=".05" value="0"></div>
+    <div class="ctrl"><label>$\\beta_1$: <span class="val" id="ff-b1v">0.8</span></label><input type="range" id="ff-b1" min="-0.99" max="0.99" step=".01" value=".8"></div>
+    <div class="ctrl"><label>$Y_T$: <span class="val" id="ff-yv">2</span></label><input type="range" id="ff-y" min="-3" max="3" step=".1" value="2"></div>
+    <div class="ctrl"><label>H: <span class="val" id="ff-hv">20</span></label><input type="range" id="ff-h" min="5" max="50" step="1" value="20"></div>
+  </div><div class="plot" id="ff-plot"></div>`;
+  const draw=()=>{
+    const b0=+t.querySelector('#ff-b0').value, b1=+t.querySelector('#ff-b1').value, yT=+t.querySelector('#ff-y').value, H=+t.querySelector('#ff-h').value;
+    t.querySelector('#ff-b0v').textContent=b0.toFixed(2);t.querySelector('#ff-b1v').textContent=b1.toFixed(2);t.querySelector('#ff-yv').textContent=yT.toFixed(2);t.querySelector('#ff-hv').textContent=H;
+    const mu=b0/(1-b1);
+    const hs=rangeArr(0,H,1);
+    const fc=hs.map(h=>mu+Math.pow(b1,h)*(yT-mu));
+    // Forecast variance: sigma_u^2 * sum_{i=0}^{h-1} beta_1^(2i)
+    const sig2=1;
+    const fv=hs.map(h=>{let s=0;for(let i=0;i<h;i++)s+=Math.pow(b1,2*i);return sig2*s;});
+    const upper=fc.map((y,i)=>y+1.96*Math.sqrt(fv[i]));
+    const lower=fc.map((y,i)=>y-1.96*Math.sqrt(fv[i]));
+    Plotly.newPlot(t.querySelector('#ff-plot'),[
+      {x:hs,y:upper,type:'scatter',mode:'lines',line:{color:'rgba(43,108,176,0.3)',width:0},name:'upper',showlegend:false},
+      {x:hs,y:lower,type:'scatter',mode:'lines',fill:'tonexty',fillcolor:'rgba(43,108,176,0.2)',line:{color:'rgba(43,108,176,0.3)',width:0},name:'95% band'},
+      {x:hs,y:fc,type:'scatter',mode:'lines',line:{color:'#2b6cb0',width:2},name:'forecast'},
+      {x:[0,H],y:[mu,mu],type:'scatter',mode:'lines',line:{color:'#c05621',dash:'dash'},name:'$\\mu$'}
+    ],chartLayout({xaxis:{title:'horizon h'}}),noBar());
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 4.9 AIC / BIC */
+function widgetAICBIC(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>True order $p_0$: <span class="val" id="ai-pv">2</span></label><input type="range" id="ai-p" min="1" max="5" step="1" value="2"></div>
+    <div class="ctrl"><label>T: <span class="val" id="ai-tv">200</span></label><input type="range" id="ai-t" min="50" max="2000" step="50" value="200"></div>
+  </div><div class="plot" id="ai-plot"></div>`;
+  const draw=()=>{
+    const p0=+t.querySelector('#ai-p').value, T=+t.querySelector('#ai-t').value;
+    t.querySelector('#ai-pv').textContent=p0;t.querySelector('#ai-tv').textContent=T;
+    const r=makePRNG(101);
+    const betas=[0.5,-0.3,0.2,-0.1,0.05].slice(0,p0);
+    const y=[];for(let i=0;i<T;i++){let yt=normalDraw(r);for(let j=0;j<betas.length;j++){if(i-1-j>=0)yt+=betas[j]*y[i-1-j];}y.push(yt);}
+    // Fit AR(p) for p=0..8, compute SSR
+    const PMAX=Math.min(8,Math.floor(T/4));
+    const aic=[],bic=[];const ps=[];
+    for(let p=0;p<=PMAX;p++){
+      ps.push(p);
+      // Build design matrix
+      if(p===0){const m=mean(y);const ssr=y.reduce((s,v)=>s+(v-m)*(v-m),0);
+        aic.push(Math.log(ssr/T)+2*1/T);bic.push(Math.log(ssr/T)+1*Math.log(T)/T);continue;}
+      const X=[];const Y2=[];
+      for(let i=p;i<T;i++){const row=[1];for(let j=1;j<=p;j++)row.push(y[i-j]);X.push(row);Y2.push(y[i]);}
+      // Solve via normal equations
+      const k=p+1;const Tr=Y2.length;
+      const XtX=[];for(let i=0;i<k;i++){const row=[];for(let j=0;j<k;j++){let s=0;for(let q=0;q<Tr;q++)s+=X[q][i]*X[q][j];row.push(s);}XtX.push(row);}
+      const Xty=[];for(let i=0;i<k;i++){let s=0;for(let q=0;q<Tr;q++)s+=X[q][i]*Y2[q];Xty.push(s);}
+      const c=solveSys(XtX,Xty);
+      const ssr=Y2.reduce((s,v,q)=>{let yh=0;for(let j=0;j<k;j++)yh+=c[j]*X[q][j];return s+(v-yh)*(v-yh);},0);
+      aic.push(Math.log(ssr/T)+2*k/T);bic.push(Math.log(ssr/T)+k*Math.log(T)/T);
+    }
+    function solveSys(A,b){const n=A.length;const M=A.map((r,i)=>[...r,b[i]]);for(let i=0;i<n;i++){let p=i;for(let kk=i+1;kk<n;kk++)if(Math.abs(M[kk][i])>Math.abs(M[p][i]))p=kk;[M[i],M[p]]=[M[p],M[i]];for(let kk=i+1;kk<n;kk++){const f=M[kk][i]/M[i][i];for(let j=i;j<=n;j++)M[kk][j]-=f*M[i][j];}}const x=Array(n);for(let i=n-1;i>=0;i--){let s=M[i][n];for(let j=i+1;j<n;j++)s-=M[i][j]*x[j];x[i]=s/M[i][i];}return x;}
+    let aicMin=0,bicMin=0;for(let i=1;i<aic.length;i++){if(aic[i]<aic[aicMin])aicMin=i;if(bic[i]<bic[bicMin])bicMin=i;}
+    Plotly.newPlot(t.querySelector('#ai-plot'),[
+      {x:ps,y:aic,type:'scatter',mode:'lines+markers',name:'AIC',line:{color:'#2b6cb0'}},
+      {x:ps,y:bic,type:'scatter',mode:'lines+markers',name:'BIC',line:{color:'#c05621'}},
+      {x:[p0,p0],y:[Math.min(...aic,...bic),Math.max(...aic,...bic)],type:'scatter',mode:'lines',line:{color:'#1a202c',dash:'dash'},name:`true $p_0$=${p0}`}
+    ],chartLayout({xaxis:{title:'p'},yaxis:{title:'IC'}}),noBar());
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 4.14 Unit-root trajectories */
+function widgetUnitRoot(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>T: <span class="val" id="ur-tv">200</span></label><input type="range" id="ur-t" min="50" max="500" step="10" value="200"></div>
+    <div class="ctrl"><label>Paths: <span class="val" id="ur-rv">5</span></label><input type="range" id="ur-r" min="1" max="20" step="1" value="5"></div>
+    <button class="btn" id="ur-rs">Resample</button>
+  </div><div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem"><div class="plot" id="ur-p1"></div><div class="plot" id="ur-p2"></div></div>`;
+  let rand=makePRNG(103);
+  const draw=()=>{
+    const T=+t.querySelector('#ur-t').value, R=+t.querySelector('#ur-r').value;
+    t.querySelector('#ur-tv').textContent=T;t.querySelector('#ur-rv').textContent=R;
+    const xs=rangeArr(0,T-1,1);
+    const tracesA=[], tracesB=[];
+    for(let r=0;r<R;r++){
+      const stat=[];let y1=0;for(let i=0;i<T;i++){y1=0.5*y1+normalDraw(rand);stat.push(y1);}
+      const ur=[];let y2=0;for(let i=0;i<T;i++){y2=y2+normalDraw(rand);ur.push(y2);}
+      tracesA.push({x:xs,y:stat,type:'scatter',mode:'lines',line:{color:'rgba(43,108,176,0.5)',width:1},showlegend:false});
+      tracesB.push({x:xs,y:ur,type:'scatter',mode:'lines',line:{color:'rgba(192,86,33,0.5)',width:1},showlegend:false});
+    }
+    Plotly.newPlot(t.querySelector('#ur-p1'),tracesA,chartLayout({title:'Stationary $\\beta_1=0.5$',height:240}),noBar());
+    Plotly.newPlot(t.querySelector('#ur-p2'),tracesB,chartLayout({title:'Unit root $\\beta_1=1$',height:240}),noBar());
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  t.querySelector('#ur-rs').addEventListener('click',()=>{rand=makePRNG(Math.floor(Math.random()*99999));draw();});
+  draw();
+}
+
+/* 4.17 Spurious regression */
+function widgetSpurious(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>T: <span class="val" id="sp-tv">200</span></label><input type="range" id="sp-t" min="50" max="1000" step="50" value="200"></div>
+    <button class="btn" id="sp-rs">Resample</button>
+  </div><div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem"><div class="plot" id="sp-tspl"></div><div class="plot" id="sp-scat"></div></div><div class="stats" id="sp-s"></div>`;
+  let rand=makePRNG(107);
+  const draw=()=>{
+    const T=+t.querySelector('#sp-t').value;
+    t.querySelector('#sp-tv').textContent=T;
+    const xs=rangeArr(0,T-1,1);
+    const X=[],Y=[];let xt=0,yt=0;
+    for(let i=0;i<T;i++){xt+=normalDraw(rand);yt+=normalDraw(rand);X.push(xt);Y.push(yt);}
+    Plotly.newPlot(t.querySelector('#sp-tspl'),[
+      {x:xs,y:X,type:'scatter',mode:'lines',name:'$X_t$',line:{color:'#2b6cb0'}},
+      {x:xs,y:Y,type:'scatter',mode:'lines',name:'$Y_t$',line:{color:'#c05621'}}
+    ],chartLayout({title:'Two independent random walks',height:240}),noBar());
+    const fit=olsSlope(X,Y);
+    Plotly.newPlot(t.querySelector('#sp-scat'),[
+      {x:X,y:Y,type:'scatter',mode:'markers',marker:{color:'#cbd5e0',size:4,opacity:.5},showlegend:false},
+      {x:[Math.min(...X),Math.max(...X)],y:[fit.b0+fit.b1*Math.min(...X),fit.b0+fit.b1*Math.max(...X)],type:'scatter',mode:'lines',line:{color:'#dd6b20'},showlegend:false}
+    ],chartLayout({title:`OLS slope: ${fit.b1.toFixed(2)}`,height:240}),noBar());
+    // Compute t-stat (spurious)
+    const resid=X.map((x,i)=>Y[i]-fit.b0-fit.b1*x);
+    const sig2=mean(resid.map(r=>r*r))*T/(T-2);
+    const sxx=variance(X);
+    const se=Math.sqrt(sig2/(T*sxx));
+    const tStat=fit.b1/se;
+    t.querySelector('#sp-s').innerHTML=`<div class="stat"><span class="stat-label">$\\hat\\beta_1$</span><span class="stat-value">${fit.b1.toFixed(3)}</span></div><div class="stat"><span class="stat-label">naive t-stat</span><span class="stat-value" style="color:${Math.abs(tStat)>2?'#c05621':'#38a169'}">${tStat.toFixed(2)}</span></div><div class="stat"><span class="stat-label">naive p</span><span class="stat-value">${(2*(1-normalCDF(Math.abs(tStat)))).toFixed(4)}</span></div><div class="stat"><span class="stat-label">true relationship</span><span class="stat-value">none</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#sp-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  t.querySelector('#sp-rs').addEventListener('click',()=>{rand=makePRNG(Math.floor(Math.random()*99999));draw();});
+  draw();
+}
+
+/* 4.18 DF distribution vs N(0,1) (simulated) */
+function widgetDFvsNormal(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>T: <span class="val" id="df-tv">100</span></label><input type="range" id="df-t" min="30" max="500" step="10" value="100"></div>
+    <div class="ctrl"><label>Replications</label><input type="range" id="df-r" min="500" max="5000" step="100" value="2000"></div>
+  </div><div class="plot" id="df-plot"></div><div class="stats" id="df-s"></div>`;
+  const draw=()=>{
+    const T=+t.querySelector('#df-t').value, R=+t.querySelector('#df-r').value;
+    t.querySelector('#df-tv').textContent=T;
+    const r=makePRNG(109);
+    const ts=[];
+    for(let rep=0;rep<R;rep++){
+      // Simulate unit root: Y_t = Y_{t-1} + u_t
+      const y=[];let yt=0;for(let i=0;i<T;i++){yt+=normalDraw(r);y.push(yt);}
+      // Run regression Delta Y_t = b0 + delta * Y_{t-1} + u
+      const dy=[],ylag=[];for(let i=1;i<T;i++){dy.push(y[i]-y[i-1]);ylag.push(y[i-1]);}
+      const fit=olsSlope(ylag,dy);
+      const resid=ylag.map((x,i)=>dy[i]-fit.b0-fit.b1*x);
+      const sig2=mean(resid.map(r=>r*r))*(T-1)/(T-3);
+      const sxx=variance(ylag);
+      const se=Math.sqrt(sig2/((T-1)*sxx));
+      ts.push(fit.b1/se);
+    }
+    const xs=rangeArr(-5,3,.1);
+    const dfQ05=ts.slice().sort((a,b)=>a-b)[Math.floor(R*0.05)];
+    Plotly.newPlot(t.querySelector('#df-plot'),[
+      {x:ts,type:'histogram',histnorm:'probability density',marker:{color:'#dd6b20',opacity:.7},nbinsx:60,name:'DF distribution'},
+      {x:xs,y:xs.map(x=>normalPDF(x,0,1)),type:'scatter',mode:'lines',line:{color:'#2b6cb0',width:2},name:'$N(0,1)$'},
+      {x:[-1.645,-1.645],y:[0,0.4],type:'scatter',mode:'lines',line:{color:'#2b6cb0',dash:'dot'},name:'$N$ 5% CV'},
+      {x:[-2.86,-2.86],y:[0,0.4],type:'scatter',mode:'lines',line:{color:'#dd6b20',dash:'dot'},name:'DF 5% CV ≈ -2.86'}
+    ],chartLayout(),noBar());
+    t.querySelector('#df-s').innerHTML=`<div class="stat"><span class="stat-label">Empirical 5% quantile (DF)</span><span class="stat-value">${dfQ05.toFixed(2)}</span></div><div class="stat"><span class="stat-label">Tabulated DF$_{cm}$ 5% CV</span><span class="stat-value">-2.86</span></div><div class="stat"><span class="stat-label">Normal 5% CV (one-sided)</span><span class="stat-value">-1.645</span></div>`;
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 4.20 Cointegration slider */
+function widgetCointegration(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>True $\\theta$: <span class="val" id="co-tv">1</span></label><input type="range" id="co-t" min="0" max="3" step=".1" value="1"></div>
+    <div class="ctrl"><label>User $\\theta$: <span class="val" id="co-uv">1</span></label><input type="range" id="co-u" min="-1" max="3" step=".05" value="1"></div>
+    <div class="ctrl"><label>T: <span class="val" id="co-tt">300</span></label><input type="range" id="co-T" min="100" max="1000" step="50" value="300"></div>
+  </div><div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem"><div class="plot" id="co-p1"></div><div class="plot" id="co-p2"></div></div>`;
+  const draw=()=>{
+    const tt=+t.querySelector('#co-t').value, u=+t.querySelector('#co-u').value, T=+t.querySelector('#co-T').value;
+    t.querySelector('#co-tv').textContent=tt.toFixed(2);t.querySelector('#co-uv').textContent=u.toFixed(2);t.querySelector('#co-tt').textContent=T;
+    const r=makePRNG(113);
+    const X=[],Y=[];let xt=0;
+    for(let i=0;i<T;i++){xt+=normalDraw(r);X.push(xt);Y.push(tt*xt+0.5*normalDraw(r));}
+    const xs=rangeArr(0,T-1,1);
+    Plotly.newPlot(t.querySelector('#co-p1'),[
+      {x:xs,y:X,type:'scatter',mode:'lines',name:'$X_t$',line:{color:'#2b6cb0'}},
+      {x:xs,y:Y,type:'scatter',mode:'lines',name:'$Y_t$',line:{color:'#c05621'}}
+    ],chartLayout({title:'Two I(1) series sharing a stochastic trend',height:240}),noBar());
+    const xi=Y.map((y,i)=>y-u*X[i]);
+    Plotly.newPlot(t.querySelector('#co-p2'),[
+      {x:xs,y:xi,type:'scatter',mode:'lines',line:{color:'#805ad5'},showlegend:false}
+    ],chartLayout({title:`$\\xi_t = Y_t - ${u.toFixed(2)} X_t$ ${Math.abs(u-tt)<0.1?'(stationary)':'(drifts)'}`,height:240}),noBar());
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
   draw();
 }
 
