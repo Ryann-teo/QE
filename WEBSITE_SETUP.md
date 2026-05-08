@@ -73,9 +73,9 @@ The first build takes about a minute. Subsequent builds take 30 seconds.
 
 **The easy way: double-click.**
 
-- **Windows**: double-click `UPDATE.bat` (or `push-updates.bat`) in this folder. It prompts for a commit message, pushes to GitHub, and waits at the end so you can read the output. Press any key to close the window.
+- **Windows**: double-click `UPDATE.bat` (or `UPDATE.bat`) in this folder. It prompts for a commit message, pushes to GitHub, and waits at the end so you can read the output. Press any key to close the window.
 - **Mac**: double-click `UPDATE.command` (Finder treats it as a script). The Terminal window opens, runs the push, and waits.
-- **Git Bash / Terminal**: run `./push-updates.sh`.
+- **Git Bash / Terminal**: run `./UPDATE.command`.
 
 Each script:
 1. Checks that git is installed and the repo is initialised.
@@ -115,8 +115,8 @@ If it does not appear:
 ├── WEBSITE_SETUP.md
 ├── setup-website.sh
 ├── setup-website.bat
-├── push-updates.sh
-└── push-updates.bat
+├── UPDATE.command
+└── UPDATE.bat
 ```
 
 URLs:

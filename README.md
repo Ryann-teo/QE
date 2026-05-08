@@ -8,8 +8,8 @@ An interactive single-page revision site for Quantitative Economics (Trinity 202
 ## What is in here
 
 - `index.html`: the central dashboard with all 86 lessons embedded inline. KaTeX renders math, Plotly powers the interactive simulators (distribution explorer, CLT, OLS, OVB direction, AR(1) trajectories, Binomial/Normal approximation), and a sticky sidebar lets you jump between modules.
-- `setup-website.sh` / `setup-website.bat`: one-time scripts to initialise the git repo and push to GitHub.
-- `push-updates.sh` / `push-updates.bat`: convenience scripts to commit and push changes any time you edit `index.html`.
+- `setup-website.bat` / `setup-website.sh`: one-time scripts to initialise the git repo and push to GitHub.
+- `UPDATE.bat` (Windows) / `UPDATE.command` (Mac): convenience scripts to commit and push changes any time you edit `index.html`.
 - `WEBSITE_SETUP.md`: step-by-step deployment guide.
 
 ## Modules
