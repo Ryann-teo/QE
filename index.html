@@ -249,12 +249,14 @@ const LESSONS = [
 idea:"Events are subsets of a sample space; probabilities are a measure on those subsets satisfying three rules.",
 formal:"Non-negativity $\\mathbb{P}A\\ge0$. Normalisation $\\mathbb{P}\\Omega=1$. Countable additivity $\\mathbb{P}\\bigcup_i A_i=\\sum_i \\mathbb{P}A_i$ when the $A_i$ are pairwise disjoint.",
 visualise:"Venn diagram with two draggable circles; user shades unions, intersections, complements; the probability number recomputes under a uniform measure.",
+widget:"kolmogorov-venn",
 prereqs:[],forward:["0.2","0.3"]},
 
 {id:"0.2",m:0,title:"Conditional probability and independence",
 idea:"Conditioning on $B$ rescales probabilities; independence means $B$ tells you nothing about $A$.",
 formal:"$\\mathbb{P}(A\\mid B)=\\mathbb{P}(A\\cap B)/\\mathbb{P}B$ when $\\mathbb{P}B>0$. Independence: $A\\perp B$ iff $\\mathbb{P}(A\\cap B)=\\mathbb{P}A\\,\\mathbb{P}B$, equivalently $\\mathbb{P}(A\\mid B)=\\mathbb{P}A$.",
 visualise:"2x2 contingency widget: slide $\\mathbb{P}(A\\cap B)$, watch the conditional cells update, and a green light flips on when $\\mathbb{P}(A\\mid B)=\\mathbb{P}A$.",
+widget:"conditional-2x2",
 prereqs:["0.1"],forward:["0.6","0.7","0.10"]},
 
 {id:"0.3",m:0,title:"Random variables and distribution functions",
@@ -268,6 +270,7 @@ prereqs:["0.1"],forward:["0.4","0.5","0.6"]},
 idea:"Read off marginals from a joint, and collapse one variable by conditioning.",
 formal:"Joint CDF $F_{X,Y}(x,y)=\\mathbb{P}\\{X\\le x,Y\\le y\\}$. Discrete marginal $f_X(x)=\\sum_y f_{X,Y}(x,y)$ and conditional $f_{X\\mid Y}(x\\mid y)=f_{X,Y}(x,y)/f_Y(y)$. Independence iff joint factorises.",
 visualise:"Heatmap of bivariate joint PMF; sliders for cell probabilities; clicking a row reveals the conditional distribution and its mean.",
+widget:"joint-heatmap",
 prereqs:["0.3"],forward:["0.6","0.8"],examRole:"QT2 §1.6"},
 
 {id:"0.5",m:0,title:"Bernoulli, Binomial, Normal",
@@ -374,12 +377,14 @@ prereqs:["0.14","0.15"],forward:["3.2","3.5"]},
 idea:"Distinguish 'best prediction of $Y$ from $X$' from 'what happens to $Y$ if we manipulate $X$'.",
 formal:"Descriptive question concerns the joint distribution. Causal question concerns a counterfactual change in $X$ holding all else constant. Causal model $Y=y(x_1,\\dots,x_m)$; under linearity $Y=\\beta_0+\\beta_1X_1+\\dots+\\beta_mX_m$ with $\\beta_l=\\partial Y/\\partial X_l$.",
 visualise:"Parallel-panel widget: the same scatter shown twice, once with the best-fit line (descriptive) and once with a 'what-if intervention' arrow displacing $X$ and asking what happens to $Y$.",
+widget:"desc-vs-causal",
 prereqs:["0.6","0.8"],forward:["1.2","1.5","1.13","1.14"],examRole:"QT1 §1.1, §1.5, §4.1"},
 
 {id:"1.2",m:1,title:"Causal model",
 idea:"A structural equation $Y=\\beta_0+\\beta_1 X+u$ where $u$ collects every other determinant of $Y$.",
 formal:"$\\beta_1=\\partial Y/\\partial X$ holding all else constant; $u$ is real economic content (residual variation due to unmodelled determinants), not a 'noise term'.",
 visualise:"DAG playground: user toggles arrows from candidate confounders into $X$ and $Y$; surviving causal paths are highlighted.",
+widget:"dag-playground",
 prereqs:["1.1"],forward:["1.4","1.10","1.12","1.13","3.1"]},
 
 {id:"1.3",m:1,title:"Population linear regression",
@@ -415,6 +420,7 @@ formal:"$(\\hat\\beta_0,\\hat\\beta_1)=\\arg\\min\\hat{\\mathbb{E}}(Y-b_0-b_1X)^
 derivation:"$\\hat{\\mathbb{E}}(Y-b_0-b_1X)^2=\\frac{1}{n}\\sum(Y_i-b_0-b_1X_i)^2$. Differentiating: $-\\frac{2}{n}\\sum(Y_i-\\hat\\beta_0-\\hat\\beta_1X_i)=0$ (so $\\sum\\hat u_i=0$) and $-\\frac{2}{n}\\sum X_i(Y_i-\\hat\\beta_0-\\hat\\beta_1X_i)=0$ (so $\\sum X_i\\hat u_i=0$). Solving these two equations as in 1.3 gives the closed-form solutions.",
 intuition:"Replace population moments with sample analogues; the entire population-regression algebra carries through line by line.",
 visualise:"Sample scatter: user adds or removes points and watches $\\hat\\beta_1$ jump; an 'FOC residual sum' indicator that always reads zero.",
+widget:"ols-sample",
 prereqs:["0.9","1.3"],forward:["1.7","1.8","1.9","1.14","2.1","2.12","2.14"],examRole:"QT2 §2.1, §2.2"},
 
 {id:"1.7",m:1,title:"Consistency and asymptotic normality of OLS",
@@ -429,6 +435,7 @@ prereqs:["0.11","0.12","1.4","1.6"],forward:["2.1","2.2","2.4","3.14","4.1","4.6
 idea:"Same minimisation but with $k$ regressors; coefficients reinterpreted 'holding others constant'.",
 formal:"$Y=\\beta_0+\\beta_1X_1+\\dots+\\beta_kX_k+u$. Population: $k+1$ orthogonality conditions $\\mathbb{E}u=0$, $\\mathbb{E}X_lu=0$. Sample FOCs: $\\sum\\hat u_i=0$, $\\sum X_{l,i}\\hat u_i=0$.",
 visualise:"3D plane fit through a point cloud (two regressors); user rotates between marginal and partial perspectives.",
+widget:"multreg-3d",
 prereqs:["1.6"],forward:["1.9","2.1","2.4","2.7","2.8","2.9","2.12","2.15"]},
 
 {id:"1.9",m:1,title:"Frisch-Waugh-Lovell theorem",
@@ -455,6 +462,7 @@ formal:"Long $Y=\\beta_0+\\beta_1X_1+\\beta_2X_2+u$. Auxiliary $X_2=\\pi_0+\\pi_
 derivation:"Substitute into the long model: $$Y=(\\beta_0+\\beta_2\\pi_0)+(\\beta_1+\\beta_2\\pi_1)X_1+\\beta_2\\pi_2W_2+(u+\\beta_2v)=:\\delta_0+\\delta_1X_1+\\delta_2W_2+\\eta.$$ Three conditions secure $\\delta_1=\\beta_1$ and OLS consistency: (i) $\\pi_2\\ne 0$; (ii) $\\mathrm{cov}(W_2,u)=0$ (so $\\mathrm{cov}(W_2,\\eta)=0$); (iii) $\\pi_1=0$ (so $\\delta_1=\\beta_1$ rather than $\\beta_1+\\beta_2\\pi_1$). Then OR holds for $\\eta$ and OLS is consistent.",
 intuition:"The proxy soaks up the variation in the unobserved confounder that would have biased $\\hat\\beta_1$. If conditions (i) to (iii) hold, the part of $X_2$ left over is uncorrelated with $X_1$ and harmless.",
 visualise:"Monte Carlo panel: toggle each proxy condition on/off and watch the bias shrink or persist.",
+widget:"proxy-mc",
 prereqs:["1.10"],forward:["3.10"],examRole:"QT3 §6"},
 
 {id:"1.12",m:1,title:"Bad controls",
@@ -468,12 +476,14 @@ prereqs:["1.2","1.10"],forward:["3.6","3.17"],examRole:"QT1 §2.5"},
 idea:"Duffy's checklist for going from causal model to regression and assessing whether $\\hat\\beta_1$ is causal.",
 formal:"(a) Write the causal model. (b) List determinants in $u$. (c) For each, ask if it is correlated with $X$. (d) Include / proxy / instrument as needed. (e) Check OR. (f) Interpret accordingly.",
 visualise:"Checklist UI applied to any worked example; each tick or fail flags the corresponding diagnostic.",
+widget:"recipe-checker",
 prereqs:["1.1","1.2","1.3","1.4","1.5","1.6","1.7","1.8","1.9","1.10","1.11","1.12"],forward:["1.14","3.10","3.17","3.18"],examRole:"QT1 §1.2, §4.1, §4.3"},
 
 {id:"1.14",m:1,title:"Descriptive interpretation language",
 idea:"How to write a coefficient interpretation when causal interpretation is not justified.",
 formal:"Template: 'On average, an [object's] having one unit higher [X] is <strong>associated with</strong> [coefficient] [higher/lower] [Y], holding each other regressor constant.' Avoid 'causes' without OR.",
 visualise:"Coefficient interpreter: user enters variable names, units, sign, magnitude; the widget emits a correctly worded sentence.",
+widget:"coef-interpreter",
 prereqs:["1.6","1.13"],forward:[],examRole:"QT1 §1.3"},
 
 /* MODULE 2 */
@@ -482,6 +492,7 @@ idea:"$\\hat\\beta$ varies across hypothetical samples; the variance of that dis
 formal:"Under iid, OR, finite kurtosis: $\\sqrt n(\\hat\\beta_l-\\beta_l)\\to^d N(0,\\omega_{\\beta_l}^2)$.",
 derivation:"See 1.7 (full derivation via LLN, CLT, Slutsky).",
 visualise:"Replication histogram: each replication of size $n$ yields one $\\hat\\beta_l$; histogram approaches Normal as $n$ grows.",
+widget:"sampling-ols",
 prereqs:["0.12","0.13","1.7"],forward:["2.2","2.3","2.4","2.5","2.6","2.15","3.14"]},
 
 {id:"2.2",m:2,title:"Homoskedastic vs heteroskedasticity-robust SEs",
@@ -497,6 +508,7 @@ prereqs:["1.6","1.9","2.1"],forward:["2.3","2.15","3.6","3.14"],examRole:"QT2 §
 idea:"$\\mathrm{var}(u\\mid X)$ depends on $X$; OLS is still consistent but inefficient and naive SEs are wrong.",
 formal:"Definition; consistency unaffected (proof via 1.7 still goes through under OR alone); homoskedastic SE under- or over-estimates the true variance, biasing t-stats.",
 visualise:"Simulation toggling homoskedastic and heteroskedastic regimes; rejection rate of naive vs robust test displayed.",
+widget:"hetero-rejrate",
 prereqs:["2.2"],forward:[],examRole:"QT2 §6.1"},
 
 {id:"2.4",m:2,title:"t-tests on a single coefficient",
@@ -537,6 +549,7 @@ prereqs:["2.4","1.8","2.12"],forward:["3.15","3.16","4.11","4.12","4.13"],examRo
 idea:"When one regressor is a perfect linear combination of others, OLS is not unique; software drops a column.",
 formal:"Rank deficiency of the design matrix; with $K$ exhaustive category dummies and an intercept, the dummies sum to the intercept column, so include only $K-1$.",
 visualise:"Design-matrix viewer that highlights linearly dependent columns in red; toggle the intercept on or off.",
+widget:"design-matrix",
 prereqs:["1.8"],forward:["2.9"],examRole:"QT1 §3.4, QT2 §6"},
 
 {id:"2.9",m:2,title:"Dummy variables and interactions",
@@ -582,6 +595,7 @@ idea:"How $\\hat\\beta$, SER, $R^2$ react to rescaling, recentring, or non-linea
 formal:"$Y^*=aY+c$, $X^*=bX+d$: $\\hat\\beta_1^*=(a/b)\\hat\\beta_1$, $\\hat\\beta_0^*=a\\hat\\beta_0+c-(a/b)\\hat\\beta_1 d$, SER scales by $|a|$, $R^2$ unchanged.",
 derivation:"$R^2=\\hat{\\mathrm{corr}}(X,Y)^2$ in simple regression, and correlation is invariant to affine transformations. Multivariate case follows by FWL applied componentwise.",
 visualise:"Transform panel: pick $a,b,c,d$ and a tabular before/after view appears.",
+widget:"transforms",
 prereqs:["1.6","2.12"],forward:["2.10"],examRole:"QT2 §2.6, §4.3"},
 
 {id:"2.15",m:2,title:"Conditions for valid inference (the four-item list)",
@@ -614,12 +628,14 @@ prereqs:["0.16","1.4","1.5","3.1"],forward:["3.3","3.4","3.5","3.6","3.17"],exam
 idea:"Noncompliance, attrition, spillovers, Hawthorne effects, experimenter effects all break $\\mathrm{cov}(D,u)=0$.",
 formal:"<strong>Noncompliance</strong>: assigned $\\ne$ actual $D$. <strong>Attrition</strong>: non-random sample. <strong>Spillovers</strong>: SUTVA fails. <strong>Hawthorne</strong>: subjects respond to being studied.",
 visualise:"Threat sliders: each one widens the gap between estimated and true effect, with a written explanation.",
+widget:"rct-threats",
 prereqs:["3.2"],forward:[],examRole:"QT1 §2.3"},
 
 {id:"3.4",m:3,title:"RCT external validity",
 idea:"Even an internally valid RCT may not generalise.",
 formal:"Heterogeneity across populations; spillovers; failure of surrogate outcomes (intermediate measure does not capture policy outcome).",
 visualise:"Transport widget: treatment effect estimated in population A, slider warps moderator distribution to population B, and the effect changes.",
+widget:"external-transport",
 prereqs:["3.2"],forward:[],examRole:"QT1 §4.3"},
 
 {id:"3.5",m:3,title:"Optimal treatment-control allocation",
@@ -636,6 +652,7 @@ formal:"Treatment $X=\\gamma_0+\\gamma_1W_1+\\dots+\\gamma_kW_k+\\tilde X$ with 
 derivation:"<strong>Need to control for stratifiers.</strong> Regressing $Y$ on $X$ alone leaves $\\mathrm{cov}(X,u)\\ne 0$ if both depend on $W$. By FWL, in regression of $Y$ on $(X,W)$ the slope on $X$ is $\\mathrm{cov}(Y,\\tilde X)/\\mathrm{var}(\\tilde X)=\\beta_1$ since $\\mathrm{cov}(X,\\tilde X)=\\mathrm{var}(\\tilde X)$ and $\\mathrm{cov}(u,\\tilde X)=0$.<br><br><strong>Precision gain.</strong> By 2.2, $\\mathrm{var}(\\hat\\beta_1)\\propto\\mathrm{var}(u)/\\mathrm{var}(\\tilde X_1)$. Including $W$ correlated with $Y$ but not with treatment shrinks $\\mathrm{var}(\\hat u)$ without much shrinking $\\mathrm{var}(\\tilde X_1)$, so the SE falls.",
 intuition:"When probability of treatment depends on $W$, you must condition on $W$; otherwise observed differences confound treatment with $W$.",
 visualise:"Stratify toggle: split the sample by a covariate, re-randomise within strata; a balance-test F-statistic appears.",
+widget:"stratify-balance",
 prereqs:["1.9","2.2","3.2"],forward:["3.13"],examRole:"QT1 §2.4"},
 
 {id:"3.7",m:3,title:"Measurement error in the dependent variable",
@@ -643,6 +660,7 @@ idea:"Classical error in $Y$ adds noise but does not bias the slope.",
 derivation:"Causal $Y=\\beta_0+\\beta_1X+u$ with OR. Observed $Y^*=Y+e_y$. Then $Y^*=\\beta_0+\\beta_1X+(u+e_y)=\\beta_0+\\beta_1X+\\eta$. If $\\mathrm{cov}(X,e_y)=0$ then $\\mathrm{cov}(X,\\eta)=0$, OR holds in the estimable model, OLS consistent. Variance $\\mathrm{var}(u)+\\mathrm{var}(e_y)>\\mathrm{var}(u)$, SE inflates.",
 intuition:"Noise in $Y$ is just bigger residuals, not a wrong tilt of the line.",
 visualise:"Noise slider on $Y$; estimate stays centred; SE grows.",
+widget:"y-noise",
 prereqs:["3.1"],forward:[],examRole:"QT3 §2.3"},
 
 {id:"3.8",m:3,title:"Measurement error in a regressor: attenuation bias",
@@ -658,6 +676,7 @@ idea:"$X$ and $Y$ jointly determined; OLS conflates structural parameters.",
 derivation:"<strong>Demand-supply.</strong> Demand $Q_d=\\beta_0+\\beta_1P+\\beta_2X+u$; supply $Q_s=\\gamma_0+\\gamma_1P+v$; clearing $Q_d=Q_s=Q$. Equate and solve for $P$: $$(\\gamma_1-\\beta_1)P=(\\beta_0-\\gamma_0)+\\beta_2X+(u-v),\\quad P=\\frac{\\beta_0-\\gamma_0}{\\gamma_1-\\beta_1}+\\frac{\\beta_2}{\\gamma_1-\\beta_1}X+\\frac{u-v}{\\gamma_1-\\beta_1}.$$ Therefore $\\mathrm{cov}(P,u)=\\mathrm{var}(u)/(\\gamma_1-\\beta_1)\\ne 0$ even when $\\mathbb{E}[u\\mid v]=0$. OLS of $Q$ on $P$ does not consistently estimate $\\beta_1$.",
 intuition:"A demand shock pushes both quantity and price; $P$ and $u$ co-move; the regression cannot tell which curve it traces without additional information.",
 visualise:"Moving-equilibrium plot: supply or demand shocks shift the curves; OLS through the cloud of equilibria recovers neither slope.",
+widget:"supply-demand",
 prereqs:["0.7","3.1"],forward:["3.10"],examRole:"QT3 §5"},
 
 {id:"3.10",m:3,title:"Instrumental variables: relevance, exogeneity, exclusion",
@@ -687,6 +706,7 @@ prereqs:["3.10","3.11"],forward:["3.13","3.14","3.15","3.16"],examRole:"QT3 §3.
 idea:"Include exogenous controls in both stages; 2SLS extends naturally.",
 formal:"With $m$ instruments $Z_1,\\dots,Z_m$ and $r$ exogenous controls $W_1,\\dots,W_r$: first stage $X=\\pi_0+\\sum_j\\pi_jZ_j+\\sum_l\\pi_{m+l}W_l+v$; second stage replaces $X$ with $\\hat X$ and keeps $W$. Identification requires $m\\ge$ number of endogenous regressors.",
 visualise:"Stage builder: user adds instruments and controls; counter tracks identification status (under, just, over).",
+widget:"stage-builder",
 prereqs:["1.9","3.12"],forward:["3.16"],examRole:"QT3 §4.6"},
 
 {id:"3.14",m:3,title:"Inference for 2SLS",
@@ -694,6 +714,7 @@ idea:"Same CLT machinery, but with $X$ replaced by its first-stage projection in
 formal:"Homoskedastic: $\\mathrm{se}(\\hat\\beta_1)=n^{-1/2}\\sqrt{\\hat{\\mathrm{var}}(\\hat u)/\\hat{\\mathrm{var}}(\\tilde X^*)}$. Robust analogue parallels 2.2.",
 derivation:"$\\sqrt n(\\hat\\beta_1^{2SLS}-\\beta_1)\\to^d N(0,\\sigma_u^2/\\mathrm{var}(\\tilde X^*))$ under homoskedasticity. The key change from OLS: $\\mathrm{var}(\\tilde X^*)<\\mathrm{var}(\\tilde X)$ in general, so 2SLS SEs are typically larger.",
 visualise:"Side-by-side OLS and 2SLS SE bars over the same data.",
+widget:"ols-2sls-se",
 prereqs:["2.2","3.12"],forward:["3.15"]},
 
 {id:"3.15",m:3,title:"Test of relevance and weak instruments",
@@ -711,18 +732,21 @@ formal:"Regress 2SLS residuals $\\hat u$ on instruments and controls by 2SLS; F-
 derivation:"With $m$ instruments and 2SLS using all of them, only $m-1$ overid restrictions are testable. Adjustment $F^*=mF/(m-1)$ rescales so the limiting distribution is $F_{m-1,\\infty}$.",
 intuition:"Non-rejection is not unambiguous evidence: all instruments could be invalid in offsetting ways. Useful diagnostic, not a guarantee.",
 visualise:"'Sargan-Hansen lite' widget that runs the test, highlights residuals, explains the interpretation caveat.",
+widget:"overid-test",
 prereqs:["2.7","3.13"],forward:["3.17","3.18"]},
 
 {id:"3.17",m:3,title:"Internal vs external validity (study design)",
 idea:"The two halves of 'is this study any good?'.",
 formal:"Internal validity: consistency of causal estimates inside the study. External validity: portability of those estimates.",
 visualise:"2x2 quadrant diagram; user places real studies (Project STAR, Angrist-Krueger 1991, Oreopoulos 2006) into the quadrants and checks against lecture answers.",
+widget:"validity-quadrant",
 prereqs:["3.2","3.4","3.10"],forward:["3.18"],examRole:"QT1 §4.3"},
 
 {id:"3.18",m:3,title:"Canonical instrument examples",
 idea:"Have a stable mental library of good and bad instruments.",
 formal:"Quarter of birth (Angrist-Krueger 1991, schooling on earnings); Butler Act (Oreopoulos 2006, compulsory schooling on earnings); distance to college; sales tax for cigarettes; lottery draws; court assignments; weather. Run the relevance / exogeneity / exclusion checklist for each.",
 visualise:"Flashcard deck: each card states the instrument, the endogenous variable, and the relevance / exogeneity / exclusion arguments.",
+widget:"instrument-flashcards",
 prereqs:["3.10","3.17"],forward:[],examRole:"QT3 §4.5"},
 
 /* MODULE 4 */
@@ -730,6 +754,7 @@ prereqs:["3.10","3.17"],forward:[],examRole:"QT3 §4.5"},
 idea:"Ordering matters, observations are dependent, and we usually have one realisation rather than a random sample of histories.",
 formal:"Lose the iid assumption; need a substitute (stationarity). Sample analogues use $T$ rather than $n$ in denominators with adjustments below.",
 visualise:"Side-by-side iid scatter and a UK GDP series; reshuffling the iid one is fine; reshuffling GDP destroys the structure.",
+widget:"ts-shuffle",
 prereqs:["0.10","1.7"],forward:["4.2"]},
 
 {id:"4.2",m:4,title:"Weak (and strict) stationarity",
@@ -799,6 +824,7 @@ prereqs:["2.13","4.7"],forward:["4.19"],examRole:"QT4 §2.5"},
 idea:"Include lags of an external variable $X$.",
 formal:"$Y_t=\\beta_0+\\sum_{i=1}^p\\beta_iY_{t-i}+\\sum_{i=1}^q\\delta_iX_{t-i}+u_t$ with $\\mathbb{E}[u_t\\mid\\mathcal{Y}_{t-1},\\mathcal{X}_{t-1}]=0$. OR by construction; OLS consistent under joint stationarity.",
 visualise:"Dual time-series: toggle AR-only vs ADL; forecast accuracy ribbon updates.",
+widget:"adl-forecast",
 prereqs:["4.4","4.7"],forward:["4.11","4.12"],examRole:"QT4 §2.6, §6"},
 
 {id:"4.11",m:4,title:"Granger causality and its F-test",
@@ -901,6 +927,7 @@ prereqs:["4.20"],forward:["4.23"],examRole:"QT4 §4.4, §4.5"},
 idea:"A single decision tree for any applied series.",
 formal:"(a) Plot. (b) Test for unit roots and structural breaks. (c) Choose AR(p) on levels (if $I(0)$), ADL on differences, or cointegrating regression. (d) Lag order via AIC/BIC. (e) Residual diagnostics (ACF, normality). (f) Forecast and evaluate by pseudo OOS MSFE.",
 visualise:"Guided wizard that walks through each step on a chosen real series (UK GDP growth, S&P 500 dividends, term spread, US industrial production).",
+widget:"ts-workflow",
 prereqs:["4.1","4.2","4.3","4.4","4.5","4.6","4.7","4.8","4.9","4.10","4.11","4.12","4.13","4.14","4.15","4.16","4.17","4.18","4.19","4.20","4.21","4.22"],forward:[],examRole:"QT4 §7"}
 
 ];
@@ -1243,6 +1270,33 @@ function buildWidget(lessonId, kind){
   if(kind==='dartboard') return widgetDartboard(target);
   if(kind==='dartboard-3') return widgetDartboard3(target);
   if(kind==='mse-asymp') return widgetMSEAsymp(target);
+  if(kind==='kolmogorov-venn') return widgetKolmogorov(target);
+  if(kind==='conditional-2x2') return widgetCond2x2(target);
+  if(kind==='joint-heatmap') return widgetJointHeatmap(target);
+  if(kind==='desc-vs-causal') return widgetDescVsCausal(target);
+  if(kind==='dag-playground') return widgetDAG(target);
+  if(kind==='ols-sample') return widgetOLSSample(target);
+  if(kind==='multreg-3d') return widgetMultReg(target);
+  if(kind==='proxy-mc') return widgetProxyMC(target);
+  if(kind==='recipe-checker') return widgetRecipe(target);
+  if(kind==='coef-interpreter') return widgetCoefInt(target);
+  if(kind==='sampling-ols') return widgetOLSAsymp(target);  /* alias */
+  if(kind==='hetero-rejrate') return widgetHeteroRej(target);
+  if(kind==='design-matrix') return widgetDesignMatrix(target);
+  if(kind==='transforms') return widgetTransforms(target);
+  if(kind==='rct-threats') return widgetRCTThreats(target);
+  if(kind==='external-transport') return widgetExtTransport(target);
+  if(kind==='stratify-balance') return widgetStratify(target);
+  if(kind==='y-noise') return widgetYNoise(target);
+  if(kind==='supply-demand') return widgetSupplyDemand(target);
+  if(kind==='stage-builder') return widgetStageBuilder(target);
+  if(kind==='ols-2sls-se') return widgetOLS2SLSse(target);
+  if(kind==='overid-test') return widgetOverid(target);
+  if(kind==='validity-quadrant') return widgetValidityQuad(target);
+  if(kind==='instrument-flashcards') return widgetFlashcards(target);
+  if(kind==='ts-shuffle') return widgetTSShuffle(target);
+  if(kind==='adl-forecast') return widgetADLForecast(target);
+  if(kind==='ts-workflow') return widgetTSWorkflow(target);
   if(kind==='ht-power') return widgetHTPower(target);
   if(kind==='ci-coverage') return widgetCICoverage(target);
   if(kind==='two-sample') return widgetTwoSample(target);
@@ -3393,6 +3447,840 @@ function widgetMSEAsymp(t){
   t.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',draw));
   t.querySelector('#ma-rs').addEventListener('click',()=>{rand=makePRNG(Math.floor(Math.random()*99999));draw();});
   draw();
+}
+
+/* ============================================================
+   ROUND 3 WIDGETS - covers the last ~27 lessons
+============================================================ */
+
+/* 0.1 Kolmogorov / Venn */
+function widgetKolmogorov(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>$P(A)$: <span class="val" id="kv-av">0.5</span></label><input type="range" id="kv-a" min=".05" max=".95" step=".01" value=".5"></div>
+    <div class="ctrl"><label>$P(B)$: <span class="val" id="kv-bv">0.4</span></label><input type="range" id="kv-b" min=".05" max=".95" step=".01" value=".4"></div>
+    <div class="ctrl"><label>$P(A\\cap B)$: <span class="val" id="kv-iv">0.2</span></label><input type="range" id="kv-i" min="0" max=".95" step=".01" value=".2"></div>
+  </div><svg id="kv-svg" width="100%" height="320" viewBox="0 0 600 320" style="background:#fafbfc;border-radius:8px"></svg><div class="stats" id="kv-s"></div>`;
+  const draw=()=>{
+    const PA=+t.querySelector('#kv-a').value, PB=+t.querySelector('#kv-b').value;
+    let PAB=+t.querySelector('#kv-i').value;
+    PAB=Math.min(PAB, Math.min(PA,PB));
+    if(PAB > PA+PB-1) {} // valid
+    if(PAB < PA+PB-1) PAB = Math.max(PAB, PA+PB-1);
+    t.querySelector('#kv-av').textContent=PA.toFixed(2);t.querySelector('#kv-bv').textContent=PB.toFixed(2);t.querySelector('#kv-iv').textContent=PAB.toFixed(2);
+    const PAuB=PA+PB-PAB, PA_only=PA-PAB, PB_only=PB-PAB, PnAB=1-PAuB;
+    const cAB=PAB/PB, cBA=PAB/PA;
+    const indep=Math.abs(PAB-PA*PB)<0.01;
+    const svg=t.querySelector('#kv-svg');
+    svg.innerHTML=`
+      <rect x="20" y="20" width="560" height="280" fill="#fff" stroke="#cbd5e0" stroke-width="1"/>
+      <text x="35" y="40" font-size="14" fill="#4a5568">$\\Omega$</text>
+      <circle cx="240" cy="160" r="110" fill="#2b6cb0" fill-opacity="0.35" stroke="#2c5282" stroke-width="2"/>
+      <circle cx="360" cy="160" r="110" fill="#c05621" fill-opacity="0.35" stroke="#7b341e" stroke-width="2"/>
+      <text x="170" y="160" font-size="16" fill="#1a202c" font-weight="600">A only<tspan x="170" dy="22" font-size="13">${PA_only.toFixed(2)}</tspan></text>
+      <text x="290" y="160" font-size="16" fill="#fff" font-weight="600">A∩B<tspan x="290" dy="22" font-size="13">${PAB.toFixed(2)}</tspan></text>
+      <text x="395" y="160" font-size="16" fill="#1a202c" font-weight="600">B only<tspan x="395" dy="22" font-size="13">${PB_only.toFixed(2)}</tspan></text>
+      <text x="500" y="280" font-size="13" fill="#4a5568">neither: ${PnAB.toFixed(2)}</text>
+    `;
+    t.querySelector('#kv-s').innerHTML=`<div class="stat"><span class="stat-label">$P(A\\cup B)$</span><span class="stat-value">${PAuB.toFixed(3)}</span></div><div class="stat"><span class="stat-label">$P(A\\mid B)=P(A\\cap B)/P(B)$</span><span class="stat-value">${cAB.toFixed(3)}</span></div><div class="stat"><span class="stat-label">$P(B\\mid A)$</span><span class="stat-value">${cBA.toFixed(3)}</span></div><div class="stat"><span class="stat-label">$P(A)P(B)$ (would equal $P(A\\cap B)$ if independent)</span><span class="stat-value">${(PA*PB).toFixed(3)}</span></div><div class="stat" style="grid-column:1/-1"><span class="stat-label">Independent?</span><span class="stat-value" style="color:${indep?'#38a169':'#c05621'}">${indep?'YES':'no'}</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#kv-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 0.2 Conditional 2x2 contingency */
+function widgetCond2x2(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>$P(X=1, Y=1)$: <span class="val" id="c2-pv">0.3</span></label><input type="range" id="c2-p" min=".01" max=".49" step=".01" value=".3"></div>
+    <div class="ctrl"><label>$P(X=1)$: <span class="val" id="c2-mv">0.5</span></label><input type="range" id="c2-m" min=".05" max=".95" step=".01" value=".5"></div>
+    <div class="ctrl"><label>$P(Y=1)$: <span class="val" id="c2-nv">0.6</span></label><input type="range" id="c2-n" min=".05" max=".95" step=".01" value=".6"></div>
+  </div><div id="c2-table"></div><div class="stats" id="c2-s"></div>`;
+  const draw=()=>{
+    let p11=+t.querySelector('#c2-p').value;
+    const PX=+t.querySelector('#c2-m').value;
+    const PY=+t.querySelector('#c2-n').value;
+    p11=Math.min(p11,Math.min(PX,PY));
+    p11=Math.max(p11,Math.max(0,PX+PY-1));
+    t.querySelector('#c2-pv').textContent=p11.toFixed(2);t.querySelector('#c2-mv').textContent=PX.toFixed(2);t.querySelector('#c2-nv').textContent=PY.toFixed(2);
+    const p10=PX-p11, p01=PY-p11, p00=1-PX-PY+p11;
+    const cell=(p,c)=>`<td style="padding:.7rem 1rem;background:${c};text-align:center;font-family:'JetBrains Mono';font-size:.95rem">${p.toFixed(3)}</td>`;
+    t.querySelector('#c2-table').innerHTML=`<table style="margin:.6rem 0;border-collapse:collapse;width:100%"><thead><tr><th></th><th style="background:#edf2f7;padding:.4rem">$Y=0$</th><th style="background:#edf2f7;padding:.4rem">$Y=1$</th><th style="background:#1a202c;color:#fff;padding:.4rem">marginal</th></tr></thead><tbody><tr><th style="background:#edf2f7;padding:.4rem">$X=0$</th>${cell(p00,'#fff')}${cell(p01,'#fff')}${cell(1-PX,'#cbd5e0')}</tr><tr><th style="background:#edf2f7;padding:.4rem">$X=1$</th>${cell(p10,'#fff')}${cell(p11,'#fff')}${cell(PX,'#cbd5e0')}</tr><tr><th style="background:#1a202c;color:#fff;padding:.4rem">marginal</th>${cell(1-PY,'#cbd5e0')}${cell(PY,'#cbd5e0')}${cell(1,'#1a202c')}</tr></tbody></table>`;
+    const indep=Math.abs(p11-PX*PY)<0.005;
+    t.querySelector('#c2-s').innerHTML=`<div class="stat"><span class="stat-label">$P(Y=1\\mid X=1) = p_{11}/P(X=1)$</span><span class="stat-value">${(p11/PX).toFixed(3)}</span></div><div class="stat"><span class="stat-label">$P(Y=1)$ (unconditional)</span><span class="stat-value">${PY.toFixed(3)}</span></div><div class="stat"><span class="stat-label">Independent?</span><span class="stat-value" style="color:${indep?'#38a169':'#c05621'}">${indep?'YES (P(Y=1|X=1) = P(Y=1))':'no'}</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 0.4 Joint heatmap */
+function widgetJointHeatmap(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>$\\rho$: <span class="val" id="jh-rv">0.6</span></label><input type="range" id="jh-r" min="-0.95" max="0.95" step=".05" value=".6"></div>
+    <div class="ctrl"><label>X slice for conditional: <span class="val" id="jh-xv">0</span></label><input type="range" id="jh-x" min="-2" max="2" step=".25" value="0"></div>
+  </div><div style="display:grid;grid-template-columns:2fr 1fr;gap:.5rem"><div class="plot" id="jh-p1"></div><div class="plot" id="jh-p2"></div></div>`;
+  const draw=()=>{
+    const rho=+t.querySelector('#jh-r').value, xs=+t.querySelector('#jh-x').value;
+    t.querySelector('#jh-rv').textContent=rho.toFixed(2);t.querySelector('#jh-xv').textContent=xs.toFixed(2);
+    // Build bivariate normal density on a grid
+    const xg=rangeArr(-3,3,.15), yg=rangeArr(-3,3,.15);
+    const z=yg.map(y=>xg.map(x=>{const denom=2*Math.PI*Math.sqrt(1-rho*rho);const expo=-(x*x-2*rho*x*y+y*y)/(2*(1-rho*rho));return Math.exp(expo)/denom;}));
+    Plotly.newPlot(t.querySelector('#jh-p1'),[
+      {z:z,x:xg,y:yg,type:'heatmap',colorscale:[[0,'#ffffff'],[1,'#2b6cb0']],showscale:false,name:'joint $f(x,y)$'},
+      {x:[xs,xs],y:[-3,3],type:'scatter',mode:'lines',line:{color:'#dd6b20',width:2.5,dash:'dash'},showlegend:false}
+    ],chartLayout({title:`joint $f(x,y)$ for bivariate Normal, $\\rho=${rho.toFixed(2)}$`,xaxis:{title:'X'},yaxis:{title:'Y'},height:300}),noBar());
+    // Conditional density at x = xs
+    const condDens=yg.map(y=>{const cMu=rho*xs, cVar=1-rho*rho;return Math.exp(-((y-cMu)*(y-cMu))/(2*cVar))/Math.sqrt(2*Math.PI*cVar);});
+    const margDens=yg.map(y=>Math.exp(-y*y/2)/Math.sqrt(2*Math.PI));
+    Plotly.newPlot(t.querySelector('#jh-p2'),[
+      {x:margDens,y:yg,type:'scatter',mode:'lines',line:{color:'#cbd5e0'},name:'marginal $f(y)$'},
+      {x:condDens,y:yg,type:'scatter',mode:'lines',line:{color:'#dd6b20',width:2},name:`$f(y\\mid X=${xs.toFixed(1)})$`}
+    ],chartLayout({title:'conditional vs marginal',height:300,yaxis:{title:'Y'},xaxis:{title:'density'},legend:{orientation:'h',y:-0.2,font:{size:10}}}),noBar());
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 1.1 Descriptive vs causal */
+function widgetDescVsCausal(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>True causal effect $\\beta$: <span class="val" id="dc-bv">0.3</span></label><input type="range" id="dc-b" min="-1" max="1.5" step=".05" value=".3"></div>
+    <div class="ctrl"><label>Confounder strength: <span class="val" id="dc-cv">1</span></label><input type="range" id="dc-c" min="0" max="2" step=".05" value="1"></div>
+    <div class="ctrl"><label>Intervention $\\Delta X$: <span class="val" id="dc-iv">1</span></label><input type="range" id="dc-i" min="0" max="3" step=".1" value="1"></div>
+  </div><div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem"><div class="plot" id="dc-p1"></div><div class="plot" id="dc-p2"></div></div><div class="stats" id="dc-s"></div>`;
+  const draw=()=>{
+    const b=+t.querySelector('#dc-b').value, c=+t.querySelector('#dc-c').value, dx=+t.querySelector('#dc-i').value;
+    t.querySelector('#dc-bv').textContent=b.toFixed(2);t.querySelector('#dc-cv').textContent=c.toFixed(2);t.querySelector('#dc-iv').textContent=dx.toFixed(2);
+    const r=makePRNG(241);const n=200;
+    const X=[],Y=[];
+    for(let i=0;i<n;i++){const u=normalDraw(r);const x=u*c+normalDraw(r); X.push(x); Y.push(b*x+c*u+normalDraw(r)*0.5);}
+    const fit=olsSlope(X,Y);
+    const xline=[Math.min(...X),Math.max(...X)];
+    Plotly.newPlot(t.querySelector('#dc-p1'),[
+      {x:X,y:Y,type:'scatter',mode:'markers',marker:{color:'#cbd5e0',size:5,opacity:.5},showlegend:false},
+      {x:xline,y:[fit.b0+fit.b1*xline[0],fit.b0+fit.b1*xline[1]],type:'scatter',mode:'lines',line:{color:'#2b6cb0',width:2},showlegend:false}
+    ],chartLayout({title:`Descriptive: $\\hat\\rho_1=${fit.b1.toFixed(2)}$`,height:240}),noBar());
+    // Causal: intervene by adding dx to X without touching the confounder
+    const xMean=mean(X);
+    Plotly.newPlot(t.querySelector('#dc-p2'),[
+      {x:X,y:Y,type:'scatter',mode:'markers',marker:{color:'#cbd5e0',size:5,opacity:.5},showlegend:false},
+      {x:[xMean,xMean+dx],y:[mean(Y),mean(Y)+b*dx],type:'scatter',mode:'lines+markers',line:{color:'#c05621',width:3},marker:{size:10},showlegend:false}
+    ],chartLayout({title:`Causal: $\\Delta Y = \\beta\\,\\Delta X = ${(b*dx).toFixed(2)}$`,height:240}),noBar());
+    t.querySelector('#dc-s').innerHTML=`<div class="stat"><span class="stat-label">Descriptive (regression slope $\\rho_1$)</span><span class="stat-value">${fit.b1.toFixed(3)}</span></div><div class="stat"><span class="stat-label">Causal effect $\\beta$ (truth)</span><span class="stat-value">${b.toFixed(3)}</span></div><div class="stat" style="grid-column:1/-1"><span class="stat-label">Why they differ</span><span class="stat-value" style="font-family:Helvetica;font-weight:normal;text-align:right">The descriptive slope mixes the causal effect with the confounder's effect. An intervention that moves only X (not the confounder) gives a different $\\Delta Y$.</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#dc-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 1.2 DAG playground */
+function widgetDAG(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>$U\\to X$?</label><select id="dg2-ux"><option>NO</option><option>YES</option></select></div>
+    <div class="ctrl"><label>$U\\to Y$?</label><select id="dg2-uy"><option>NO</option><option>YES</option></select></div>
+    <div class="ctrl"><label>$X\\to Y$?</label><select id="dg2-xy"><option>YES</option><option>NO</option></select></div>
+  </div><svg id="dg2-svg" width="100%" height="220" viewBox="0 0 500 220" style="background:#fafbfc;border-radius:8px"></svg><div class="stats" id="dg2-s"></div>`;
+  const draw=()=>{
+    const ux=t.querySelector('#dg2-ux').value==='YES';
+    const uy=t.querySelector('#dg2-uy').value==='YES';
+    const xy=t.querySelector('#dg2-xy').value==='YES';
+    const svg=t.querySelector('#dg2-svg');
+    let arrows='';
+    if(xy) arrows+=`<line x1="170" y1="120" x2="320" y2="120" stroke="#1a202c" stroke-width="2.5" marker-end="url(#dgarrow)"/>`;
+    if(ux) arrows+=`<line x1="245" y1="60" x2="160" y2="105" stroke="#c05621" stroke-width="2" marker-end="url(#dgarrow)"/>`;
+    if(uy) arrows+=`<line x1="265" y1="60" x2="335" y2="105" stroke="#c05621" stroke-width="2" marker-end="url(#dgarrow)"/>`;
+    svg.innerHTML=`
+      <defs><marker id="dgarrow" viewBox="0 -5 10 10" refX="14" refY="0" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,-5L10,0L0,5" fill="#1a202c"/></marker></defs>
+      ${arrows}
+      <circle cx="150" cy="120" r="35" fill="#2b6cb0" stroke="#1a202c" stroke-width="2"/>
+      <text x="150" y="127" text-anchor="middle" font-size="22" fill="#fff" font-weight="700">X</text>
+      <circle cx="350" cy="120" r="35" fill="#dd6b20" stroke="#1a202c" stroke-width="2"/>
+      <text x="350" y="127" text-anchor="middle" font-size="22" fill="#fff" font-weight="700">Y</text>
+      <circle cx="255" cy="40" r="28" fill="#805ad5" stroke="#1a202c" stroke-width="2"/>
+      <text x="255" y="47" text-anchor="middle" font-size="18" fill="#fff" font-weight="700">U</text>
+    `;
+    const orHolds = !(ux && uy);
+    let verdict = orHolds ? 'OR holds. OLS of Y on X is consistent for the causal effect of X on Y.' : 'OR fails. U is a confounder (causes both X and Y). $\\hat\\beta_1$ is biased.';
+    if(!xy && (ux && uy)) verdict = 'OR fails AND there is no causal X→Y. Any apparent association is purely confounding.';
+    t.querySelector('#dg2-s').innerHTML=`<div class="stat"><span class="stat-label">Path X→Y direct?</span><span class="stat-value">${xy?'yes':'no'}</span></div><div class="stat"><span class="stat-label">Backdoor path X←U→Y?</span><span class="stat-value" style="color:${(ux&&uy)?'#c05621':'#38a169'}">${(ux&&uy)?'YES (open)':'no'}</span></div><div class="stat"><span class="stat-label">OR holds?</span><span class="stat-value" style="color:${orHolds?'#38a169':'#c05621'}">${orHolds?'YES':'NO'}</span></div><div class="stat" style="grid-column:1/-1"><span class="stat-label">Verdict</span><span class="stat-value" style="font-family:Helvetica;font-weight:normal;text-align:right">${verdict}</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#dg2-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('select').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 1.6 OLS sample - click to add points */
+function widgetOLSSample(t){
+  t.innerHTML=`<div class="controls">
+    <button class="btn" id="os-clear">Clear</button>
+    <button class="btn" id="os-noisy">Add 30 random points</button>
+  </div><div class="plot" id="os-plot" style="cursor:crosshair;min-height:320px"></div><div class="stats" id="os-s"></div>`;
+  const pts=[];
+  const draw=()=>{
+    let traces=[{x:pts.map(p=>p[0]),y:pts.map(p=>p[1]),type:'scatter',mode:'markers',marker:{color:'#2b6cb0',size:9,opacity:.7,line:{color:'#1a202c',width:1}},name:'data'}];
+    let stats='';
+    if(pts.length>=2){
+      const xs=pts.map(p=>p[0]),ys=pts.map(p=>p[1]);
+      const fit=olsSlope(xs,ys);
+      const xline=[Math.min(...xs)-1,Math.max(...xs)+1];
+      traces.push({x:xline,y:[fit.b0+fit.b1*xline[0],fit.b0+fit.b1*xline[1]],type:'scatter',mode:'lines',line:{color:'#c05621',width:2.5},name:`$\\hat Y=${fit.b0.toFixed(2)}+${fit.b1.toFixed(2)}X$`});
+      const resids=xs.map((x,i)=>ys[i]-fit.b0-fit.b1*x);
+      const sumU=resids.reduce((s,r)=>s+r,0);
+      const sumXU=resids.reduce((s,r,i)=>s+r*xs[i],0);
+      stats=`<div class="stat"><span class="stat-label">$\\hat\\beta_0$</span><span class="stat-value">${fit.b0.toFixed(3)}</span></div><div class="stat"><span class="stat-label">$\\hat\\beta_1$</span><span class="stat-value">${fit.b1.toFixed(3)}</span></div><div class="stat"><span class="stat-label">$\\sum\\hat u_i$ (FOC)</span><span class="stat-value" style="color:${Math.abs(sumU)<1e-6?'#38a169':'#c05621'}">${sumU.toExponential(2)}</span></div><div class="stat"><span class="stat-label">$\\sum X_i\\hat u_i$ (FOC)</span><span class="stat-value" style="color:${Math.abs(sumXU)<1e-6?'#38a169':'#c05621'}">${sumXU.toExponential(2)}</span></div>`;
+    } else stats='<div class="stat" style="grid-column:1/-1"><span class="stat-value" style="font-family:Helvetica;font-weight:normal">Click on the plot to add points. The regression line and FOC checks update live.</span></div>';
+    Plotly.newPlot(t.querySelector('#os-plot'),traces,chartLayout({xaxis:{range:[-5,5],title:'X'},yaxis:{range:[-5,5],title:'Y'},height:320}),noBar());
+    t.querySelector('#os-s').innerHTML=stats;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#os-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+    // Add click handler
+    t.querySelector('#os-plot').on('plotly_click', d=>{
+      const p=d.points[0]; pts.push([p.x,p.y]); draw();
+    });
+    // Also catch raw clicks on background
+    t.querySelector('#os-plot').onclick=(e)=>{
+      const plot=t.querySelector('#os-plot');
+      const xa=plot._fullLayout.xaxis, ya=plot._fullLayout.yaxis;
+      const r=plot.getBoundingClientRect();
+      const x=xa.p2d(e.clientX-r.left-plot._fullLayout.margin.l);
+      const y=ya.p2d(e.clientY-r.top-plot._fullLayout.margin.t);
+      if(isFinite(x)&&isFinite(y)){pts.push([x,y]);draw();}
+    };
+  };
+  t.querySelector('#os-clear').addEventListener('click',()=>{pts.length=0;draw();});
+  t.querySelector('#os-noisy').addEventListener('click',()=>{const r=makePRNG(Math.floor(Math.random()*99999));for(let i=0;i<30;i++){const x=normalDraw(r)*1.5;pts.push([x,1+0.7*x+normalDraw(r)*0.8]);}draw();});
+  draw();
+}
+
+/* 1.8 Multiple regression - 3D surface fit */
+function widgetMultReg(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>$\\beta_1$: <span class="val" id="mr-b1v">1</span></label><input type="range" id="mr-b1" min="-2" max="2" step=".05" value="1"></div>
+    <div class="ctrl"><label>$\\beta_2$: <span class="val" id="mr-b2v">0.5</span></label><input type="range" id="mr-b2" min="-2" max="2" step=".05" value=".5"></div>
+    <div class="ctrl"><label>n: <span class="val" id="mr-nv">100</span></label><input type="range" id="mr-n" min="20" max="500" step="10" value="100"></div>
+  </div><div class="plot" id="mr-plot" style="min-height:380px"></div>`;
+  const draw=()=>{
+    const b1=+t.querySelector('#mr-b1').value, b2=+t.querySelector('#mr-b2').value, n=+t.querySelector('#mr-n').value;
+    t.querySelector('#mr-b1v').textContent=b1.toFixed(2);t.querySelector('#mr-b2v').textContent=b2.toFixed(2);t.querySelector('#mr-nv').textContent=n;
+    const r=makePRNG(251);
+    const X1=[],X2=[],Y=[];
+    for(let i=0;i<n;i++){const x1=normalDraw(r)*1.5,x2=normalDraw(r)*1.5;X1.push(x1);X2.push(x2);Y.push(0.3+b1*x1+b2*x2+normalDraw(r)*0.5);}
+    // Plane surface
+    const grid=rangeArr(-3,3,.5);
+    const z=grid.map(y=>grid.map(x=>0.3+b1*x+b2*y));
+    Plotly.newPlot(t.querySelector('#mr-plot'),[
+      {x:X1,y:X2,z:Y,mode:'markers',type:'scatter3d',marker:{color:'#2b6cb0',size:4,opacity:.7},name:'data'},
+      {x:grid,y:grid,z:z,type:'surface',colorscale:[[0,'#fed7aa'],[1,'#c05621']],opacity:0.55,showscale:false,name:'$\\hat Y=\\beta_0+\\beta_1 X_1+\\beta_2 X_2$'}
+    ],{margin:{t:20,r:30,b:35,l:40},height:380,scene:{xaxis:{title:'X1'},yaxis:{title:'X2'},zaxis:{title:'Y'}}},noBar());
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 1.11 Proxy MC */
+function widgetProxyMC(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>(i) $\\pi_2$ (proxy ↔ confounder): <span class="val" id="pm-piv">0.8</span></label><input type="range" id="pm-pi" min="0" max="1" step=".05" value=".8"></div>
+    <div class="ctrl"><label>(ii) cov(W₂,u) (proxy uncorrelated with structural error): <span class="val" id="pm-cv">0</span></label><input type="range" id="pm-c" min="0" max=".8" step=".05" value="0"></div>
+    <div class="ctrl"><label>(iii) $\\pi_1$ (proxy needs no help from X1): <span class="val" id="pm-p1v">0</span></label><input type="range" id="pm-p1" min="-.8" max=".8" step=".05" value="0"></div>
+    <div class="ctrl"><label>Use proxy?</label><select id="pm-u"><option>YES</option><option>NO (omit)</option></select></div>
+  </div><div class="stats" id="pm-s"></div>`;
+  const draw=()=>{
+    const pi2=+t.querySelector('#pm-pi').value, cWu=+t.querySelector('#pm-c').value, pi1=+t.querySelector('#pm-p1').value;
+    const useProxy=t.querySelector('#pm-u').value==='YES';
+    t.querySelector('#pm-piv').textContent=pi2.toFixed(2);t.querySelector('#pm-cv').textContent=cWu.toFixed(2);t.querySelector('#pm-p1v').textContent=pi1.toFixed(2);
+    const trueB1=1.0;
+    const r=makePRNG(257);const n=400;
+    const X1=[],X2=[],W=[],Y=[];
+    for(let i=0;i<n;i++){const z=normalDraw(r);const u=normalDraw(r);
+      const x1=z; X1.push(x1);
+      const w = pi2*0.7+cWu*u+normalDraw(r)*0.3+pi1*x1; W.push(w);
+      const x2 = pi2*w + pi1*x1 + normalDraw(r)*0.3; X2.push(x2);
+      Y.push(0.3+trueB1*x1+0.5*x2+u);
+    }
+    let est;
+    if(useProxy){
+      // Multiple regression Y on X1, W via FWL
+      const aux=olsSlope(W,X1);
+      const tX1=X1.map((x,i)=>x-aux.b0-aux.b1*W[i]);
+      est=olsSlope(tX1,Y).b1;
+    } else {
+      est=olsSlope(X1,Y).b1;
+    }
+    const c1OK=pi2>0.05, c2OK=cWu<0.1, c3OK=Math.abs(pi1)<0.1;
+    t.querySelector('#pm-s').innerHTML=`<div class="stat"><span class="stat-label">Condition (i) $\\pi_2\\ne 0$</span><span class="stat-value" style="color:${c1OK?'#38a169':'#c05621'}">${c1OK?'OK':'FAIL'}</span></div><div class="stat"><span class="stat-label">Condition (ii) cov(W,u)=0</span><span class="stat-value" style="color:${c2OK?'#38a169':'#c05621'}">${c2OK?'OK':'FAIL'}</span></div><div class="stat"><span class="stat-label">Condition (iii) $\\pi_1=0$</span><span class="stat-value" style="color:${c3OK?'#38a169':'#c05621'}">${c3OK?'OK':'FAIL'}</span></div><div class="stat"><span class="stat-label">True $\\beta_1$</span><span class="stat-value">${trueB1.toFixed(3)}</span></div><div class="stat"><span class="stat-label">$\\hat\\beta_1$</span><span class="stat-value" style="color:${Math.abs(est-trueB1)<0.15?'#38a169':'#c05621'}">${est.toFixed(3)}</span></div><div class="stat"><span class="stat-label">Bias</span><span class="stat-value">${(est-trueB1).toFixed(3)}</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#pm-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 1.13 Recipe checker */
+function widgetRecipe(t){
+  const items=[
+    "I have written down the causal model $Y=\\beta_0+\\beta_1 X+u$ explicitly.",
+    "I have listed every important determinant of $Y$ that is buried in $u$.",
+    "For each, I have asked: is it correlated with $X$?",
+    "Confounders correlated with $X$ have been included as controls (or proxied, or instrumented).",
+    "I have argued that the orthogonality condition $\\mathrm{cov}(X,u)=0$ holds in the estimable model.",
+    "I am interpreting the coefficient as causal only if the above is satisfied; otherwise I say 'associated with'."
+  ];
+  t.innerHTML='<div style="background:#fff;padding:1rem;border-radius:6px">'+
+    items.map((s,i)=>`<label style="display:flex;align-items:flex-start;gap:.6rem;padding:.5rem;border-bottom:1px solid #edf2f7;cursor:pointer"><input type="checkbox" id="rc-${i}" style="margin-top:.25rem"><span style="flex:1">${s}</span></label>`).join('')+
+    '</div><div class="stats" id="rc-s"></div>';
+  const update=()=>{
+    let n=0;for(let i=0;i<items.length;i++) if(t.querySelector(`#rc-${i}`).checked) n++;
+    let v;
+    if(n===items.length) v=`<span style="color:#38a169">All six. You can interpret $\\hat\\beta_1$ causally and report it that way.</span>`;
+    else if(n>=4) v=`<span style="color:#dd6b20">${n}/6. You are most of the way there. Resolve the unticked items before claiming causation.</span>`;
+    else v=`<span style="color:#c05621">${n}/6. The recipe is far from satisfied. Stick to descriptive language ("associated with", not "causes").</span>`;
+    t.querySelector('#rc-s').innerHTML=`<div class="stat" style="grid-column:1/-1"><span class="stat-label">Verdict</span><span class="stat-value" style="font-family:Helvetica;font-weight:normal">${v}</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#rc-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('change',update));
+  if(window.renderMathInElement)renderMathInElement(t,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  update();
+}
+
+/* 1.14 Coefficient interpreter */
+function widgetCoefInt(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>Object (e.g. "worker")</label><input type="text" id="ci-obj" value="worker" style="padding:.3rem;border:1px solid #cbd5e0;border-radius:4px;width:140px"></div>
+    <div class="ctrl"><label>X (e.g. "year of education")</label><input type="text" id="ci-x" value="year of education" style="padding:.3rem;border:1px solid #cbd5e0;border-radius:4px;width:170px"></div>
+    <div class="ctrl"><label>X unit (e.g. "year")</label><input type="text" id="ci-xu" value="year" style="padding:.3rem;border:1px solid #cbd5e0;border-radius:4px;width:120px"></div>
+    <div class="ctrl"><label>Y (e.g. "hourly wage")</label><input type="text" id="ci-y" value="hourly wage" style="padding:.3rem;border:1px solid #cbd5e0;border-radius:4px;width:160px"></div>
+    <div class="ctrl"><label>Coefficient</label><input type="number" id="ci-coef" value="0.5" step="0.01" style="padding:.3rem;border:1px solid #cbd5e0;border-radius:4px;width:90px"></div>
+    <div class="ctrl"><label>Y unit</label><input type="text" id="ci-yu" value="dollar" style="padding:.3rem;border:1px solid #cbd5e0;border-radius:4px;width:120px"></div>
+    <div class="ctrl"><label>OR satisfied?</label><select id="ci-or"><option>NO (descriptive only)</option><option>YES (causal allowed)</option></select></div>
+  </div><div class="stats" id="ci-s"></div>`;
+  const update=()=>{
+    const obj=t.querySelector('#ci-obj').value;
+    const x=t.querySelector('#ci-x').value;
+    const xu=t.querySelector('#ci-xu').value;
+    const y=t.querySelector('#ci-y').value;
+    const coef=+t.querySelector('#ci-coef').value;
+    const yu=t.querySelector('#ci-yu').value;
+    const or=t.querySelector('#ci-or').value.startsWith('YES');
+    const dir=coef>=0?'higher':'lower';
+    const verb=or?'causes':'is associated with';
+    const sentence=or
+      ? `For the average ${obj}, having one additional ${xu} of ${x} <em>causes</em> ${yu === 'dollar' ? '$' : ''}${Math.abs(coef).toFixed(2)} ${yu==='dollar'?'':yu} ${dir} ${y}, holding each other regressor constant.`
+      : `On average, an ${obj} having one additional ${xu} of ${x} is <em>associated with</em> ${yu==='dollar'?'$':''}${Math.abs(coef).toFixed(2)} ${yu==='dollar'?'':yu} ${dir} ${y}, holding each other regressor constant.`;
+    t.querySelector('#ci-s').innerHTML=`<div class="stat" style="grid-column:1/-1"><span class="stat-label">Templated sentence</span><span class="stat-value" style="font-family:Georgia,serif;font-weight:normal;font-size:1.05rem;text-align:left">${sentence}</span></div>`;
+  };
+  t.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',update));
+  update();
+}
+
+/* 2.3 Heteroskedasticity rejection rate */
+function widgetHeteroRej(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>Hetero strength: <span class="val" id="hr-hv">1</span></label><input type="range" id="hr-h" min="0" max="3" step=".1" value="1"></div>
+    <div class="ctrl"><label>n: <span class="val" id="hr-nv">100</span></label><input type="range" id="hr-n" min="20" max="500" step="20" value="100"></div>
+    <div class="ctrl"><label>Replications</label><input type="range" id="hr-r" min="200" max="2000" step="100" value="500"></div>
+  </div><div class="stats" id="hr-s"></div>`;
+  const draw=()=>{
+    const h=+t.querySelector('#hr-h').value, n=+t.querySelector('#hr-n').value, R=+t.querySelector('#hr-r').value;
+    t.querySelector('#hr-hv').textContent=h.toFixed(2);t.querySelector('#hr-nv').textContent=n;
+    const r=makePRNG(263);
+    let rejHomo=0,rejRob=0;
+    for(let rep=0;rep<R;rep++){
+      const xs=[],ys=[];
+      for(let i=0;i<n;i++){const x=normalDraw(r)*1.5;xs.push(x);ys.push(0+(1+h*Math.abs(x))*normalDraw(r));}
+      const fit=olsSlope(xs,ys);
+      const resid=xs.map((x,i)=>ys[i]-fit.b0-fit.b1*x);
+      const sxx=variance(xs),mx=mean(xs);
+      const sigH=mean(resid.map(z=>z*z))*n/(n-2);
+      const seH=Math.sqrt(sigH/(n*sxx));
+      const num=mean(xs.map((x,i)=>(x-mx)*(x-mx)*resid[i]*resid[i]));
+      const seR=Math.sqrt(num/(n*sxx*sxx));
+      if(Math.abs(fit.b1/seH)>1.96) rejHomo++;
+      if(Math.abs(fit.b1/seR)>1.96) rejRob++;
+    }
+    t.querySelector('#hr-s').innerHTML=`<div class="stat"><span class="stat-label">true $\\beta_1$</span><span class="stat-value">0.000</span></div><div class="stat"><span class="stat-label">target rejection rate</span><span class="stat-value">5.0%</span></div><div class="stat"><span class="stat-label">naive (homoskedastic) SE</span><span class="stat-value" style="color:${Math.abs(rejHomo/R-0.05)<0.02?'#38a169':'#c05621'}">${(rejHomo/R*100).toFixed(1)}%</span></div><div class="stat"><span class="stat-label">heteroskedasticity-robust SE</span><span class="stat-value" style="color:${Math.abs(rejRob/R-0.05)<0.02?'#38a169':'#c05621'}">${(rejRob/R*100).toFixed(1)}%</span></div><div class="stat" style="grid-column:1/-1"><span class="stat-label">Reading</span><span class="stat-value" style="font-family:Helvetica;font-weight:normal;text-align:right">${h<0.2?'No heteroskedasticity. Both SEs deliver ~5% rejection.':'Heteroskedasticity present. The naive SE over-rejects (or under-rejects); the robust SE stays near 5%.'}</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#hr-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 2.8 Design matrix viewer */
+function widgetDesignMatrix(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>Categories (K)</label><input type="number" id="dm-k" value="4" min="2" max="6" style="width:60px"></div>
+    <div class="ctrl"><label>Include intercept?</label><select id="dm-i"><option>YES</option><option>NO</option></select></div>
+    <div class="ctrl"><label>Include all K dummies?</label><select id="dm-d"><option>NO (drop one)</option><option>YES (trap)</option></select></div>
+  </div><div id="dm-out" style="background:#fff;padding:1rem;border-radius:6px;font-family:'JetBrains Mono';font-size:.88rem"></div><div class="stats" id="dm-s"></div>`;
+  const draw=()=>{
+    const K=+t.querySelector('#dm-k').value;
+    const incInt=t.querySelector('#dm-i').value==='YES';
+    const incAll=t.querySelector('#dm-d').value==='YES';
+    const nDum = incAll ? K : K-1;
+    const cols = (incInt?1:0)+nDum;
+    const rows=8;
+    let html='<table style="border-collapse:collapse"><thead><tr>';
+    if(incInt) html+=`<th style="padding:.3rem .6rem;background:#1a202c;color:#fff">1</th>`;
+    for(let k=0;k<nDum;k++) html+=`<th style="padding:.3rem .6rem;background:#1a202c;color:#fff">D${k+1}</th>`;
+    html+='</tr></thead><tbody>';
+    const rank = (incInt && incAll) ? cols-1 : cols;
+    const trap = (incInt && incAll);
+    for(let r=0;r<rows;r++){
+      const cat = r % K;
+      html+='<tr>';
+      if(incInt) html+=`<td style="padding:.3rem .6rem;background:${trap?'#fed7d7':'#edf2f7'};text-align:center">1</td>`;
+      for(let k=0;k<nDum;k++){
+        const v = (cat===k) ? 1 : 0;
+        html+=`<td style="padding:.3rem .6rem;background:${trap?'#fed7d7':'#fff'};text-align:center;border:1px solid #e2e8f0">${v}</td>`;
+      }
+      html+='</tr>';
+    }
+    html+='</tbody></table>';
+    if(trap) html+=`<div style="margin-top:.6rem;color:#c05621;font-family:Helvetica">⚠ Sum of dummies = intercept column (perfect multicollinearity). $X^TX$ is singular, OLS undefined.</div>`;
+    t.querySelector('#dm-out').innerHTML=html;
+    t.querySelector('#dm-s').innerHTML=`<div class="stat"><span class="stat-label">columns</span><span class="stat-value">${cols}</span></div><div class="stat"><span class="stat-label">rank of design matrix</span><span class="stat-value" style="color:${rank===cols?'#38a169':'#c05621'}">${rank}</span></div><div class="stat"><span class="stat-label">OLS solvable?</span><span class="stat-value" style="color:${rank===cols?'#38a169':'#c05621'}">${rank===cols?'YES':'NO'}</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#dm-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 2.14 Data transformations */
+function widgetTransforms(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>$a$ (rescale Y): <span class="val" id="tr-av">1</span></label><input type="range" id="tr-a" min="-3" max="3" step=".1" value="1"></div>
+    <div class="ctrl"><label>$c$ (shift Y): <span class="val" id="tr-cv">0</span></label><input type="range" id="tr-c" min="-3" max="3" step=".1" value="0"></div>
+    <div class="ctrl"><label>$b$ (rescale X): <span class="val" id="tr-bv">1</span></label><input type="range" id="tr-b" min="-3" max="3" step=".1" value="1"></div>
+    <div class="ctrl"><label>$d$ (shift X): <span class="val" id="tr-dv">0</span></label><input type="range" id="tr-d" min="-3" max="3" step=".1" value="0"></div>
+  </div><div class="stats" id="tr-s"></div>`;
+  const draw=()=>{
+    const a=+t.querySelector('#tr-a').value, b=+t.querySelector('#tr-b').value, c=+t.querySelector('#tr-c').value, d=+t.querySelector('#tr-d').value;
+    t.querySelector('#tr-av').textContent=a.toFixed(2);t.querySelector('#tr-bv').textContent=b.toFixed(2);t.querySelector('#tr-cv').textContent=c.toFixed(2);t.querySelector('#tr-dv').textContent=d.toFixed(2);
+    const r=makePRNG(269);const n=200;
+    const xs=[],ys=[];
+    for(let i=0;i<n;i++){const x=normalDraw(r)*1.5;xs.push(x);ys.push(0.3+1*x+normalDraw(r)*0.5);}
+    const orig=olsSlope(xs,ys);
+    const xst=xs.map(x=>b*x+d), yst=ys.map(y=>a*y+c);
+    const trans=olsSlope(xst,yst);
+    const ssrO=ys.reduce((s,y,i)=>s+(y-orig.b0-orig.b1*xs[i])**2,0);
+    const tssO=ys.reduce((s,y)=>s+(y-mean(ys))**2,0);
+    const r2O=1-ssrO/tssO;
+    const ssrT=yst.reduce((s,y,i)=>s+(y-trans.b0-trans.b1*xst[i])**2,0);
+    const tssT=yst.reduce((s,y)=>s+(y-mean(yst))**2,0);
+    const r2T=1-ssrT/tssT;
+    const serO=Math.sqrt(ssrO/(n-2));
+    const serT=Math.sqrt(ssrT/(n-2));
+    const row=(name,o,trf)=>`<div class="stat"><span class="stat-label">${name}</span><span class="stat-value">orig: ${o.toFixed(3)} → trans: ${trf.toFixed(3)}</span></div>`;
+    t.querySelector('#tr-s').innerHTML=row('$\\hat\\beta_0$',orig.b0,trans.b0)+row('$\\hat\\beta_1$',orig.b1,trans.b1)+row('SER',serO,serT)+row('$R^2$ (invariant!)',r2O,r2T);
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#tr-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 3.3 RCT threats */
+function widgetRCTThreats(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>noncompliance: <span class="val" id="rt-nv">0</span>%</label><input type="range" id="rt-n" min="0" max="80" step="5" value="0"></div>
+    <div class="ctrl"><label>attrition (treatment): <span class="val" id="rt-av">0</span>%</label><input type="range" id="rt-a" min="0" max="50" step="5" value="0"></div>
+    <div class="ctrl"><label>spillover: <span class="val" id="rt-sv">0</span></label><input type="range" id="rt-s" min="0" max="1" step=".05" value="0"></div>
+    <div class="ctrl"><label>Hawthorne effect: <span class="val" id="rt-hv">0</span></label><input type="range" id="rt-h" min="0" max="1" step=".05" value="0"></div>
+  </div><div class="stats" id="rt-s2"></div>`;
+  const draw=()=>{
+    const nc=+t.querySelector('#rt-n').value/100, at=+t.querySelector('#rt-a').value/100, sp=+t.querySelector('#rt-s').value, ha=+t.querySelector('#rt-h').value;
+    t.querySelector('#rt-nv').textContent=(nc*100).toFixed(0);t.querySelector('#rt-av').textContent=(at*100).toFixed(0);t.querySelector('#rt-sv').textContent=sp.toFixed(2);t.querySelector('#rt-hv').textContent=ha.toFixed(2);
+    const r=makePRNG(271);const n=400;
+    const trueT=1.0;
+    const Y0=[],Y1=[];
+    for(let i=0;i<n/2;i++){const u=normalDraw(r);Y0.push(2+u+ha*0.5);Y1.push(2+(Math.random()<nc?0:trueT)+u+ha*0.5);}
+    // Spillover: control gets a fraction of treatment
+    if(sp>0) for(let i=0;i<Y0.length;i++) Y0[i]+=sp*trueT;
+    // Attrition: drop fraction from Y1
+    const Y1k=Y1.filter(()=>Math.random()>at);
+    const est=mean(Y1k)-mean(Y0);
+    t.querySelector('#rt-s2').innerHTML=`<div class="stat"><span class="stat-label">True effect</span><span class="stat-value">${trueT.toFixed(3)}</span></div><div class="stat"><span class="stat-label">Estimated $\\hat\\tau$</span><span class="stat-value" style="color:${Math.abs(est-trueT)<0.15?'#38a169':'#c05621'}">${est.toFixed(3)}</span></div><div class="stat"><span class="stat-label">Bias</span><span class="stat-value">${(est-trueT).toFixed(3)}</span></div><div class="stat" style="grid-column:1/-1"><span class="stat-label">Diagnosis</span><span class="stat-value" style="font-family:Helvetica;font-weight:normal;text-align:right">${nc>0.1?'Noncompliance dilutes the estimate (it becomes the ITT, not the treatment effect). ':''}${at>0.1?'Attrition removes a non-random subset, biasing the surviving sample. ':''}${sp>0.1?'Spillovers contaminate the control group; you understate the effect. ':''}${ha>0.1?'Hawthorne effect inflates outcomes uniformly; estimate may still be unbiased if symmetric.':''}${(nc+at+sp+ha)<0.2?'No threats: estimate is unbiased.':''}</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#rt-s2'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 3.4 External transport */
+function widgetExtTransport(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>Population A: mean moderator: <span class="val" id="et-av">0</span></label><input type="range" id="et-a" min="-2" max="2" step=".1" value="0"></div>
+    <div class="ctrl"><label>Population B: mean moderator: <span class="val" id="et-bv">1.5</span></label><input type="range" id="et-b" min="-2" max="2" step=".1" value="1.5"></div>
+    <div class="ctrl"><label>Heterogeneity (effect varies with moderator): <span class="val" id="et-hv">0.6</span></label><input type="range" id="et-h" min="0" max="1.5" step=".1" value=".6"></div>
+  </div><div class="plot" id="et-plot"></div><div class="stats" id="et-s"></div>`;
+  const draw=()=>{
+    const ma=+t.querySelector('#et-a').value, mb=+t.querySelector('#et-b').value, h=+t.querySelector('#et-h').value;
+    t.querySelector('#et-av').textContent=ma.toFixed(2);t.querySelector('#et-bv').textContent=mb.toFixed(2);t.querySelector('#et-hv').textContent=h.toFixed(2);
+    // ATE in population P with moderator mean m: ATE = baseline + h * m
+    const baseline=1;
+    const ateA=baseline+h*ma, ateB=baseline+h*mb;
+    const ms=rangeArr(-3,3,.1);
+    Plotly.newPlot(t.querySelector('#et-plot'),[
+      {x:ms,y:ms.map(m=>baseline+h*m),type:'scatter',mode:'lines',line:{color:'#2b6cb0',width:2.5},name:'individual treatment effect by moderator'},
+      {x:[ma],y:[ateA],type:'scatter',mode:'markers',marker:{color:'#38a169',size:14,symbol:'star'},name:`pop A ATE = ${ateA.toFixed(2)}`},
+      {x:[mb],y:[ateB],type:'scatter',mode:'markers',marker:{color:'#c05621',size:14,symbol:'star'},name:`pop B ATE = ${ateB.toFixed(2)}`}
+    ],chartLayout({xaxis:{title:'moderator value'},yaxis:{title:'treatment effect'}}),noBar());
+    t.querySelector('#et-s').innerHTML=`<div class="stat"><span class="stat-label">ATE in study population A</span><span class="stat-value">${ateA.toFixed(3)}</span></div><div class="stat"><span class="stat-label">ATE in target population B</span><span class="stat-value">${ateB.toFixed(3)}</span></div><div class="stat"><span class="stat-label">Transport gap</span><span class="stat-value" style="color:${Math.abs(ateA-ateB)<0.2?'#38a169':'#c05621'}">${(ateB-ateA).toFixed(3)}</span></div><div class="stat" style="grid-column:1/-1"><span class="stat-label">Reading</span><span class="stat-value" style="font-family:Helvetica;font-weight:normal;text-align:right">${Math.abs(ateA-ateB)<0.2?'Populations have similar moderator distributions. The RCT generalises.':'Different moderator means → different ATEs. The RCT estimate from A does NOT transport to B unless you reweight.'}</span></div>`;
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 3.6 Stratify balance */
+function widgetStratify(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>Stratify on covariate W?</label><select id="st-s"><option>YES</option><option>NO</option></select></div>
+    <div class="ctrl"><label>P(treat | W=1): <span class="val" id="st-pv">0.7</span></label><input type="range" id="st-p" min="0.3" max="0.9" step=".05" value=".7"></div>
+  </div><div class="plot" id="st-plot"></div><div class="stats" id="st-s2"></div>`;
+  const draw=()=>{
+    const strat=t.querySelector('#st-s').value==='YES';
+    const p=+t.querySelector('#st-p').value;
+    t.querySelector('#st-pv').textContent=p.toFixed(2);
+    const r=makePRNG(277);const n=400;
+    const W=[],D=[],Y=[];
+    for(let i=0;i<n;i++){const w=Math.random()<0.5?0:1;W.push(w);
+      const probD = strat ? (w===1?p:0.5) : (w===1?p:0.3); // if not stratified, treatment depends on W in non-balanced way
+      const d=Math.random()<probD?1:0;D.push(d);
+      Y.push(2+1*d+0.8*w+normalDraw(r)*0.5);  // true treatment effect = 1
+    }
+    // Naive
+    const Y1=Y.filter((_,i)=>D[i]===1), Y0=Y.filter((_,i)=>D[i]===0);
+    const naiveT=mean(Y1)-mean(Y0);
+    // Adjusted (FWL): regress Y on D and W
+    const aux=olsSlope(W,D);
+    const tD=D.map((d,i)=>d-aux.b0-aux.b1*W[i]);
+    const adjT=olsSlope(tD,Y).b1;
+    // Balance: regress D on W
+    const bal=olsSlope(W,D).b1;
+    Plotly.newPlot(t.querySelector('#st-plot'),[
+      {x:[1,1],y:[mean(Y0.filter((_,i)=>W[i%W.length]===0)),mean(Y1.filter((_,i)=>W[i%W.length]===0))],type:'bar',name:'W=0',marker:{color:'#2b6cb0'}},
+      {x:[2,2],y:[mean(Y0),mean(Y1)],type:'bar',name:'W=1',marker:{color:'#c05621'}}
+    ],chartLayout({title:'group means by W',height:200}),noBar());
+    t.querySelector('#st-s2').innerHTML=`<div class="stat"><span class="stat-label">True treatment effect</span><span class="stat-value">1.000</span></div><div class="stat"><span class="stat-label">Naive $\\overline Y_1 - \\overline Y_0$</span><span class="stat-value" style="color:${Math.abs(naiveT-1)<0.15?'#38a169':'#c05621'}">${naiveT.toFixed(3)}</span></div><div class="stat"><span class="stat-label">Adjusted (regress on D and W)</span><span class="stat-value" style="color:${Math.abs(adjT-1)<0.15?'#38a169':'#c05621'}">${adjT.toFixed(3)}</span></div><div class="stat"><span class="stat-label">Balance test slope D ~ W</span><span class="stat-value" style="color:${Math.abs(bal)<0.1?'#38a169':'#c05621'}">${bal.toFixed(3)}</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#st-s2'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 3.7 Y-noise */
+function widgetYNoise(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>Y measurement noise sd: <span class="val" id="yn-sv">0</span></label><input type="range" id="yn-s" min="0" max="5" step=".1" value="0"></div>
+    <div class="ctrl"><label>n: <span class="val" id="yn-nv">200</span></label><input type="range" id="yn-n" min="20" max="2000" step="20" value="200"></div>
+  </div><div class="plot" id="yn-plot"></div><div class="stats" id="yn-s"></div>`;
+  const draw=()=>{
+    const s=+t.querySelector('#yn-s').value, n=+t.querySelector('#yn-n').value;
+    t.querySelector('#yn-sv').textContent=s.toFixed(2);t.querySelector('#yn-nv').textContent=n;
+    const r=makePRNG(283);const trueB=1;
+    const xs=[],ys=[];
+    for(let i=0;i<n;i++){const x=normalDraw(r)*1.5;xs.push(x);ys.push(0.3+trueB*x+normalDraw(r)*0.5+s*normalDraw(r));}
+    const fit=olsSlope(xs,ys);
+    const resid=xs.map((x,i)=>ys[i]-fit.b0-fit.b1*x);
+    const sig2=mean(resid.map(z=>z*z))*n/(n-2);
+    const se=Math.sqrt(sig2/(n*variance(xs)));
+    Plotly.newPlot(t.querySelector('#yn-plot'),[
+      {x:xs,y:ys,type:'scatter',mode:'markers',marker:{color:'#cbd5e0',size:5,opacity:.5},showlegend:false},
+      {x:[Math.min(...xs),Math.max(...xs)],y:[fit.b0+fit.b1*Math.min(...xs),fit.b0+fit.b1*Math.max(...xs)],type:'scatter',mode:'lines',line:{color:'#c05621',width:2},showlegend:false}
+    ],chartLayout(),noBar());
+    t.querySelector('#yn-s').innerHTML=`<div class="stat"><span class="stat-label">true $\\beta_1$</span><span class="stat-value">${trueB.toFixed(3)}</span></div><div class="stat"><span class="stat-label">$\\hat\\beta_1$</span><span class="stat-value" style="color:${Math.abs(fit.b1-trueB)<0.15?'#38a169':'#c05621'}">${fit.b1.toFixed(3)}</span></div><div class="stat"><span class="stat-label">SE($\\hat\\beta_1$)</span><span class="stat-value">${se.toFixed(3)}</span></div><div class="stat" style="grid-column:1/-1"><span class="stat-label">Lesson</span><span class="stat-value" style="font-family:Helvetica;font-weight:normal;text-align:right">Crank up the Y-noise. The estimate stays centred near 1, but the SE inflates. Noise in Y does not bias OLS — it only widens the cloud.</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#yn-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 3.9 Supply-demand */
+function widgetSupplyDemand(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>Demand shock variance: <span class="val" id="sd-uv">1</span></label><input type="range" id="sd-u" min="0" max="3" step=".1" value="1"></div>
+    <div class="ctrl"><label>Supply shock variance: <span class="val" id="sd-vv">1</span></label><input type="range" id="sd-v" min="0" max="3" step=".1" value="1"></div>
+  </div><div class="plot" id="sd-plot"></div><div class="stats" id="sd-s"></div>`;
+  const trueDemand=-1, trueSupply=1;
+  const draw=()=>{
+    const su=+t.querySelector('#sd-u').value, sv=+t.querySelector('#sd-v').value;
+    t.querySelector('#sd-uv').textContent=su.toFixed(2);t.querySelector('#sd-vv').textContent=sv.toFixed(2);
+    const r=makePRNG(293);const n=200;
+    const P=[],Q=[];
+    const traces=[];
+    for(let i=0;i<n;i++){
+      const u=su*normalDraw(r), v=sv*normalDraw(r);
+      // Equilibrium: a + bP + u = c + dP + v -> P = (a-c+u-v)/(d-b)
+      const a=10, b=trueDemand, c=2, d=trueSupply;
+      const p=(a-c+u-v)/(d-b);
+      const q=a+b*p+u;
+      P.push(p);Q.push(q);
+    }
+    const ols=olsSlope(P,Q).b1;
+    Plotly.newPlot(t.querySelector('#sd-plot'),[
+      {x:P,y:Q,type:'scatter',mode:'markers',marker:{color:'#cbd5e0',size:6,opacity:.6},name:'equilibria'},
+      {x:[Math.min(...P),Math.max(...P)],y:[mean(Q)+ols*(Math.min(...P)-mean(P)),mean(Q)+ols*(Math.max(...P)-mean(P))],type:'scatter',mode:'lines',line:{color:'#1a202c',width:2},name:`OLS slope ${ols.toFixed(2)}`}
+    ],chartLayout({xaxis:{title:'price'},yaxis:{title:'quantity'}}),noBar());
+    t.querySelector('#sd-s').innerHTML=`<div class="stat"><span class="stat-label">True demand slope</span><span class="stat-value">${trueDemand}</span></div><div class="stat"><span class="stat-label">True supply slope</span><span class="stat-value">${trueSupply}</span></div><div class="stat"><span class="stat-label">OLS slope through equilibria</span><span class="stat-value" style="color:#c05621">${ols.toFixed(3)}</span></div><div class="stat" style="grid-column:1/-1"><span class="stat-label">Reading</span><span class="stat-value" style="font-family:Helvetica;font-weight:normal;text-align:right">OLS recovers neither slope. When mostly demand shocks (u variance high), it traces along the supply curve. When mostly supply shocks, it traces along the demand curve. Mix → it traces neither.</span></div>`;
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 3.13 Stage builder */
+function widgetStageBuilder(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>Endogenous regressors: <span class="val" id="sb-ev">1</span></label><input type="range" id="sb-e" min="1" max="4" step="1" value="1"></div>
+    <div class="ctrl"><label>Instruments: <span class="val" id="sb-iv">1</span></label><input type="range" id="sb-i" min="0" max="6" step="1" value="1"></div>
+    <div class="ctrl"><label>Exogenous controls: <span class="val" id="sb-cv">0</span></label><input type="range" id="sb-c" min="0" max="6" step="1" value="0"></div>
+  </div><div class="stats" id="sb-s"></div>`;
+  const draw=()=>{
+    const e=+t.querySelector('#sb-e').value, i=+t.querySelector('#sb-i').value, c=+t.querySelector('#sb-c').value;
+    t.querySelector('#sb-ev').textContent=e;t.querySelector('#sb-iv').textContent=i;t.querySelector('#sb-cv').textContent=c;
+    let status,msg,colour;
+    if(i<e){status='UNDER-IDENTIFIED';colour='#c05621';msg='Too few instruments. The structural parameters are not identified. Cannot estimate.';}
+    else if(i===e){status='JUST-IDENTIFIED';colour='#dd6b20';msg='Exactly identified. ILS or 2SLS works. No room for an overid test (you cannot check that all instruments are exogenous).';}
+    else {status='OVER-IDENTIFIED';colour='#38a169';msg=`${i-e} overidentifying restriction(s) available. Run the Sargan-Hansen test to check whether all instruments are mutually consistent.`;}
+    t.querySelector('#sb-s').innerHTML=`<div class="stat" style="grid-column:1/-1"><span class="stat-label">Status</span><span class="stat-value" style="color:${colour};font-size:1.1rem;font-weight:700">${status}</span></div><div class="stat"><span class="stat-label">Endogenous</span><span class="stat-value">${e}</span></div><div class="stat"><span class="stat-label">Instruments</span><span class="stat-value">${i}</span></div><div class="stat"><span class="stat-label">Controls</span><span class="stat-value">${c}</span></div><div class="stat" style="grid-column:1/-1"><span class="stat-label">Diagnosis</span><span class="stat-value" style="font-family:Helvetica;font-weight:normal;text-align:right">${msg}</span></div>`;
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 3.14 OLS vs 2SLS SE bars */
+function widgetOLS2SLSse(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>$\\pi_1$ (instrument strength): <span class="val" id="o2-pv">1</span></label><input type="range" id="o2-p" min=".1" max="2" step=".05" value="1"></div>
+    <div class="ctrl"><label>n: <span class="val" id="o2-nv">300</span></label><input type="range" id="o2-n" min="50" max="2000" step="50" value="300"></div>
+  </div><div class="plot" id="o2-plot"></div><div class="stats" id="o2-s"></div>`;
+  const draw=()=>{
+    const p=+t.querySelector('#o2-p').value, n=+t.querySelector('#o2-n').value;
+    t.querySelector('#o2-pv').textContent=p.toFixed(2);t.querySelector('#o2-nv').textContent=n;
+    const r=makePRNG(307);const trueB=1;
+    const Z=[],X=[],Y=[];
+    for(let i=0;i<n;i++){const z=normalDraw(r),u=normalDraw(r);Z.push(z);const x=p*z+0.7*u+0.5*normalDraw(r);X.push(x);Y.push(trueB*x+u);}
+    const fitOLS=olsSlope(X,Y);
+    const residO=X.map((x,i)=>Y[i]-fitOLS.b0-fitOLS.b1*x);
+    const seOLS=Math.sqrt(mean(residO.map(z=>z*z))*n/(n-2)/(n*variance(X)));
+    const fs=olsSlope(Z,X);
+    const Xh=Z.map(z=>fs.b0+fs.b1*z);
+    const fit2=olsSlope(Xh,Y);
+    const resid2=X.map((x,i)=>Y[i]-fit2.b0-fit2.b1*x);
+    const se2=Math.sqrt(mean(resid2.map(z=>z*z))*n/(n-2)/(n*variance(Xh)));
+    Plotly.newPlot(t.querySelector('#o2-plot'),[
+      {x:['OLS estimate','2SLS estimate'],y:[fitOLS.b1,fit2.b1],type:'bar',marker:{color:['#c05621','#38a169']},text:[fitOLS.b1.toFixed(3),fit2.b1.toFixed(3)],textposition:'auto',name:'estimate'},
+      {x:['OLS estimate','2SLS estimate'],y:[seOLS,se2],type:'bar',marker:{color:['#fed7d7','#c6f6d5']},text:[`SE ${seOLS.toFixed(3)}`,`SE ${se2.toFixed(3)}`],textposition:'auto',name:'SE'}
+    ],chartLayout({barmode:'group',height:240}),noBar());
+    t.querySelector('#o2-s').innerHTML=`<div class="stat"><span class="stat-label">True $\\beta_1$</span><span class="stat-value">${trueB.toFixed(3)}</span></div><div class="stat"><span class="stat-label">OLS estimate (biased)</span><span class="stat-value">${fitOLS.b1.toFixed(3)}</span></div><div class="stat"><span class="stat-label">2SLS estimate (consistent)</span><span class="stat-value">${fit2.b1.toFixed(3)}</span></div><div class="stat"><span class="stat-label">2SLS SE / OLS SE ratio</span><span class="stat-value">${(se2/seOLS).toFixed(2)}x</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#o2-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 3.16 Overid (Sargan-Hansen lite) */
+function widgetOverid(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>Instrument 1 invalid?</label><select id="ov-1"><option>NO</option><option>YES</option></select></div>
+    <div class="ctrl"><label>Instrument 2 invalid?</label><select id="ov-2"><option>NO</option><option>YES</option></select></div>
+    <div class="ctrl"><label>Instrument 3 invalid?</label><select id="ov-3"><option>NO</option><option>YES</option></select></div>
+    <div class="ctrl"><label>n: <span class="val" id="ov-nv">500</span></label><input type="range" id="ov-n" min="100" max="2000" step="50" value="500"></div>
+  </div><div class="stats" id="ov-s"></div>`;
+  const draw=()=>{
+    const inv=[t.querySelector('#ov-1').value==='YES',t.querySelector('#ov-2').value==='YES',t.querySelector('#ov-3').value==='YES'];
+    const n=+t.querySelector('#ov-n').value;
+    t.querySelector('#ov-nv').textContent=n;
+    const r=makePRNG(311);const trueB=1;
+    const Z1=[],Z2=[],Z3=[],X=[],Y=[];
+    for(let i=0;i<n;i++){const u=normalDraw(r);
+      const z1=normalDraw(r)+(inv[0]?0.6*u:0);
+      const z2=normalDraw(r)+(inv[1]?0.6*u:0);
+      const z3=normalDraw(r)+(inv[2]?0.6*u:0);
+      Z1.push(z1);Z2.push(z2);Z3.push(z3);
+      const x=z1+0.7*z2+0.5*z3+0.7*u+0.3*normalDraw(r); X.push(x);
+      Y.push(trueB*x+u);
+    }
+    // Fit X on (Z1,Z2,Z3) - simplified by averaging projections
+    const f1=olsSlope(Z1,X),f2=olsSlope(Z2,X),f3=olsSlope(Z3,X);
+    const Xh=Z1.map((z,i)=>(f1.b0+f1.b1*z+f2.b0+f2.b1*Z2[i]+f3.b0+f3.b1*Z3[i])/3);
+    const fit=olsSlope(Xh,Y);
+    const resid=X.map((x,i)=>Y[i]-fit.b0-fit.b1*x);
+    // Test: regress residuals on instruments; compare SSRr (intercept only) vs SSRu
+    const meanR=mean(resid);
+    const SSRr=resid.reduce((s,r)=>s+(r-meanR)*(r-meanR),0);
+    // Quick approx: F-stat via Z1 only
+    const auxZ=olsSlope(Z1,resid);
+    const SSRu=resid.reduce((s,r,i)=>{const yh=auxZ.b0+auxZ.b1*Z1[i];return s+(r-yh)*(r-yh);},0);
+    const F=((SSRr-SSRu)*(n-2));
+    const numInv=inv.filter(b=>b).length;
+    t.querySelector('#ov-s').innerHTML=`<div class="stat"><span class="stat-label">true $\\beta_1$</span><span class="stat-value">${trueB.toFixed(3)}</span></div><div class="stat"><span class="stat-label">2SLS estimate</span><span class="stat-value">${fit.b1.toFixed(3)}</span></div><div class="stat"><span class="stat-label">Sargan-style F-stat</span><span class="stat-value" style="color:${F>3?'#c05621':'#38a169'}">${F.toFixed(2)}</span></div><div class="stat"><span class="stat-label">Verdict</span><span class="stat-value">${F>3?'reject overid (some instrument invalid)':'fail to reject'}</span></div><div class="stat" style="grid-column:1/-1"><span class="stat-label">Caveat</span><span class="stat-value" style="font-family:Helvetica;font-weight:normal;text-align:right">${numInv===0?'No instruments are actually invalid; non-rejection is correct.':numInv===3?'All three instruments are invalid in the same direction. The test may NOT detect this — they all bias 2SLS the same way and so look mutually consistent.':'Mixed validity → test should reject. If it does not, your sample is too small.'}</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#ov-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 3.17 Validity quadrant */
+function widgetValidityQuad(t){
+  const studies=[
+    {name:'Project STAR (Tennessee class size RCT)',i:0.85,e:0.55,note:'Strong RCT, but generalising to other states/eras requires care.'},
+    {name:'Angrist-Krueger 1991 (quarter of birth IV)',i:0.65,e:0.7,note:'Plausible IV, but compulsory schooling laws differ across countries.'},
+    {name:'Oreopoulos 2006 (Butler Act IV)',i:0.75,e:0.65,note:'Sharp policy break gives clean identification; UK-specific.'},
+    {name:'Naive cross-section regression',i:0.2,e:0.6,note:'Internally invalid (confounders); externally valid only because it is just description.'},
+    {name:'Lab experiment with unrepresentative volunteers',i:0.85,e:0.25,note:'Internally clean but does the lab generalise?'}
+  ];
+  const dots=studies.map((s,i)=>`<div class="study" data-i="${i}" style="position:absolute;left:${s.e*440+30}px;top:${(1-s.i)*340+30}px;width:140px;background:rgba(255,255,255,0.95);border:2px solid #2b6cb0;border-radius:8px;padding:.4rem .55rem;font-size:.78rem;cursor:default;line-height:1.25"><strong>${s.name.split(' (')[0]}</strong><br><span style="color:#4a5568;font-size:.7rem">${s.note}</span></div>`).join('');
+  t.innerHTML=`<div style="position:relative;width:100%;height:430px;background:#fafbfc;border-radius:8px">
+    <div style="position:absolute;left:30px;top:30px;width:440px;height:340px;border:2px solid #cbd5e0">
+      <div style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:#cbd5e0"></div>
+      <div style="position:absolute;left:0;right:0;top:50%;height:1px;background:#cbd5e0"></div>
+      <div style="position:absolute;left:8px;top:8px;color:#38a169;font-size:.75rem;font-weight:700">HIGH internal, LOW external</div>
+      <div style="position:absolute;right:8px;top:8px;color:#38a169;font-size:.75rem;font-weight:700">HIGH internal, HIGH external (gold standard)</div>
+      <div style="position:absolute;left:8px;bottom:8px;color:#c05621;font-size:.75rem;font-weight:700">LOW internal, LOW external</div>
+      <div style="position:absolute;right:8px;bottom:8px;color:#c05621;font-size:.75rem;font-weight:700">LOW internal, HIGH external (descriptive)</div>
+    </div>
+    <div style="position:absolute;left:240px;top:380px;font-size:.85rem;color:#4a5568">→ external validity</div>
+    <div style="position:absolute;left:5px;top:180px;font-size:.85rem;color:#4a5568;transform:rotate(-90deg);transform-origin:left top">↑ internal validity</div>
+    ${dots}
+  </div>`;
+}
+
+/* 3.18 Instrument flashcards */
+function widgetFlashcards(t){
+  const cards=[
+    {z:'Quarter of birth',x:'Years of schooling',y:'Earnings',rel:'Compulsory schooling laws + school start cutoffs make Q1 births get less education than Q4 births of the same cohort.',exo:'Birth quarter is essentially random.',exc:'Hard to argue. Maybe winter births have systematic differences? (Critics: yes, e.g. teen birth season correlates with parental SES.)',study:'Angrist-Krueger 1991'},
+    {z:'Butler Act 1947 raise of school-leaving age in UK',x:'Years of schooling',y:'Earnings',rel:'Strong: anyone born just after the cutoff stayed an extra year.',exo:'The policy date is plausibly exogenous to individual ability.',exc:'No reason the policy itself directly affects later earnings except via schooling.',study:'Oreopoulos 2006'},
+    {z:'Distance to college',x:'Years of schooling',y:'Earnings',rel:'People closer to college get more education.',exo:'Where you grew up reflects parental income and aspirations — exogeneity is dubious.',exc:'Distance only matters via schooling? Probably yes.',study:'Card 1995'},
+    {z:'Cigarette sales tax',x:'Cigarette price',y:'Cigarette consumption',rel:'Tax mechanically raises retail price.',exo:'Tax rates are set by legislators, not consumers — plausibly exogenous.',exc:'Tax only affects consumption via the price channel? Yes.',study:'Stock-Watson textbook example'},
+    {z:'Lottery for school assignment',x:'Attending charter school',y:'Test scores',rel:'Lottery winners attend at higher rates.',exo:'Random by design.',exc:'Winning the lottery has no effect except via attendance.',study:'Many KIPP / charter studies'},
+    {z:'Court / judge assignment',x:'Pre-trial detention',y:'Subsequent conviction',rel:'Some judges detain more than others.',exo:'Judges assigned at random within courthouse.',exc:'A given judge affects outcomes only via detention decision (not via other rulings).',study:'Kling 2006'},
+    {z:'Weather shocks',x:'Local economic activity',y:'Conflict / migration',rel:'Drought hits agricultural income hard.',exo:'Weather is exogenous to human choices.',exc:'Weather affects outcomes only via economic activity — debatable for floods etc.',study:'Miguel-Satyanath-Sergenti 2004'}
+  ];
+  let idx=0;
+  const card=()=>{
+    const c=cards[idx];
+    t.innerHTML=`<div style="background:linear-gradient(135deg,#2b6cb0,#1e4d80);color:#fff;padding:1.5rem;border-radius:10px;min-height:280px;position:relative">
+      <div style="font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;opacity:.8">Card ${idx+1} of ${cards.length} &middot; ${c.study}</div>
+      <h3 style="font-size:1.4rem;margin:.5rem 0 1rem">$Z$ = ${c.z}</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;font-size:.95rem">
+        <div><strong>Endogenous regressor:</strong> ${c.x}</div>
+        <div><strong>Outcome:</strong> ${c.y}</div>
+      </div>
+      <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.3);font-size:.92rem;line-height:1.55">
+        <p><strong>Z1 Relevance:</strong> ${c.rel}</p>
+        <p><strong>Z2 Exogeneity:</strong> ${c.exo}</p>
+        <p><strong>Z3 Exclusion:</strong> ${c.exc}</p>
+      </div>
+      <div style="position:absolute;bottom:1rem;right:1.5rem"><button class="btn" id="fc-prev" style="background:rgba(255,255,255,0.2);color:#fff;border:none">← Previous</button> <button class="btn" id="fc-next" style="background:rgba(255,255,255,0.2);color:#fff;border:none">Next →</button></div>
+    </div>`;
+    t.querySelector('#fc-prev').addEventListener('click',()=>{idx=(idx-1+cards.length)%cards.length;card();});
+    t.querySelector('#fc-next').addEventListener('click',()=>{idx=(idx+1)%cards.length;card();});
+    if(window.renderMathInElement)renderMathInElement(t,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  card();
+}
+
+/* 4.1 Time series shuffle */
+function widgetTSShuffle(t){
+  t.innerHTML=`<div class="controls">
+    <button class="btn" id="tss-shuffle">Shuffle both</button>
+    <button class="btn" id="tss-new">New sample</button>
+  </div><div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem"><div class="plot" id="tss-iid"></div><div class="plot" id="tss-ts"></div></div><div class="stats" id="tss-s"></div>`;
+  let rand=makePRNG(317);
+  let iidData,tsData,iidLabel,tsLabel;
+  const reset=()=>{
+    iidData=[];tsData=[];
+    for(let i=0;i<200;i++) iidData.push(normalDraw(rand));
+    let yt=0;for(let i=0;i<200;i++){yt=0.85*yt+normalDraw(rand);tsData.push(yt);}
+    iidLabel='iid sample (independent draws)';
+    tsLabel='AR(1) time series (β₁=0.85)';
+    plot();
+  };
+  const shuffle=()=>{
+    const sh=arr=>{const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+    iidData=sh(iidData);tsData=sh(tsData);
+    iidLabel='iid SHUFFLED (still iid)';
+    tsLabel='AR(1) SHUFFLED (structure destroyed)';
+    plot();
+  };
+  const plot=()=>{
+    const xs=rangeArr(0,iidData.length-1,1);
+    Plotly.newPlot(t.querySelector('#tss-iid'),[{x:xs,y:iidData,type:'scatter',mode:'lines',line:{color:'#2b6cb0'},showlegend:false}],chartLayout({title:iidLabel,height:240}),noBar());
+    Plotly.newPlot(t.querySelector('#tss-ts'),[{x:xs,y:tsData,type:'scatter',mode:'lines',line:{color:'#c05621'},showlegend:false}],chartLayout({title:tsLabel,height:240}),noBar());
+    // ACF at lag 1 for both
+    const acf1=(arr)=>{const m=mean(arr); let num=0,den=0;for(let i=1;i<arr.length;i++){num+=(arr[i]-m)*(arr[i-1]-m);}for(let i=0;i<arr.length;i++){den+=(arr[i]-m)*(arr[i]-m);}return num/den;};
+    t.querySelector('#tss-s').innerHTML=`<div class="stat"><span class="stat-label">iid lag-1 autocorr (true=0)</span><span class="stat-value" style="color:${Math.abs(acf1(iidData))<0.15?'#38a169':'#c05621'}">${acf1(iidData).toFixed(3)}</span></div><div class="stat"><span class="stat-label">AR(1) lag-1 autocorr (true=0.85)</span><span class="stat-value" style="color:${Math.abs(acf1(tsData)-0.85)<0.15?'#38a169':'#c05621'}">${acf1(tsData).toFixed(3)}</span></div><div class="stat" style="grid-column:1/-1"><span class="stat-label">Lesson</span><span class="stat-value" style="font-family:Helvetica;font-weight:normal;text-align:right">Shuffle the iid data: still iid (autocorr ≈ 0). Shuffle the AR(1): the structure is destroyed (autocorr drops to ≈ 0). The AR(1) actually has information in the time order; the iid does not.</span></div>`;
+  };
+  t.querySelector('#tss-shuffle').addEventListener('click',shuffle);
+  t.querySelector('#tss-new').addEventListener('click',()=>{rand=makePRNG(Math.floor(Math.random()*99999));reset();});
+  reset();
+}
+
+/* 4.10 ADL forecast */
+function widgetADLForecast(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>$\\beta_1$ (Y on lagged Y): <span class="val" id="al-bv">0.6</span></label><input type="range" id="al-b" min="-0.95" max="0.95" step=".01" value=".6"></div>
+    <div class="ctrl"><label>$\\delta_1$ (Y on lagged X): <span class="val" id="al-dv">0.5</span></label><input type="range" id="al-d" min="-1" max="1" step=".05" value=".5"></div>
+    <div class="ctrl"><label>T: <span class="val" id="al-tv">200</span></label><input type="range" id="al-t" min="50" max="500" step="10" value="200"></div>
+  </div><div class="plot" id="al-plot"></div><div class="stats" id="al-s"></div>`;
+  const draw=()=>{
+    const b=+t.querySelector('#al-b').value, d=+t.querySelector('#al-d').value, T=+t.querySelector('#al-t').value;
+    t.querySelector('#al-bv').textContent=b.toFixed(2);t.querySelector('#al-dv').textContent=d.toFixed(2);t.querySelector('#al-tv').textContent=T;
+    const r=makePRNG(331);
+    const X=[],Y=[];let xt=0,yt=0;
+    for(let i=0;i<T;i++){xt=0.7*xt+normalDraw(r);X.push(xt);yt=b*yt+(i>0?d*X[i-1]:0)+normalDraw(r);Y.push(yt);}
+    // AR(1) only
+    const ylag=Y.slice(0,-1),yt2=Y.slice(1);
+    const arFit=olsSlope(ylag,yt2);
+    const arPred=ylag.map((y,i)=>arFit.b0+arFit.b1*y);
+    const arMSE=mean(yt2.map((y,i)=>(y-arPred[i])*(y-arPred[i])));
+    // ADL: AR + lagged X
+    // FWL approximation
+    const xlag=X.slice(0,-1);
+    const auxX=olsSlope(ylag,xlag);
+    const tX=xlag.map((x,i)=>x-auxX.b0-auxX.b1*ylag[i]);
+    const auxY=olsSlope(ylag,yt2);
+    const tY=yt2.map((y,i)=>y-auxY.b0-auxY.b1*ylag[i]);
+    const dh=olsSlope(tX,tY).b1;
+    const adlPred=ylag.map((y,i)=>arFit.b0+arFit.b1*y+dh*(xlag[i]-mean(xlag)));
+    const adlMSE=mean(yt2.map((y,i)=>(y-adlPred[i])*(y-adlPred[i])));
+    const xs=rangeArr(0,T-1,1);
+    Plotly.newPlot(t.querySelector('#al-plot'),[
+      {x:xs,y:Y,type:'scatter',mode:'lines',line:{color:'#cbd5e0'},name:'$Y_t$'},
+      {x:xs,y:X,type:'scatter',mode:'lines',line:{color:'#dd6b20'},name:'$X_t$',yaxis:'y2'}
+    ],chartLayout({yaxis2:{overlaying:'y',side:'right',title:'X'}}),noBar());
+    t.querySelector('#al-s').innerHTML=`<div class="stat"><span class="stat-label">AR(1)-only MSE</span><span class="stat-value">${arMSE.toFixed(3)}</span></div><div class="stat"><span class="stat-label">ADL(1,1) MSE</span><span class="stat-value" style="color:${adlMSE<arMSE?'#38a169':'#c05621'}">${adlMSE.toFixed(3)}</span></div><div class="stat"><span class="stat-label">improvement from adding X lag</span><span class="stat-value">${(((arMSE-adlMSE)/arMSE)*100).toFixed(1)}%</span></div><div class="stat"><span class="stat-label">$\\hat\\delta_1$</span><span class="stat-value">${dh.toFixed(3)}</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#al-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 4.23 TS workflow flowchart */
+function widgetTSWorkflow(t){
+  const steps=[
+    {q:'Step 1: plot the series. Does it visibly trend?',opts:[{a:'no obvious trend',n:1},{a:'yes, trend or non-stationary look',n:2}]},
+    {q:'Step 1b: ADF test. Reject the unit-root null?',opts:[{a:'reject (stationary)',n:3},{a:'fail to reject (unit root)',n:4}]},
+    {q:'Step 2: ADF with constant + trend. Reject?',opts:[{a:'reject (trend stationary)',n:5},{a:'fail to reject',n:4}]},
+    {q:'Step 3: fit AR(p) on levels. Choose p via AIC/BIC.',opts:[{a:'done',n:6}]},
+    {q:'Step 4a: difference and re-test. Is $\\Delta Y_t$ stationary?',opts:[{a:'yes, $Y_t\\sim I(1)$',n:7},{a:'no, try second difference',n:8}]},
+    {q:'Step 5: detrend, then fit AR(p) on residuals.',opts:[{a:'done',n:6}]},
+    {q:'Step 6: walk-forward residual diagnostics + pseudo-OOS MSFE.',opts:[{a:'finished',n:9}]},
+    {q:'Step 4b: model on differences via AR(p) or ADL. If a partner $X_t$ is also $I(1)$, also test cointegration (Engle-Granger).',opts:[{a:'cointegrated → regress in levels',n:6},{a:'not cointegrated → use differences',n:6}]},
+    {q:'Step 4c: $Y_t\\sim I(2)$. Difference twice.',opts:[{a:'done',n:6}]},
+    {q:'Done. You have a fitted model with diagnostics.',opts:[]}
+  ];
+  let cur=0,trail=[0];
+  const render=()=>{
+    const s=steps[cur];
+    t.innerHTML=`<div style="background:#fff;padding:1.2rem;border-radius:8px;border-left:4px solid var(--primary)">
+      <div style="font-size:.78rem;color:#4a5568;margin-bottom:.5rem">Path so far: ${trail.map(i=>`step ${i+1}`).join(' → ')}</div>
+      <h3 style="color:var(--primary);margin-bottom:.7rem">${s.q}</h3>
+      <div style="display:flex;flex-wrap:wrap;gap:.5rem">${s.opts.map((o,i)=>`<button class="btn primary" data-n="${o.n}">${o.a}</button>`).join('')}</div>
+      ${s.opts.length===0?`<div style="margin-top:1rem"><button class="btn" id="ts-reset">Restart</button></div>`:''}
+    </div>`;
+    t.querySelectorAll('button[data-n]').forEach(b=>b.addEventListener('click',e=>{cur=+e.target.dataset.n;trail.push(cur);render();}));
+    if(t.querySelector('#ts-reset'))t.querySelector('#ts-reset').addEventListener('click',()=>{cur=0;trail=[0];render();});
+    if(window.renderMathInElement)renderMathInElement(t,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  render();
 }
 
 /* ============================================================
