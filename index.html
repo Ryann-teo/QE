@@ -332,12 +332,19 @@ visualise:"Build-your-own CLT: pick a wildly skewed source distribution; the wid
 widget:"clt-sim",
 prereqs:["0.5","0.10"],forward:["0.13","0.14","1.7","2.1","3.14"],examRole:"QT2 §1.3, §1.4"},
 
-{id:"0.13",m:0,title:"Estimator properties: bias, variance, MSE, consistency, asymptotic normality",
-idea:"A vocabulary for ranking estimators.",
-formal:"Bias $b(\\hat\\theta_n)=\\mathbb{E}\\hat\\theta_n-\\theta$. MSE $=\\mathrm{var}(\\hat\\theta_n)+b^2$. Consistency $\\hat\\theta_n\\to^p\\theta$. Asymptotic normality $\\sqrt n(\\hat\\theta_n-\\theta)\\to^d N(0,V)$.",
-visualise:"Dartboard widget: each dot is one simulated estimate; user toggles three competing estimators and reads off bias, sd, RMSE.",
-widget:"dartboard",
-prereqs:["0.10","0.11","0.12"],forward:["0.14","0.15","1.7","2.1","3.14","4.7"]},
+{id:"0.13",m:0,title:"Estimator properties: unbiased, consistent, efficient",
+idea:"Three different things you might ask of an estimator $\\hat\\theta_n$ for a parameter $\\theta$.<br><br><strong>1. Unbiased.</strong> Imagine repeating the experiment many times and computing $\\hat\\theta_n$ each time. An unbiased estimator's <em>average</em> across all those replications is exactly $\\theta$. It does not systematically aim too high or too low. A biased estimator has a fixed offset: it is wrong on average no matter how many times you repeat.<br><br><strong>2. Consistent.</strong> As the sample size $n$ grows, the estimator settles down to $\\theta$. The cloud of possible estimates collapses onto the true value. An inconsistent estimator never collapses, no matter how much data you collect, because it is throwing away information (e.g. only using the first observation).<br><br><strong>3. Efficient.</strong> Among unbiased (or consistent) estimators, the efficient one has the <em>smallest</em> variance for a given $n$. Two estimators may both be unbiased but one's cloud is tight while the other's is wide. The tighter one is more efficient: it gives you a useful answer with fewer observations.<br><br><em>An estimator can be unbiased but inefficient, or biased but consistent, or efficient but biased. These three properties are independent.</em>",
+formal:"<strong>Bias</strong>: $b(\\hat\\theta_n)=\\mathbb{E}\\hat\\theta_n-\\theta$. Unbiased iff $b=0$ for every $n$. <strong>Consistency</strong>: $\\hat\\theta_n\\to^p\\theta$ as $n\\to\\infty$. <strong>Efficiency</strong>: $\\mathrm{var}(\\hat\\theta_n)$ is minimised within a class (e.g. unbiased estimators). The Cram\\'er-Rao bound gives a lower bound on $\\mathrm{var}(\\hat\\theta_n)$ for unbiased estimators.",
+visualise:"Three side-by-side strip plots, each showing many simulated estimates of $\\theta=2$. Top row contrasts an unbiased vs biased estimator. Middle row contrasts a consistent vs inconsistent estimator (slide $n$ to see only the first cloud collapse). Bottom row contrasts an efficient vs inefficient estimator (both centred, but one cloud is much wider).",
+widget:"dartboard-3",
+prereqs:["0.10","0.11","0.12"],forward:["0.13b","0.14","0.15","1.7","2.1","3.14","4.7"]},
+
+{id:"0.13b",m:0,title:"Mean-squared error and asymptotic normality",
+idea:"<strong>Mean-squared error (MSE)</strong> is the single number that captures how wrong an estimator is on average. It rolls bias and variance into one: $\\mathrm{MSE}=\\mathrm{var}+\\mathrm{bias}^2$. So an estimator with a tiny variance but a huge bias is no better than one with the right average but a huge variance. MSE forces you to weigh the two against each other; this is the <em>bias-variance tradeoff</em>. Sometimes a slightly biased estimator with a much smaller variance has a lower MSE than the unbiased version (this is the whole logic of shrinkage / James-Stein / regularised regression).<br><br><strong>Asymptotic normality</strong> describes what the sampling distribution of $\\hat\\theta_n$ <em>looks like</em> for large $n$. Even if the underlying data are skewed, by the CLT the estimator's distribution becomes bell-shaped after appropriate scaling: $\\sqrt n(\\hat\\theta_n-\\theta)\\to^d N(0,V)$. This is the foundation for every t-test and confidence interval in the course: we know how spread out the estimator is, and we know its shape, so we can compute tail probabilities. <em>Crucially, this is a large-sample fact</em>. At small $n$ with non-Normal data, the actual distribution is messy and the Normal approximation is poor.",
+formal:"<strong>MSE</strong>: $\\mathrm{mse}(\\hat\\theta_n)=\\mathbb{E}(\\hat\\theta_n-\\theta)^2=\\mathrm{var}(\\hat\\theta_n)+[\\mathbb{E}\\hat\\theta_n-\\theta]^2$. <strong>Asymptotic normality</strong>: $\\sqrt n(\\hat\\theta_n-\\theta)\\to^d N(0,V)$. Combined: a $\\sqrt n$-consistent asymptotically normal estimator has $\\mathrm{var}(\\hat\\theta_n)\\approx V/n$ for large $n$.",
+visualise:"Two panels. (a) MSE decomposition: pick the bias and the sd of two competing estimators; the bar chart breaks each MSE into the variance contribution and the squared-bias contribution. (b) Convergence to Normal: simulate the estimator $R$ times for a chosen $n$. The histogram is built from the actual replications, so at $n=5$ with skewed data it looks visibly non-Normal; as $n$ grows it tightens toward the bell.",
+widget:"mse-asymp",
+prereqs:["0.13"],forward:["0.14","0.15","1.7","2.1","3.14","4.7"]},
 
 {id:"0.14",m:0,title:"Hypothesis testing skeleton",
 idea:"The seven-line ritual; everything in QE inference plugs into it.",
@@ -1234,6 +1241,8 @@ function buildWidget(lessonId, kind){
   if(kind==='convergence-compare') return widgetConvergence(target);
   if(kind==='lln-running') return widgetLLN(target);
   if(kind==='dartboard') return widgetDartboard(target);
+  if(kind==='dartboard-3') return widgetDartboard3(target);
+  if(kind==='mse-asymp') return widgetMSEAsymp(target);
   if(kind==='ht-power') return widgetHTPower(target);
   if(kind==='ci-coverage') return widgetCICoverage(target);
   if(kind==='two-sample') return widgetTwoSample(target);
@@ -1355,35 +1364,47 @@ function widgetBinomialNormal(t){
   draw();
 }
 
-/* CLT simulator */
+/* CLT simulator -- raw simulation; the Normal curve is dashed and labelled "asymptotic limit" */
 function widgetCLT(t){
   t.innerHTML = `<div class="controls">
-    <div class="ctrl"><label>Source distribution</label><select id="clt-src"><option>Exponential</option><option>Bernoulli(.2)</option><option>Uniform</option></select></div>
+    <div class="ctrl"><label>Source distribution</label><select id="clt-src"><option>Exponential (very skewed)</option><option>Bernoulli(.2) (highly discrete)</option><option>Uniform (already symmetric)</option><option>Normal (already Normal)</option></select></div>
     <div class="ctrl"><label>n: <span class="val" id="clt-nv">5</span></label><input type="range" id="clt-n" min="1" max="200" step="1" value="5"></div>
     <div class="ctrl"><label>Replications</label><input type="range" id="clt-r" min="500" max="20000" step="500" value="5000"></div>
-  </div><div class="plot" id="clt-plot"></div>`;
+    <button class="btn" id="clt-rs">Resample</button>
+  </div><div class="plot" id="clt-plot" style="min-height:300px"></div>
+  <div class="stats" id="clt-stats"></div>`;
+  let rand=makePRNG(229);
   const draw=()=>{
     const src=t.querySelector('#clt-src').value;
     const n=+t.querySelector('#clt-n').value, R=+t.querySelector('#clt-r').value;
     t.querySelector('#clt-nv').textContent=n;
     let mu, sigma2, sample;
-    if(src==='Exponential'){mu=1; sigma2=1; sample=()=>-Math.log(Math.random());}
-    else if(src==='Bernoulli(.2)'){mu=.2; sigma2=.16; sample=()=>Math.random()<.2?1:0;}
-    else {mu=.5; sigma2=1/12; sample=()=>Math.random();}
+    if(src.startsWith('Exp')){mu=1; sigma2=1; sample=()=>expDraw(rand);}
+    else if(src.startsWith('Bern')){mu=.2; sigma2=.16; sample=()=>bernDraw(0.2,rand);}
+    else if(src.startsWith('Uni')){mu=.5; sigma2=1/12; sample=()=>uniDraw(rand);}
+    else {mu=0; sigma2=1; sample=()=>normalDraw(rand);}
     const sigma=Math.sqrt(sigma2);
     const zs=[];
     for(let r=0;r<R;r++){
       let s=0; for(let i=0;i<n;i++) s+=sample();
       zs.push(((s/n)-mu)/(sigma/Math.sqrt(n)));
     }
-    const xs=[],normal=[];
-    for(let x=-4;x<=4;x+=.1){xs.push(x); normal.push(Math.exp(-x*x/2)/Math.sqrt(2*Math.PI));}
+    const xs=rangeArr(-4.5,4.5,.05);
+    const normal=xs.map(x=>Math.exp(-x*x/2)/Math.sqrt(2*Math.PI));
     Plotly.newPlot(t.querySelector('#clt-plot'),[
-      {x:zs,type:'histogram',histnorm:'probability density',name:'Standardised mean',nbinsx:50,marker:{color:'#2b6cb0',opacity:.7}},
-      {x:xs,y:normal,type:'scatter',name:'N(0,1)',line:{color:'#c05621',width:2}}
-    ],{margin:{t:20,r:30,b:35,l:40},height:300,legend:{orientation:'h',y:-0.18}},{displayModeBar:false});
+      {x:zs,type:'histogram',histnorm:'probability density',name:`empirical: ${R} sims at n=${n}`,nbinsx:Math.min(60,Math.max(15,Math.floor(R/100))),marker:{color:'#2b6cb0',opacity:.75,line:{color:'#2c5282',width:0.5}}},
+      {x:xs,y:normal,type:'scatter',name:'$N(0,1)$ asymptotic limit (large $n$)',line:{color:'#c05621',width:2,dash:'dash'}}
+    ],chartLayout({xaxis:{range:[-4.5,4.5]},yaxis:{title:'density'},height:300}),noBar());
+    // Empirical skew/kurtosis to quantify how far from Normal we are
+    const m=zs.reduce((a,b)=>a+b,0)/R;
+    const m2=zs.reduce((s,z)=>s+(z-m)*(z-m),0)/R;
+    const m3=zs.reduce((s,z)=>s+Math.pow(z-m,3),0)/R;
+    const m4=zs.reduce((s,z)=>s+Math.pow(z-m,4),0)/R;
+    const skew=m3/Math.pow(m2,1.5),kurt=m4/(m2*m2)-3;
+    t.querySelector('#clt-stats').innerHTML=`<div class="stat"><span class="stat-label">empirical skewness</span><span class="stat-value" style="color:${Math.abs(skew)<0.2?'#38a169':'#c05621'}">${skew.toFixed(3)}</span></div><div class="stat"><span class="stat-label">empirical excess kurtosis</span><span class="stat-value" style="color:${Math.abs(kurt)<0.5?'#38a169':'#c05621'}">${kurt.toFixed(3)}</span></div><div class="stat" style="grid-column:1/-1"><span class="stat-label">verdict</span><span class="stat-value" style="font-family:Helvetica;font-weight:normal;text-align:right">${(Math.abs(skew)+Math.abs(kurt))<0.7?'Approximately Normal -- CLT has kicked in.':'Visibly non-Normal -- the histogram does not match the dashed bell. Slide n up.'}</span></div>`;
   };
   t.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',draw));
+  t.querySelector('#clt-rs').addEventListener('click',()=>{rand=makePRNG(Math.floor(Math.random()*99999));draw();});
   draw();
 }
 
@@ -1554,9 +1575,9 @@ function widgetConvergence(t){
       sampMeans.push(s/n);
       zs.push(((s/n)-1)/(1/Math.sqrt(n)));
     }
-    Plotly.newPlot(t.querySelector('#cv-p1'),[{x:sampMeans,type:'histogram',histnorm:'probability density',marker:{color:'#805ad5',opacity:.7},nbinsx:40}],chartLayout({title:'$\\overline X_n\\to^p \\mu=1$',height:240}),noBar());
-    const xs=rangeArr(-4,4,.1);
-    Plotly.newPlot(t.querySelector('#cv-p2'),[{x:zs,type:'histogram',histnorm:'probability density',marker:{color:'#2b6cb0',opacity:.7},nbinsx:40,name:'$Z_n$'},{x:xs,y:xs.map(x=>normalPDF(x,0,1)),type:'scatter',mode:'lines',line:{color:'#c05621'},name:'$N(0,1)$'}],chartLayout({title:'$Z_n\\to^d N(0,1)$',height:240}),noBar());
+    Plotly.newPlot(t.querySelector('#cv-p1'),[{x:sampMeans,type:'histogram',histnorm:'probability density',marker:{color:'#805ad5',opacity:.75,line:{color:'#553c9a',width:.4}},nbinsx:Math.min(60,Math.max(15,Math.floor(R/100))),name:'sample means'}],chartLayout({title:`$\\overline X_n\\to^p \\mu=1$ &nbsp; (n=${n}, ${R} reps)`,height:240}),noBar());
+    const xs=rangeArr(-4,4,.05);
+    Plotly.newPlot(t.querySelector('#cv-p2'),[{x:zs,type:'histogram',histnorm:'probability density',marker:{color:'#2b6cb0',opacity:.75,line:{color:'#2c5282',width:.4}},nbinsx:Math.min(60,Math.max(15,Math.floor(R/100))),name:'simulated $Z_n$'},{x:xs,y:xs.map(x=>normalPDF(x,0,1)),type:'scatter',mode:'lines',line:{color:'#c05621',dash:'dash'},name:'$N(0,1)$ asymptotic'}],chartLayout({title:`$Z_n\\to^d N(0,1)$ &nbsp; (n=${n})`,height:240}),noBar());
   };
   t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
   draw();
@@ -1761,33 +1782,56 @@ function widgetCEFvsLinear(t){
   draw();
 }
 
-/* 1.7 OLS asymptotic distribution */
+/* 1.7 OLS asymptotic distribution -- raw simulation; the Normal overlay is the asymptotic limit */
 function widgetOLSAsymp(t){
   t.innerHTML=`<div class="controls">
-    <div class="ctrl"><label>n: <span class="val" id="oa-nv">30</span></label><input type="range" id="oa-n" min="10" max="1000" step="10" value="30"></div>
+    <div class="ctrl"><label>n: <span class="val" id="oa-nv">10</span></label><input type="range" id="oa-n" min="3" max="1000" step="1" value="10"></div>
     <div class="ctrl"><label>Replications</label><input type="range" id="oa-r" min="200" max="5000" step="100" value="2000"></div>
-  </div><div class="plot" id="oa-plot"></div><div class="stats" id="oa-stats"></div>`;
+    <div class="ctrl"><label>Errors</label><select id="oa-e"><option>Normal</option><option>t with df=4 (heavy tail)</option><option>Skewed (chi-sq centred)</option></select></div>
+    <button class="btn" id="oa-rs">Resample</button>
+  </div><div class="plot" id="oa-plot" style="min-height:280px"></div><div class="stats" id="oa-stats"></div>`;
+  let rand=makePRNG(31);
   const draw=()=>{
-    const n=+t.querySelector('#oa-n').value, R=+t.querySelector('#oa-r').value;
+    const n=+t.querySelector('#oa-n').value, R=+t.querySelector('#oa-r').value, et=t.querySelector('#oa-e').value;
     t.querySelector('#oa-nv').textContent=n;
-    const r=makePRNG(31);
-    const trueB1=1.5, sigma=1.0;
+    const trueB1=1.5;
+    const drawErr=()=>{
+      if(et.startsWith('Normal')) return normalDraw(rand);
+      if(et.startsWith('t')){
+        // Student t with df=4 via Z/sqrt(chi2_df/df)
+        const z=normalDraw(rand);
+        let c=0;for(let k=0;k<4;k++){const g=normalDraw(rand);c+=g*g;}
+        return z/Math.sqrt(c/4);
+      }
+      // chi-sq(2) centred
+      const g1=normalDraw(rand),g2=normalDraw(rand);
+      return (g1*g1+g2*g2-2)/2;
+    };
     const ests=[];
     for(let rep=0;rep<R;rep++){
       const xs=[],ys=[];
-      for(let i=0;i<n;i++){const x=normalDraw(r); xs.push(x); ys.push(0.3+trueB1*x+sigma*normalDraw(r));}
+      for(let i=0;i<n;i++){const x=normalDraw(rand); xs.push(x); ys.push(0.3+trueB1*x+drawErr());}
       ests.push(olsSlope(xs,ys).b1);
     }
-    const m=mean(ests),v=variance(ests);
-    const xs2=rangeArr(trueB1-1,trueB1+1,.02);
+    const m=ests.reduce((a,b)=>a+b,0)/R;
+    const v=ests.reduce((s,e)=>s+(e-m)*(e-m),0)/R;
+    // Asymptotic Normal centred at the truth with the empirical sd (a fair "if CLT had finished" overlay)
+    const sd=Math.sqrt(v);
+    const xRange=Math.max(1.5,4*sd);
+    const xs2=rangeArr(trueB1-xRange,trueB1+xRange,.02);
+    const filtered=ests.filter(e=>Math.abs(e-trueB1)<xRange);
     Plotly.newPlot(t.querySelector('#oa-plot'),[
-      {x:ests,type:'histogram',histnorm:'probability density',marker:{color:'#2b6cb0',opacity:.7},nbinsx:40,name:'$\\hat\\beta_1$ across reps'},
-      {x:xs2,y:xs2.map(x=>normalPDF(x,trueB1,Math.sqrt(v))),type:'scatter',mode:'lines',line:{color:'#c05621'},name:'Normal fit'}
-    ],chartLayout(),noBar());
-    t.querySelector('#oa-stats').innerHTML=`<div class="stat"><span class="stat-label">Empirical mean</span><span class="stat-value">${m.toFixed(3)}</span></div><div class="stat"><span class="stat-label">True $\\beta_1$</span><span class="stat-value">${trueB1.toFixed(3)}</span></div><div class="stat"><span class="stat-label">Empirical sd</span><span class="stat-value">${Math.sqrt(v).toFixed(3)}</span></div><div class="stat"><span class="stat-label">Theoretical sd $\\sigma_u/\\sqrt{n\\sigma_X^2}$</span><span class="stat-value">${(sigma/Math.sqrt(n)).toFixed(3)}</span></div>`;
+      {x:filtered,type:'histogram',histnorm:'probability density',marker:{color:'#2b6cb0',opacity:.75,line:{color:'#2c5282',width:.4}},nbinsx:Math.min(60,Math.max(15,Math.floor(R/100))),name:`empirical (${R} sims, n=${n})`},
+      {x:xs2,y:xs2.map(x=>normalPDF(x,trueB1,sd)),type:'scatter',mode:'lines',line:{color:'#c05621',dash:'dash',width:2},name:'asymptotic $N(\\beta_1, \\sigma_{\\hat\\beta}^2)$'}
+    ],chartLayout({xaxis:{range:[trueB1-xRange,trueB1+xRange]}}),noBar());
+    // Skew/kurtosis
+    const m2=v;const m3=ests.reduce((s,e)=>s+Math.pow(e-m,3),0)/R;const m4=ests.reduce((s,e)=>s+Math.pow(e-m,4),0)/R;
+    const skew=m3/Math.pow(m2,1.5),kurt=m4/(m2*m2)-3;
+    t.querySelector('#oa-stats').innerHTML=`<div class="stat"><span class="stat-label">empirical mean</span><span class="stat-value">${m.toFixed(3)}</span></div><div class="stat"><span class="stat-label">true $\\beta_1$</span><span class="stat-value">${trueB1.toFixed(3)}</span></div><div class="stat"><span class="stat-label">empirical sd</span><span class="stat-value">${sd.toFixed(3)}</span></div><div class="stat"><span class="stat-label">empirical skew / kurt</span><span class="stat-value" style="color:${(Math.abs(skew)+Math.abs(kurt))<0.5?'#38a169':'#c05621'}">${skew.toFixed(2)} / ${kurt.toFixed(2)}</span></div>`;
     if(window.renderMathInElement)renderMathInElement(t.querySelector('#oa-stats'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
   };
-  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  t.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',draw));
+  t.querySelector('#oa-rs').addEventListener('click',()=>{rand=makePRNG(Math.floor(Math.random()*99999));draw();});
   draw();
 }
 
@@ -3093,8 +3137,8 @@ function widgetSamplingDist(t){
     for(let rep=0;rep<R;rep++){let s=0;for(let i=0;i<n;i++)s+=sample();means.push(s/n);}
     const empMean=mean(means), empVar=variance(means), seThy=Math.sqrt(sigma2/n);
     Plotly.newPlot(t.querySelector('#sd-plot'),[
-      {x:means,type:'histogram',histnorm:'probability density',marker:{color:'#805ad5',opacity:.7},nbinsx:50,name:'$\\overline X_n$ across reps'},
-      {x:rangeArr(mu-4*seThy,mu+4*seThy,.02),y:rangeArr(mu-4*seThy,mu+4*seThy,.02).map(x=>normalPDF(x,mu,seThy)),type:'scatter',mode:'lines',line:{color:'#c05621'},name:`Theory $N(\\mu, \\sigma^2/n)$`}
+      {x:means,type:'histogram',histnorm:'probability density',marker:{color:'#805ad5',opacity:.75,line:{color:'#553c9a',width:.4}},nbinsx:Math.min(60,Math.max(15,Math.floor(R/100))),name:`empirical (${R} sims, n=${n})`},
+      {x:rangeArr(mu-4*seThy,mu+4*seThy,.02),y:rangeArr(mu-4*seThy,mu+4*seThy,.02).map(x=>normalPDF(x,mu,seThy)),type:'scatter',mode:'lines',line:{color:'#c05621',dash:'dash'},name:`asymptotic $N(\\mu, \\sigma^2/n)$`}
     ],chartLayout(),noBar());
     t.querySelector('#sd-s').innerHTML=`<div class="stat"><span class="stat-label">Empirical mean of $\\overline X_n$</span><span class="stat-value">${empMean.toFixed(3)}</span></div><div class="stat"><span class="stat-label">True $\\mu$</span><span class="stat-value">${mu.toFixed(3)}</span></div><div class="stat"><span class="stat-label">Empirical sd</span><span class="stat-value">${Math.sqrt(empVar).toFixed(3)}</span></div><div class="stat"><span class="stat-label">Theory $\\sigma/\\sqrt{n}$</span><span class="stat-value">${seThy.toFixed(3)}</span></div>`;
     if(window.renderMathInElement)renderMathInElement(t.querySelector('#sd-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
@@ -3236,6 +3280,118 @@ function widgetSuperCons(t){
     ],chartLayout({xaxis:{type:'log',title:'T'},yaxis:{type:'log',title:'sd'}}),noBar());
   };
   t.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 0.13 Three-pair dartboard contrasting unbiased/consistent/efficient */
+function widgetDartboard3(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>n: <span class="val" id="d3-nv">30</span></label><input type="range" id="d3-n" min="3" max="500" step="1" value="30"></div>
+    <div class="ctrl"><label>Replications</label><input type="range" id="d3-r" min="100" max="2000" step="50" value="500"></div>
+    <button class="btn" id="d3-rs">Resample</button>
+  </div>
+  <div class="plot" id="d3-p1" style="min-height:160px"></div>
+  <div class="plot" id="d3-p2" style="min-height:160px"></div>
+  <div class="plot" id="d3-p3" style="min-height:160px"></div>
+  <div class="stats" id="d3-s"></div>`;
+  let rand=makePRNG(211);
+  const draw=()=>{
+    const n=+t.querySelector('#d3-n').value;
+    const R=+t.querySelector('#d3-r').value;
+    t.querySelector('#d3-nv').textContent=n;
+    const trueT=2;
+    const unbiased=[],biased=[],consistent=[],inconsistent=[],efficient=[],inefficient=[];
+    for(let rep=0;rep<R;rep++){
+      const sample=[];
+      for(let i=0;i<n;i++) sample.push(trueT+normalDraw(rand));
+      const m=sample.reduce((a,b)=>a+b,0)/n;
+      const sorted=[...sample].sort((a,b)=>a-b);
+      const med = n%2 ? sorted[(n-1)/2] : (sorted[n/2-1]+sorted[n/2])/2;
+      unbiased.push(m);
+      biased.push(m+0.7);            // sample mean shifted by a fixed bias
+      consistent.push(m);             // collapses with n
+      inconsistent.push(sample[0]);   // throws away n-1 obs; var stays = 1
+      efficient.push(m);              // BLUE for normal data
+      inefficient.push(med);          // less efficient: var(median) ~ pi/2 * var(mean)
+    }
+    const xRange=[trueT-3,trueT+3];
+    const strip=(target,A,nameA,B,nameB,title,subtitle)=>{
+      const jA=A.map(()=>0.65+Math.random()*0.25);
+      const jB=B.map(()=>0.10+Math.random()*0.25);
+      Plotly.newPlot(target,[
+        {x:A,y:jA,mode:'markers',type:'scatter',name:nameA,marker:{color:'#38a169',size:5,opacity:.5}},
+        {x:B,y:jB,mode:'markers',type:'scatter',name:nameB,marker:{color:'#c05621',size:5,opacity:.5}},
+        {x:[trueT,trueT],y:[0,1],mode:'lines',type:'scatter',line:{color:'#1a202c',dash:'dash',width:2},name:`true θ=${trueT}`}
+      ],chartLayout({title:`<b>${title}</b><br><span style="font-size:.78rem;color:#666">${subtitle}</span>`,height:170,yaxis:{showticklabels:false,range:[0,1],title:''},xaxis:{title:'estimate',range:xRange},legend:{orientation:'h',y:-0.4,font:{size:10}}}),noBar());
+    };
+    strip(t.querySelector('#d3-p1'),unbiased,'Unbiased: sample mean',biased,'Biased: sample mean + 0.7','Bias','Both clouds have the same width. The biased one is shifted off the dashed truth.');
+    strip(t.querySelector('#d3-p2'),consistent,'Consistent: sample mean',inconsistent,'Inconsistent: first observation only','Consistency','Slide n. The green cloud collapses; the orange cloud stays the same width forever.');
+    strip(t.querySelector('#d3-p3'),efficient,'Efficient: sample mean (BLUE for Normal)',inefficient,'Inefficient: sample median','Efficiency','Both unbiased. The mean has the smaller cloud, so it gives a sharper answer per unit of data.');
+    const row=(name,arr)=>{const m=arr.reduce((a,b)=>a+b,0)/arr.length; const v=arr.map(x=>(x-m)*(x-m)).reduce((a,b)=>a+b,0)/arr.length; return `<div class="stat"><span class="stat-label">${name}</span><span class="stat-value">bias ${(m-trueT).toFixed(3)} | sd ${Math.sqrt(v).toFixed(3)}</span></div>`;};
+    t.querySelector('#d3-s').innerHTML=row('Unbiased mean',unbiased)+row('Biased (+0.7)',biased)+row('Consistent (mean)',consistent)+row('Inconsistent (X₁)',inconsistent)+row('Efficient (mean)',efficient)+row('Inefficient (median)',inefficient);
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  t.querySelector('#d3-rs').addEventListener('click',()=>{rand=makePRNG(Math.floor(Math.random()*99999));draw();});
+  draw();
+}
+
+/* 0.13b MSE decomposition + asymptotic normality */
+function widgetMSEAsymp(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>Bias of A: <span class="val" id="ma-bav">0</span></label><input type="range" id="ma-ba" min="-1.5" max="1.5" step=".05" value="0"></div>
+    <div class="ctrl"><label>SD of A: <span class="val" id="ma-sav">0.8</span></label><input type="range" id="ma-sa" min=".1" max="2" step=".05" value=".8"></div>
+    <div class="ctrl"><label>Bias of B: <span class="val" id="ma-bbv">0.4</span></label><input type="range" id="ma-bb" min="-1.5" max="1.5" step=".05" value=".4"></div>
+    <div class="ctrl"><label>SD of B: <span class="val" id="ma-sbv">0.3</span></label><input type="range" id="ma-sb" min=".1" max="2" step=".05" value=".3"></div>
+  </div>
+  <div class="plot" id="ma-p1" style="min-height:240px"></div>
+  <div style="margin-top:1.2rem;border-top:1px solid var(--border);padding-top:1rem"><strong>Asymptotic normality &mdash; the histogram is built from actual simulations</strong></div>
+  <div class="controls" style="margin-top:.6rem">
+    <div class="ctrl"><label>n: <span class="val" id="ma-nv">5</span></label><input type="range" id="ma-n" min="2" max="500" step="1" value="5"></div>
+    <div class="ctrl"><label>Replications</label><input type="range" id="ma-r" min="500" max="10000" step="500" value="3000"></div>
+    <div class="ctrl"><label>Source distribution</label><select id="ma-src"><option>Exponential (skewed)</option><option>Bernoulli p=0.2 (very discrete)</option><option>Uniform</option><option>Normal (already symmetric)</option></select></div>
+    <button class="btn" id="ma-rs">Resample</button>
+  </div>
+  <div class="plot" id="ma-p2" style="min-height:280px"></div>
+  <div class="stats" id="ma-s"></div>`;
+  let rand=makePRNG(223);
+  const draw=()=>{
+    // -- MSE decomposition --
+    const ba=+t.querySelector('#ma-ba').value,sa=+t.querySelector('#ma-sa').value;
+    const bb=+t.querySelector('#ma-bb').value,sb=+t.querySelector('#ma-sb').value;
+    t.querySelector('#ma-bav').textContent=ba.toFixed(2);t.querySelector('#ma-sav').textContent=sa.toFixed(2);
+    t.querySelector('#ma-bbv').textContent=bb.toFixed(2);t.querySelector('#ma-sbv').textContent=sb.toFixed(2);
+    const mseA=sa*sa+ba*ba, mseB=sb*sb+bb*bb;
+    Plotly.newPlot(t.querySelector('#ma-p1'),[
+      {x:['Estimator A','Estimator B'],y:[sa*sa,sb*sb],type:'bar',name:'variance',marker:{color:'#2b6cb0'},text:[(sa*sa).toFixed(2),(sb*sb).toFixed(2)],textposition:'inside'},
+      {x:['Estimator A','Estimator B'],y:[ba*ba,bb*bb],type:'bar',name:'bias²',marker:{color:'#c05621'},text:[(ba*ba).toFixed(2),(bb*bb).toFixed(2)],textposition:'inside'}
+    ],chartLayout({title:`MSE = variance + bias²&nbsp;&nbsp;|&nbsp;&nbsp;A: ${mseA.toFixed(2)}&nbsp;&nbsp;B: ${mseB.toFixed(2)}&nbsp;&nbsp;<span style="color:${mseA<mseB?'#38a169':'#c05621'}">winner: ${mseA<mseB?'A':'B'}</span>`,barmode:'stack',height:240,yaxis:{title:'MSE'},legend:{orientation:'h',y:-0.2}}),noBar());
+    // -- Asymptotic normality (raw simulation) --
+    const n=+t.querySelector('#ma-n').value,R=+t.querySelector('#ma-r').value,src=t.querySelector('#ma-src').value;
+    t.querySelector('#ma-nv').textContent=n;
+    let mu,sigma2,sample;
+    if(src.startsWith('Exp')){mu=1;sigma2=1;sample=()=>expDraw(rand);}
+    else if(src.startsWith('Bern')){mu=0.2;sigma2=0.16;sample=()=>bernDraw(0.2,rand);}
+    else if(src.startsWith('Uni')){mu=0.5;sigma2=1/12;sample=()=>uniDraw(rand);}
+    else {mu=0;sigma2=1;sample=()=>normalDraw(rand);}
+    const zs=[];
+    for(let r=0;r<R;r++){let s=0;for(let i=0;i<n;i++) s+=sample(); zs.push(((s/n)-mu)/Math.sqrt(sigma2/n));}
+    // Empirical histogram only - no theoretical curve overlay so the user actually sees the shape
+    const xs2=rangeArr(-4.5,4.5,.05);
+    const normCurve=xs2.map(x=>Math.exp(-x*x/2)/Math.sqrt(2*Math.PI));
+    Plotly.newPlot(t.querySelector('#ma-p2'),[
+      {x:zs,type:'histogram',histnorm:'probability density',marker:{color:'#805ad5',opacity:.75,line:{color:'#553c9a',width:0.5}},nbinsx:Math.min(60,Math.max(15,Math.floor(R/100))),name:`${R} simulated $Z_n$ at n=${n}`},
+      {x:xs2,y:normCurve,type:'scatter',mode:'lines',line:{color:'#c05621',width:2,dash:'dash'},name:'$N(0,1)$ asymptotic limit'}
+    ],chartLayout({title:`Standardised sample mean $Z_n=\\sqrt n(\\overline X_n - \\mu)/\\sigma$&nbsp;&nbsp;|&nbsp;&nbsp;source: ${src}`,xaxis:{range:[-4.5,4.5]},height:280}),noBar());
+    // Skewness / excess kurtosis as a quick measure of "how far from Normal"
+    const m=zs.reduce((a,b)=>a+b,0)/R;
+    const m2=zs.reduce((s,z)=>s+(z-m)*(z-m),0)/R;
+    const m3=zs.reduce((s,z)=>s+Math.pow(z-m,3),0)/R;
+    const m4=zs.reduce((s,z)=>s+Math.pow(z-m,4),0)/R;
+    const skew=m3/Math.pow(m2,1.5),kurt=m4/(m2*m2)-3;
+    t.querySelector('#ma-s').innerHTML=`<div class="stat"><span class="stat-label">Empirical skewness (Normal=0)</span><span class="stat-value" style="color:${Math.abs(skew)<0.2?'#38a169':'#c05621'}">${skew.toFixed(3)}</span></div><div class="stat"><span class="stat-label">Empirical excess kurtosis (Normal=0)</span><span class="stat-value" style="color:${Math.abs(kurt)<0.5?'#38a169':'#c05621'}">${kurt.toFixed(3)}</span></div><div class="stat" style="grid-column:1/-1"><span class="stat-label">Reading</span><span class="stat-value" style="font-family:Helvetica;font-weight:normal;text-align:right">${n<10?'At small n the histogram is visibly NOT Normal (large skew/kurtosis). Slide n up to watch CLT kick in.':n<50?'Approaching Normal but still noticeable departures.':'Approximately Normal. CLT has done its job.'}</span></div>`;
+  };
+  t.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',draw));
+  t.querySelector('#ma-rs').addEventListener('click',()=>{rand=makePRNG(Math.floor(Math.random()*99999));draw();});
   draw();
 }
 
