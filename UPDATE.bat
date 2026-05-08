@@ -1,8 +1,4 @@
 @echo off
-REM Friendly alias: double-click this to push updates.
-REM Just calls push-updates.bat. Kept separate so it stands out
-REM in the folder, and so you can pin / shortcut it without
-REM disturbing the canonical push-updates.bat name.
-
+REM Friendly alias - double-click to push your QE dashboard updates.
 cd /d "%~dp0"
-call "%~dp0push-updates.bat" %*
+call "%~dp0push-updates.bat"
