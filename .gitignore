@@ -1,0 +1,18 @@
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*~
+
+# Python (in case you add notebooks/scripts later)
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+__marimo__/
+
+# Local outputs
+*.log

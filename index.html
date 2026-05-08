@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quantitative Economics: Interactive Revision Dashboard</title>
+<meta name="description" content="Interactive revision dashboard for Quantitative Economics (Trinity 2026, J. A. Duffy). Every examinable concept with full derivations, intuition, and live visualisations.">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<style>
+:root{
+  --bg:#fafbfc; --fg:#1a202c; --muted:#4a5568;
+  --primary:#2b6cb0; --primary-dark:#1e4d80; --accent:#c05621;
+  --border:#e2e8f0; --card:#fff;
+  --m0:#805ad5; --m1:#2b6cb0; --m2:#319795; --m3:#dd6b20; --m4:#38a169;
+  --insight:#fffbea; --insight-border:#f59e0b;
+  --formula:#ebf4ff; --derivation:#f0fff4;
+  --code-bg:#1a202c; --code-fg:#e2e8f0;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Helvetica Neue',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--fg);line-height:1.6}
+a{color:var(--primary);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* Hero */
+header.hero{background:linear-gradient(135deg,var(--primary) 0%,var(--primary-dark) 100%);color:#fff;padding:3.5rem 2rem 2.5rem;text-align:center}
+header.hero h1{font-size:2.4rem;font-weight:800;letter-spacing:-.02em;margin-bottom:.4rem}
+header.hero .tagline{max-width:820px;margin:0 auto;opacity:.94;font-size:1.05rem}
+header.hero .meta{margin-top:.8rem;font-size:.85rem;opacity:.85}
+header.hero .meta a{color:#cbd5e0}
+
+/* Layout */
+.shell{display:grid;grid-template-columns:280px 1fr;gap:0;max-width:1500px;margin:0 auto}
+@media(max-width:900px){.shell{grid-template-columns:1fr}}
+
+/* Sidebar */
+aside.nav{position:sticky;top:0;align-self:start;height:100vh;overflow-y:auto;background:#fff;border-right:1px solid var(--border);padding:1.4rem 1rem 2rem}
+@media(max-width:900px){aside.nav{position:static;height:auto;border-right:none;border-bottom:1px solid var(--border)}}
+aside.nav h2{font-size:.95rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin:1rem 0 .4rem}
+aside.nav h2:first-child{margin-top:0}
+aside.nav .search{width:100%;padding:.5rem .7rem;border:1px solid var(--border);border-radius:6px;font-size:.92rem;margin-bottom:.6rem}
+aside.nav .module-block{margin-bottom:.4rem}
+aside.nav .module-title{font-weight:700;font-size:.92rem;color:#fff;padding:.4rem .7rem;border-radius:5px;margin-bottom:.3rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+aside.nav .module-title.m0{background:var(--m0)}
+aside.nav .module-title.m1{background:var(--m1)}
+aside.nav .module-title.m2{background:var(--m2)}
+aside.nav .module-title.m3{background:var(--m3)}
+aside.nav .module-title.m4{background:var(--m4)}
+aside.nav .module-title:hover{filter:brightness(1.1)}
+aside.nav ol{list-style:none;padding-left:.4rem}
+aside.nav li{font-size:.86rem;padding:.18rem .4rem;border-radius:3px;cursor:pointer;color:var(--fg);line-height:1.35}
+aside.nav li:hover{background:#edf2f7;color:var(--primary)}
+aside.nav li .lid{display:inline-block;min-width:2.4rem;color:var(--muted);font-family:'JetBrains Mono','Courier New',monospace;font-size:.78rem}
+
+/* Main */
+main{padding:1.4rem 2rem 4rem;max-width:1100px}
+@media(max-width:900px){main{padding:1rem}}
+
+.intro{background:#fff;border:1px solid var(--border);border-left:6px solid var(--primary);border-radius:8px;padding:1.2rem 1.4rem;margin:1rem 0 2rem}
+.intro h2{font-size:1.15rem;color:var(--primary);margin-bottom:.3rem}
+.intro p{margin:.4rem 0;color:var(--muted);font-size:.95rem}
+
+.module-section{margin:2.5rem 0 1rem;padding:.6rem 1rem;border-radius:8px;color:#fff}
+.module-section.m0{background:var(--m0)}
+.module-section.m1{background:var(--m1)}
+.module-section.m2{background:var(--m2)}
+.module-section.m3{background:var(--m3)}
+.module-section.m4{background:var(--m4)}
+.module-section h2{font-size:1.4rem}
+.module-section p{font-size:.92rem;opacity:.92;margin-top:.2rem}
+
+.lesson{background:var(--card);border:1px solid var(--border);border-radius:10px;margin:1rem 0;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.lesson-head{padding:1rem 1.4rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:1rem}
+.lesson-head:hover{background:#f7fafc}
+.lesson-head .lh-left{flex:1;min-width:0}
+.lid-pill{display:inline-block;font-family:'JetBrains Mono','Courier New',monospace;font-size:.72rem;color:#fff;padding:.18rem .55rem;border-radius:10px;letter-spacing:.06em;font-weight:600;margin-right:.6rem;vertical-align:middle}
+.lid-pill.m0{background:var(--m0)}.lid-pill.m1{background:var(--m1)}.lid-pill.m2{background:var(--m2)}.lid-pill.m3{background:var(--m3)}.lid-pill.m4{background:var(--m4)}
+.lesson-title{display:inline;font-size:1.08rem;font-weight:600;color:var(--fg);vertical-align:middle}
+.lesson-head .toggle{color:var(--muted);font-size:1.2rem;transition:transform .2s}
+.lesson.open .lesson-head .toggle{transform:rotate(90deg)}
+.lesson-body{display:none;padding:0 1.4rem 1.2rem;border-top:1px solid var(--border)}
+.lesson.open .lesson-body{display:block}
+
+.tab{margin:1rem 0;background:#fbfdff;border:1px solid var(--border);border-left:4px solid var(--primary);border-radius:6px;padding:.85rem 1.1rem}
+.tab.idea{border-left-color:#3182ce}
+.tab.formal{border-left-color:#2c5282;background:var(--formula)}
+.tab.derivation{border-left-color:#2f855a;background:var(--derivation)}
+.tab.intuition{border-left-color:#d69e2e;background:var(--insight)}
+.tab.visualise{border-left-color:#805ad5;background:#faf5ff}
+.tab.why{border-left-color:#718096;background:#f7fafc}
+.tab.selftest{border-left-color:#dd6b20;background:#fffaf0}
+.tab h4{font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.4rem;font-weight:700}
+.tab p{margin:.4rem 0}
+.tab ul{margin:.3rem 0 .3rem 1.2rem}
+.tab ol{margin:.3rem 0 .3rem 1.4rem}
+
+.links{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.4rem}
+.linkpill{display:inline-block;font-size:.78rem;padding:.18rem .55rem;border-radius:4px;background:#edf2f7;color:var(--primary);cursor:pointer;border:1px solid var(--border);font-family:'JetBrains Mono','Courier New',monospace}
+.linkpill:hover{background:#e2e8f0}
+
+.demo{background:#fff;border:1px solid var(--border);border-radius:8px;padding:1rem 1.2rem;margin:.7rem 0}
+.demo .controls{display:flex;flex-wrap:wrap;gap:1rem;margin-bottom:.8rem}
+.demo .ctrl{display:flex;flex-direction:column;min-width:140px}
+.demo .ctrl label{font-size:.8rem;color:var(--muted);font-weight:600;margin-bottom:.25rem}
+.demo .ctrl input[type="range"]{width:170px}
+.demo .ctrl select{padding:.25rem .4rem;border:1px solid var(--border);border-radius:4px;font-size:.9rem}
+.demo .val{font-family:'JetBrains Mono','Courier New',monospace;color:var(--accent);font-weight:600;margin-left:.3rem}
+.plot{background:#fff;border-radius:6px;min-height:280px}
+.demo .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.5rem;margin-top:.6rem;font-size:.88rem}
+.demo .stat{padding:.35rem .6rem;background:#f7fafc;border-radius:4px;display:flex;justify-content:space-between}
+.demo .stat-label{color:var(--muted)}
+.demo .stat-value{font-family:'JetBrains Mono',monospace;font-weight:600}
+
+/* Concept map and exam map sections */
+.section-extra{background:#fff;border:1px solid var(--border);border-radius:10px;margin:2.5rem 0;padding:1.2rem 1.4rem}
+.section-extra h2{font-size:1.3rem;color:var(--primary);margin-bottom:.5rem}
+.section-extra h3{font-size:1.05rem;color:var(--accent);margin-top:1rem;margin-bottom:.3rem}
+.qt-block{margin:.6rem 0;font-size:.92rem}
+.qt-block .qt-name{font-weight:600;color:var(--fg)}
+.qt-block .qt-lessons{font-family:'JetBrains Mono','Courier New',monospace;font-size:.85rem;color:var(--muted)}
+
+footer{background:#1a202c;color:#cbd5e0;padding:2rem;margin-top:3rem;text-align:center;font-size:.88rem}
+footer a{color:#93c5fd}
+
+/* Open-all and module collapse */
+.toolbar{display:flex;gap:.6rem;margin:1rem 0;flex-wrap:wrap}
+.btn{background:#fff;border:1px solid var(--border);padding:.4rem .8rem;border-radius:5px;cursor:pointer;font-size:.85rem;color:var(--fg)}
+.btn:hover{background:#edf2f7}
+.btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+.btn.primary:hover{background:var(--primary-dark)}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <h1>Quantitative Economics</h1>
+  <p class="tagline">Interactive revision for Trinity 2026 (J. A. Duffy). Every examinable concept from the notes, slides, and Question Types catalogue, with full derivations, intuitive explanations, and live visualisations.</p>
+  <p class="meta">By Ryan Teo &middot; <a href="https://github.com/Ryann-teo/QE">GitHub</a></p>
+</header>
+
+<div class="shell">
+
+<aside class="nav" id="sidebar">
+  <input class="search" id="search" placeholder="Search lessons..." />
+  <!-- Modules + lesson links injected by JS -->
+</aside>
+
+<main>
+  <div class="intro">
+    <h2>How to use this dashboard</h2>
+    <p>The left sidebar lists every lesson, grouped by module. Click any lesson title to expand its tabs: <strong>Idea</strong> (one-line summary), <strong>Formal</strong> (definitions and the result statement), <strong>Derivation</strong> (full step-by-step proof where one is given in the notes), <strong>Intuition</strong> (plain-language explanation), <strong>Visualise</strong> (interactive demo where one is wired up), <strong>Why it matters</strong> (concept links and exam role), and <strong>Self-test</strong> (sample sub-questions).</p>
+    <p>Per the Trinity 2026 lectures (slide 1, p.6): "you are not expected to remember derivations. You should be comfortable with the steps involved." Every derivation here is something you should be able to reconstruct under exam conditions by chaining the algebra of $\mathbb{E},\mathrm{var},\mathrm{cov},\mathbb{E}[Y\mid X]$ plus LLN, CLT, Slutsky, and the Continuous Mapping Theorem.</p>
+    <p><strong>Excluded</strong> (per Question Types §Excluded Topics): potential outcomes / Neyman-Rubin, selection-bias decomposition, ATE / TOT / LATE deep dive, twin studies, dynamic causal effects in time series.</p>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn primary" onclick="openAll()">Expand all lessons</button>
+    <button class="btn" onclick="closeAll()">Collapse all</button>
+    <button class="btn" onclick="document.getElementById('concept-map').scrollIntoView({behavior:'smooth'})">Concept map</button>
+    <button class="btn" onclick="document.getElementById('qt-map').scrollIntoView({behavior:'smooth'})">Question Types map</button>
+  </div>
+
+  <div id="lessons"></div>
+
+  <section class="section-extra" id="concept-map">
+    <h2>5. Concept map (prerequisite edges)</h2>
+    <p>Each line below reads "A is a prerequisite for B". Click any pill to jump to the lesson.</p>
+    <div id="edges"></div>
+  </section>
+
+  <section class="section-extra" id="qt-map">
+    <h2>6. Question Type to lesson cross-reference</h2>
+    <p>For each big Question Type, the minimum set of lessons needed to attempt it.</p>
+    <div id="qts"></div>
+  </section>
+
+  <section class="section-extra">
+    <h2>7. Sources</h2>
+    <ul style="margin-left:1.4rem">
+      <li>Notes: <code>notes-1 (1).pdf</code> through <code>notes-5-appendix.pdf</code></li>
+      <li>Slides: <code>slides-1 (1).pdf</code> through <code>slides-4.pdf</code></li>
+      <li>Summary: <code>Quantitative Economics Key Facts.md</code></li>
+      <li>Question Types: four files in <code>Study Guide/Question Types/</code></li>
+      <li>Master outline: <code>QE Interactive Dashboard - Lesson Outline.md</code></li>
+    </ul>
+  </section>
+</main>
+
+</div>
+
+<footer>
+  Quantitative Economics Interactive Dashboard &middot; Built by Ryan Teo &middot;
+  <a href="https://github.com/Ryann-teo/QE">github.com/Ryann-teo/QE</a><br>
+  Vanilla HTML, KaTeX, Plotly. No build step.
+</footer>
+
+<script>
+/* ============================================================
+   LESSON DATA
+   Every lesson has: id, module (0-4), title, idea, formal,
+   derivation (optional), intuition (optional), widget (optional id),
+   prereqs, forward, examRole, selfTest.
+   Math uses $...$ and $$...$$ for KaTeX.
+============================================================ */
+const LESSONS = [
+/* MODULE 0 */
+{id:"0.1",m:0,title:"Sample spaces, events, Kolmogorov axioms",
+idea:"Events are subsets of a sample space; probabilities are a measure on those subsets satisfying three rules.",
+formal:"Non-negativity $\\mathbb{P}A\\ge0$. Normalisation $\\mathbb{P}\\Omega=1$. Countable additivity $\\mathbb{P}\\bigcup_i A_i=\\sum_i \\mathbb{P}A_i$ when the $A_i$ are pairwise disjoint.",
+visualise:"Venn diagram with two draggable circles; user shades unions, intersections, complements; the probability number recomputes under a uniform measure.",
+prereqs:[],forward:["0.2","0.3"]},
+
+{id:"0.2",m:0,title:"Conditional probability and independence",
+idea:"Conditioning on $B$ rescales probabilities; independence means $B$ tells you nothing about $A$.",
+formal:"$\\mathbb{P}(A\\mid B)=\\mathbb{P}(A\\cap B)/\\mathbb{P}B$ when $\\mathbb{P}B>0$. Independence: $A\\perp B$ iff $\\mathbb{P}(A\\cap B)=\\mathbb{P}A\\,\\mathbb{P}B$, equivalently $\\mathbb{P}(A\\mid B)=\\mathbb{P}A$.",
+visualise:"2x2 contingency widget: slide $\\mathbb{P}(A\\cap B)$, watch the conditional cells update, and a green light flips on when $\\mathbb{P}(A\\mid B)=\\mathbb{P}A$.",
+prereqs:["0.1"],forward:["0.6","0.7","0.10"]},
+
+{id:"0.3",m:0,title:"Random variables and distribution functions",
+idea:"A random variable is a numerical summary of an outcome; its distribution is encoded by a CDF (always), a PMF (discrete), or a PDF (continuous).",
+formal:"CDF $F_X(x)=\\mathbb{P}\\{X\\le x\\}$. Discrete PMF $f_X(x)=\\mathbb{P}\\{X=x\\}$. Continuous PDF $f_X$ with $F_X(x)=\\int_{-\\infty}^x f_X(u)\\,du$.",
+visualise:"Paired CDF/PMF or CDF/PDF chart; user picks a distribution from a dropdown, sliders update parameters, both panels redraw together.",
+widget:"dist-explorer",
+prereqs:["0.1"],forward:["0.4","0.5","0.6"]},
+
+{id:"0.4",m:0,title:"Joint, marginal, and conditional distributions",
+idea:"Read off marginals from a joint, and collapse one variable by conditioning.",
+formal:"Joint CDF $F_{X,Y}(x,y)=\\mathbb{P}\\{X\\le x,Y\\le y\\}$. Discrete marginal $f_X(x)=\\sum_y f_{X,Y}(x,y)$ and conditional $f_{X\\mid Y}(x\\mid y)=f_{X,Y}(x,y)/f_Y(y)$. Independence iff joint factorises.",
+visualise:"Heatmap of bivariate joint PMF; sliders for cell probabilities; clicking a row reveals the conditional distribution and its mean.",
+prereqs:["0.3"],forward:["0.6","0.8"],examRole:"QT2 §1.6"},
+
+{id:"0.5",m:0,title:"Bernoulli, Binomial, Normal",
+idea:"Three distributions to know cold; Bernoulli sums to Binomial, and the standardised sum converges to Normal by CLT.",
+formal:"Bernoulli$(p)$: $\\mathbb{E}X=p$, $\\mathrm{var}(X)=p(1-p)$. Binomial$(n,p)=\\sum_{i=1}^nB_i$: mean $np$, variance $np(1-p)$. Normal$(\\mu,\\sigma^2)$: density $\\frac{1}{\\sigma\\sqrt{2\\pi}}\\exp(-(x-\\mu)^2/2\\sigma^2)$. Standardisation: $(X-\\mu)/\\sigma\\sim N(0,1)$.",
+visualise:"Pick $n$ and $p$: Binomial PMF shown with the Normal approximation overlaid, plus a percentage-error indicator that shrinks as $n$ grows.",
+widget:"binomial-normal",
+prereqs:["0.3"],forward:["0.12","0.16"],examRole:"QT2 §1.1, §1.2"},
+
+{id:"0.6",m:0,title:"Expectation, variance, covariance, correlation",
+idea:"Scalar summaries of a distribution; covariance is signed, correlation is unitless and bounded.",
+formal:"$\\mathbb{E}X=\\sum xf_X(x)$ or $\\int xf_X(x)\\,dx$. $\\mathrm{var}(X)=\\mathbb{E}X^2-(\\mathbb{E}X)^2$. $\\mathrm{cov}(X,Y)=\\mathbb{E}XY-\\mathbb{E}X\\,\\mathbb{E}Y$. $\\mathrm{corr}(X,Y)=\\mathrm{cov}/(\\mathrm{sd}\\,\\mathrm{sd})\\in[-1,1]$.",
+visualise:"Bivariate scatter parameterised by $\\rho$; sliders for $\\rho$, marginal means and variances; live readout of computed sample moments.",
+prereqs:["0.4"],forward:["0.7","0.8","1.4"]},
+
+{id:"0.7",m:0,title:"Properties of expectation, variance, covariance",
+idea:"A small algebra of moments that you use constantly.",
+formal:"$\\mathbb{E}(aX+bY+c)=a\\mathbb{E}X+b\\mathbb{E}Y+c$. $\\mathrm{var}(aX+b)=a^2\\mathrm{var}(X)$. $\\mathrm{var}(X+Y)=\\mathrm{var}(X)+\\mathrm{var}(Y)+2\\mathrm{cov}(X,Y)$. $\\mathrm{cov}$ is bilinear, $\\mathrm{cov}(X,X)=\\mathrm{var}(X)$.",
+derivation:"$\\mathrm{var}(X+Y)=\\mathbb{E}[(X+Y)-\\mathbb{E}(X+Y)]^2=\\mathbb{E}[(X-\\mathbb{E}X)+(Y-\\mathbb{E}Y)]^2$. Expand: $\\mathbb{E}(X-\\mathbb{E}X)^2+\\mathbb{E}(Y-\\mathbb{E}Y)^2+2\\mathbb{E}(X-\\mathbb{E}X)(Y-\\mathbb{E}Y)$, which equals $\\mathrm{var}(X)+\\mathrm{var}(Y)+2\\mathrm{cov}(X,Y)$. Linearity of $\\mathbb{E}$ comes from linearity of integration; bilinearity of $\\mathrm{cov}$ from expanding products.",
+intuition:"Expand the bracket, take expectations, recombine using definitions. Mastery of this loop is the entire content of the slide-1 advice that you should master $\\mathbb{E},\\mathrm{var},\\mathrm{cov}$.",
+visualise:"Moment calculator: define $W=aX+bY+c$ for chosen distributions and watch the formula expand symbolically alongside a numeric Monte Carlo check.",
+prereqs:["0.6"],forward:["0.8","0.9","1.3","1.7","2.2","2.7","2.14","3.5","3.7","3.8","4.5"]},
+
+{id:"0.8",m:0,title:"Conditional expectation, the CEF, and its properties",
+idea:"$\\mathbb{E}[Y\\mid X]$ is the best mean-square predictor of $Y$ from $X$. Everything in regression is an approximation to it.",
+formal:"$\\mathbb{E}[Y\\mid X=x]=\\int y f_{Y\\mid X}(y\\mid x)\\,dy$. (i) Linearity. (ii) Law of Iterated Expectations $\\mathbb{E}[\\mathbb{E}[Y\\mid X]]=\\mathbb{E}Y$. (iii) Conditioning rule $\\mathbb{E}[g(X)Y\\mid X]=g(X)\\mathbb{E}[Y\\mid X]$. (iv) $X\\perp Y\\Rightarrow \\mathbb{E}[Y\\mid X]=\\mathbb{E}Y$.",
+derivation:"<strong>LIE.</strong> With joint density $p(y,x)=q(y\\mid x)r(x)$: $\\mathbb{E}Y=\\int\\int y\\,p(y,x)\\,dy\\,dx=\\int r(x)\\Big[\\int y\\,q(y\\mid x)\\,dy\\Big]dx=\\int r(x)\\mathbb{E}[Y\\mid X=x]\\,dx=\\mathbb{E}[\\mathbb{E}[Y\\mid X]]$.<br><br><strong>Conditioning rule.</strong> $\\mathbb{E}[g(X)Y\\mid X=x]=\\int yg(x)q(y\\mid x)\\,dy=g(x)\\int yq(y\\mid x)\\,dy=g(x)\\mathbb{E}[Y\\mid X=x]$.<br><br><strong>CEF as MSE-minimiser.</strong> Let $e=Y-\\mathbb{E}[Y\\mid X]$ and $g(X)=m(X)-\\mathbb{E}[Y\\mid X]$. Then $\\mathbb{E}[Y-m(X)]^2=\\mathbb{E}e^2+\\mathbb{E}g^2-2\\mathbb{E}[eg]$. The cross term: $\\mathbb{E}[eg]=\\mathbb{E}[\\mathbb{E}[eg\\mid X]]=\\mathbb{E}[g\\,\\mathbb{E}[e\\mid X]]=\\mathbb{E}[g\\cdot 0]=0$. So $\\mathbb{E}[Y-m(X)]^2=\\mathbb{E}e^2+\\mathbb{E}g^2\\ge\\mathbb{E}e^2$, equality iff $m(X)=\\mathbb{E}[Y\\mid X]$.",
+intuition:"LIE: take expectations in any order. Conditioning rule: known-given-$X$ pulls out. MSE-minimiser is a Pythagorean decomposition; any deviation from the CEF adds an orthogonal extra error.",
+visualise:"Heatmap with a draggable $x$-line that highlights the conditional slice; side panel plots $\\mathbb{E}[Y\\mid X=x]$ as $x$ moves.",
+prereqs:["0.4","0.6"],forward:["1.4","1.5","4.7"],examRole:"QT1 §1.5"},
+
+{id:"0.9",m:0,title:"Sample estimators",
+idea:"Data-based analogues of population moments; Bessel corrections preserve unbiasedness.",
+formal:"$\\overline{X}_n=\\frac{1}{n}\\sum X_i$. $s_{n,X}^2=\\frac{1}{n-1}\\sum(X_i-\\overline X_n)^2$. Naive variance $\\hat\\sigma_{n,X}^2=\\frac{1}{n}\\sum(X_i-\\overline X_n)^2$. $s_{n,XY}=\\frac{1}{n-1}\\sum(X_i-\\overline X_n)(Y_i-\\overline Y_n)$. $\\hat{\\mathrm{corr}}=s_{n,XY}/(s_{n,X}s_{n,Y})$.",
+visualise:"Bootstrap simulator: pick $n$ and a distribution; the widget draws $B$ samples and overlays the histogram of $\\overline X_n$ with the theoretical sampling distribution.",
+prereqs:["0.6","0.7"],forward:["0.10","0.13","1.6","4.3"]},
+
+{id:"0.10",m:0,title:"Convergence: in probability and in distribution",
+idea:"Two ways for a sequence of random variables to settle down. Probability convergence pins values; distribution convergence pins shapes.",
+formal:"$X_n\\to^p X$ iff $\\mathbb{P}(|X_n-X|>\\varepsilon)\\to0$ for every $\\varepsilon>0$. $X_n\\to^d X$ iff $F_{X_n}\\to F_X$ at continuity points. <strong>Continuous Mapping</strong>: $g$ continuous, $X_n\\to^p X\\Rightarrow g(X_n)\\to^p g(X)$; same for $\\to^d$. <strong>Slutsky</strong>: $X_n\\to^d X$ and $Y_n\\to^p c$ then $X_n+Y_n\\to^d X+c$ and $X_n Y_n\\to^d cX$.",
+visualise:"Side-by-side panels: probability panel where the trajectory tightens around a constant; distribution panel where the histogram approaches a Normal but individual draws keep moving.",
+prereqs:["0.6","0.9"],forward:["0.11","0.12","0.13","1.7","4.1"]},
+
+{id:"0.11",m:0,title:"Law of Large Numbers",
+idea:"Averages of iid draws converge to the population mean.",
+formal:"$\\{X_i\\}$ iid, $\\mathbb{E}X_i=\\mu$, $\\mathrm{var}(X_i)<\\infty$. Then $\\overline X_n\\to^p \\mu$.",
+intuition:"The variance of the sample mean is $\\sigma^2/n$, which goes to zero; Chebyshev gives the probability bound. Each datapoint is a noisy report of $\\mu$; averaging cancels the noise.",
+visualise:"Animated running mean as $n$ grows from 1 to 10,000; user picks the underlying distribution; reference line at $\\mu$.",
+prereqs:["0.10"],forward:["0.13","1.7","4.6"]},
+
+{id:"0.12",m:0,title:"Central Limit Theorem",
+idea:"Standardised sample means are approximately Normal regardless of the underlying distribution (subject to finite variance).",
+formal:"$\\{X_i\\}$ iid, $\\mathbb{E}X_i=\\mu$, $\\mathrm{var}(X_i)=\\sigma^2<\\infty$. Then $Z_n=\\frac{\\overline X_n-\\mu}{\\sqrt{\\sigma^2/n}}\\to^d N(0,1)$.",
+intuition:"Deviations of individual draws from $\\mu$ accumulate; the standardisation rescales the accumulation so the distribution shape stabilises around the bell curve. Surprising in its universality.",
+visualise:"Build-your-own CLT: pick a wildly skewed source distribution; the widget plots histograms of $\\overline X_n$ for $n=2,5,30,200$ with a Normal density overlaid.",
+widget:"clt-sim",
+prereqs:["0.5","0.10"],forward:["0.13","0.14","1.7","2.1","3.14"],examRole:"QT2 §1.3, §1.4"},
+
+{id:"0.13",m:0,title:"Estimator properties: bias, variance, MSE, consistency, asymptotic normality",
+idea:"A vocabulary for ranking estimators.",
+formal:"Bias $b(\\hat\\theta_n)=\\mathbb{E}\\hat\\theta_n-\\theta$. MSE $=\\mathrm{var}(\\hat\\theta_n)+b^2$. Consistency $\\hat\\theta_n\\to^p\\theta$. Asymptotic normality $\\sqrt n(\\hat\\theta_n-\\theta)\\to^d N(0,V)$.",
+visualise:"Dartboard widget: each dot is one simulated estimate; user toggles three competing estimators and reads off bias, sd, RMSE.",
+prereqs:["0.10","0.11","0.12"],forward:["0.14","0.15","1.7","2.1","3.14","4.7"]},
+
+{id:"0.14",m:0,title:"Hypothesis testing skeleton",
+idea:"The seven-line ritual; everything in QE inference plugs into it.",
+formal:"$H_0$ vs $H_1$, test statistic $T$, distribution under $H_0$, decision rule (reject if $|T|>c_\\alpha$), critical value $c_\\alpha$, conclusion. Type I $\\alpha=\\mathbb{P}_{H_0}(\\text{reject})$. Type II $\\beta=\\mathbb{P}_{H_1}(\\text{fail to reject})$. Power $=1-\\beta$.",
+visualise:"Distribution-under-the-null with shaded rejection region; sliders for $\\alpha$, true $\\theta$, $n$; a power curve in the corner that updates as the user moves the true value.",
+prereqs:["0.12","0.13"],forward:["0.15","0.16","2.4","2.7","3.15","3.16","4.11","4.12","4.13","4.18","4.19","4.21"],examRole:"Implicit in essentially every Part B sub-question"},
+
+{id:"0.15",m:0,title:"Standard errors, confidence intervals, p-values",
+idea:"Three vehicles for reporting estimator uncertainty; CIs and tests are duals.",
+formal:"$\\mathrm{se}(\\hat\\theta)$ is an estimator of $\\mathrm{sd}(\\hat\\theta)$. Two-sided $(1-\\alpha)$ CI: $\\mathcal{C}_n=[\\hat\\theta\\pm c_\\alpha\\,\\mathrm{se}(\\hat\\theta)]$. p-value $p=\\mathbb{P}_{H_0}(|T|\\ge|t_{\\mathrm{obs}}|)=2\\Phi(-|t_{\\mathrm{obs}}|)$ for two-sided.",
+derivation:"<strong>CI by test inversion.</strong> $\\mathcal{C}=\\{b:|t(b)|\\le c_\\alpha\\}=\\{b:|(\\hat\\theta-b)/\\mathrm{se}(\\hat\\theta)|\\le c_\\alpha\\}$. Solve: $-c_\\alpha\\le(\\hat\\theta-b)/\\mathrm{se}\\le c_\\alpha$ becomes $\\hat\\theta-c_\\alpha\\,\\mathrm{se}\\le b\\le\\hat\\theta+c_\\alpha\\,\\mathrm{se}$. Coverage: in repeated samples $\\mathcal{C}$ contains the true $\\theta$ with probability $1-\\alpha$.",
+intuition:"A CI is the set of nulls you cannot reject. The shaded tail of the test statistic is the p-value; if data and null disagree, the tail is small.",
+visualise:"Replication panel: each replication draws a CI; coverage counter approaches $1-\\alpha$. Separate p-value visualiser shades the area beyond the observed $t$.",
+prereqs:["0.13","0.14"],forward:["0.16","2.5","2.6"]},
+
+{id:"0.16",m:0,title:"Two-sample comparisons",
+idea:"Comparing means or proportions across one or two samples; bedrock for RCT analysis.",
+formal:"<strong>Mean</strong>: $t(\\mu_0)=(\\overline X_n-\\mu_0)/(s_{n,X}/\\sqrt n)$. <strong>Diff of means, one sample</strong>: $\\overline D_n=\\overline X_n-\\overline Y_n$, $\\mathrm{se}=s_{n,D}/\\sqrt n$. <strong>Diff of means, two indep samples</strong>: $\\hat\\delta=\\overline X_{1,n_1}-\\overline X_{2,n_2}$, $\\mathrm{se}=\\sqrt{s_{1,n_1}^2/n_1+s_{2,n_2}^2/n_2}$. <strong>Proportion</strong>: $\\mathrm{se}(\\hat p_n)=\\sqrt{\\hat p(1-\\hat p)/n}$. <strong>Diff of proportions, two samples (pooled)</strong>: $\\hat\\pi=(n_1\\hat p_1+n_2\\hat p_2)/(n_1+n_2)$, $\\mathrm{se}=\\sqrt{\\hat\\pi(1-\\hat\\pi)(1/n_1+1/n_2)}$.",
+visualise:"Compare two groups: drag means and variances of two normal samples; watch $\\hat\\delta$, $\\mathrm{se}$, $t$, and $p$ update.",
+prereqs:["0.14","0.15"],forward:["3.2","3.5"]},
+
+/* MODULE 1 */
+{id:"1.1",m:1,title:"Two kinds of question: descriptive vs causal",
+idea:"Distinguish 'best prediction of $Y$ from $X$' from 'what happens to $Y$ if we manipulate $X$'.",
+formal:"Descriptive question concerns the joint distribution. Causal question concerns a counterfactual change in $X$ holding all else constant. Causal model $Y=y(x_1,\\dots,x_m)$; under linearity $Y=\\beta_0+\\beta_1X_1+\\dots+\\beta_mX_m$ with $\\beta_l=\\partial Y/\\partial X_l$.",
+visualise:"Parallel-panel widget: the same scatter shown twice, once with the best-fit line (descriptive) and once with a 'what-if intervention' arrow displacing $X$ and asking what happens to $Y$.",
+prereqs:["0.6","0.8"],forward:["1.2","1.5","1.13","1.14"],examRole:"QT1 §1.1, §1.5, §4.1"},
+
+{id:"1.2",m:1,title:"Causal model",
+idea:"A structural equation $Y=\\beta_0+\\beta_1 X+u$ where $u$ collects every other determinant of $Y$.",
+formal:"$\\beta_1=\\partial Y/\\partial X$ holding all else constant; $u$ is real economic content (residual variation due to unmodelled determinants), not a 'noise term'.",
+visualise:"DAG playground: user toggles arrows from candidate confounders into $X$ and $Y$; surviving causal paths are highlighted.",
+prereqs:["1.1"],forward:["1.4","1.10","1.12","1.13","3.1"]},
+
+{id:"1.3",m:1,title:"Population linear regression",
+idea:"Best linear predictor of $Y$ given $X$ in mean-square sense, with no causal assumption.",
+formal:"$(\\rho_0,\\rho_1)=\\arg\\min_{b_0,b_1}\\mathbb{E}(Y-b_0-b_1X)^2$. Implies normal equations $\\mathbb{E}e=0$, $\\mathbb{E}Xe=0$ where $e=Y-\\rho_0-\\rho_1X$.",
+derivation:"Define $C(b_0,b_1)=\\mathbb{E}(Y-b_0-b_1X)^2$. FOCs: $\\partial C/\\partial b_0=-2\\mathbb{E}(Y-b_0-b_1X)=0$; $\\partial C/\\partial b_1=-2\\mathbb{E}X(Y-b_0-b_1X)=0$. The first gives $\\rho_0=\\mathbb{E}Y-\\rho_1\\mathbb{E}X$. Substitute into the second: $\\mathbb{E}X[(Y-\\mathbb{E}Y)-\\rho_1(X-\\mathbb{E}X)]=0\\Rightarrow \\mathbb{E}X(Y-\\mathbb{E}Y)-\\rho_1\\mathbb{E}X(X-\\mathbb{E}X)=0$. Recognise $\\mathbb{E}X(Y-\\mathbb{E}Y)=\\mathrm{cov}(X,Y)$ and $\\mathbb{E}X(X-\\mathbb{E}X)=\\mathrm{var}(X)$, so $$\\boxed{\\rho_1=\\frac{\\mathrm{cov}(X,Y)}{\\mathrm{var}(X)},\\quad \\rho_0=\\mathbb{E}Y-\\rho_1\\mathbb{E}X.}$$ Uniqueness: any $(\\gamma_0,\\gamma_1,v)$ with $\\mathbb{E}v=\\mathbb{E}Xv=0$ would satisfy the same normal equations, which have a unique solution.",
+intuition:"Regression slope is 'how $X$ and $Y$ co-move' divided by 'how much $X$ varies'. The intercept anchors the line through the point of means.",
+visualise:"Draggable line over a scatter with a live readout of $\\mathbb{E}(Y-b_0-b_1X)^2$; a 'snap to optimum' button.",
+widget:"ols-line",
+prereqs:["0.6","0.7","0.8"],forward:["1.4","1.6","1.9","1.10"],examRole:"QT1 §1.1, QT2 §2.1"},
+
+{id:"1.4",m:1,title:"Orthogonality (OR) and mean independence (MI)",
+idea:"When does the causal $\\beta_1$ coincide with the population regression $\\rho_1$?",
+formal:"OR: $\\mathbb{E}u=0$ and $\\mathbb{E}Xu=0$. MI: $\\mathbb{E}[u\\mid X]=0$. MI implies OR (apply LIE to $Xu$); the converse fails in general.",
+derivation:"<strong>Causal = regression under OR.</strong> Substitute the causal model into the normal equations: $\\mathbb{E}(Y-\\beta_0-\\beta_1X)=\\mathbb{E}u=0$ and $\\mathbb{E}X(Y-\\beta_0-\\beta_1X)=\\mathbb{E}Xu=0$. Both hold by OR. Uniqueness of normal equations gives $(\\beta_0,\\beta_1)=(\\rho_0,\\rho_1)$.<br><br><strong>MI implies OR.</strong> $\\mathbb{E}u=\\mathbb{E}[\\mathbb{E}[u\\mid X]]=0$ by LIE; $\\mathbb{E}Xu=\\mathbb{E}[X\\,\\mathbb{E}[u\\mid X]]=\\mathbb{E}[X\\cdot 0]=0$ by conditioning rule.",
+intuition:"OR is moment-form: 'unmodelled part of $Y$ is uncorrelated with $X$'. MI is conditional: 'no slice of $X$ has a systematic tilt in $u$'. OR suffices for OLS consistency on the structural slope; MI suffices for the CEF to be linear.",
+visualise:"Satisfaction grid: three checkboxes (OR, MI, full independence); user constructs a process violating one without the others.",
+prereqs:["1.2","1.3","0.7"],forward:["1.5","1.7","1.10","3.1","3.2","4.6"],examRole:"QT1 §1.1, §1.2, QT3 §1"},
+
+{id:"1.5",m:1,title:"CEF, best linear prediction, and when regression is causal",
+idea:"If the CEF is linear, the population regression equals the CEF; combined with OR, the regression equals the causal model.",
+formal:"$\\mathbb{E}[Y\\mid X]=\\arg\\min_m\\mathbb{E}[Y-m(X)]^2$ (proved in 0.8). If $\\mathbb{E}[Y\\mid X]=a+bX$ is linear, then $a+bX$ is also the best <strong>linear</strong> predictor and $(a,b)=(\\rho_0,\\rho_1)$.",
+derivation:"<strong>MI implies linear CEF.</strong> From $Y=\\beta_0+\\beta_1X+u$, apply conditional expectation: $\\mathbb{E}[Y\\mid X]=\\beta_0+\\beta_1X+\\mathbb{E}[u\\mid X]$. Under MI, $\\mathbb{E}[u\\mid X]=0$, so $\\mathbb{E}[Y\\mid X]=\\beta_0+\\beta_1X$.<br><br><strong>CEF decomposition.</strong> Define $e=Y-\\mathbb{E}[Y\\mid X]$. By LIE $\\mathbb{E}e=0$. By conditioning rule and LIE: $\\mathbb{E}Xe=\\mathbb{E}[\\mathbb{E}[Xe\\mid X]]=\\mathbb{E}[X\\,\\mathbb{E}[e\\mid X]]=\\mathbb{E}[X\\cdot 0]=0$. So $e$ satisfies the same normal equations as the regression residual.",
+intuition:"CEF is the gold standard predictor; the regression is its best linear approximation. They coincide iff the CEF is linear.",
+visualise:"Stacked plots: true CEF, best linear fit, gap between them; user picks linear vs nonlinear underlying data.",
+prereqs:["0.8","1.4"],forward:["2.10","2.11","3.2"],examRole:"QT1 §1.5"},
+
+{id:"1.6",m:1,title:"Sample regression: OLS estimators",
+idea:"Empirical analogue of the population minimisation.",
+formal:"$(\\hat\\beta_0,\\hat\\beta_1)=\\arg\\min\\hat{\\mathbb{E}}(Y-b_0-b_1X)^2$. Solutions: $\\hat\\beta_1=\\hat{\\mathrm{cov}}(X,Y)/\\hat{\\mathrm{var}}(X)$, $\\hat\\beta_0=\\overline Y_n-\\hat\\beta_1\\overline X_n$. FOCs: $\\sum\\hat u_i=0$ and $\\sum X_i\\hat u_i=0$.",
+derivation:"$\\hat{\\mathbb{E}}(Y-b_0-b_1X)^2=\\frac{1}{n}\\sum(Y_i-b_0-b_1X_i)^2$. Differentiating: $-\\frac{2}{n}\\sum(Y_i-\\hat\\beta_0-\\hat\\beta_1X_i)=0$ (so $\\sum\\hat u_i=0$) and $-\\frac{2}{n}\\sum X_i(Y_i-\\hat\\beta_0-\\hat\\beta_1X_i)=0$ (so $\\sum X_i\\hat u_i=0$). Solving these two equations as in 1.3 gives the closed-form solutions.",
+intuition:"Replace population moments with sample analogues; the entire population-regression algebra carries through line by line.",
+visualise:"Sample scatter: user adds or removes points and watches $\\hat\\beta_1$ jump; an 'FOC residual sum' indicator that always reads zero.",
+prereqs:["0.9","1.3"],forward:["1.7","1.8","1.9","1.14","2.1","2.12","2.14"],examRole:"QT2 §2.1, §2.2"},
+
+{id:"1.7",m:1,title:"Consistency and asymptotic normality of OLS",
+idea:"With iid sampling, OLS is consistent for population regression coefficients; under finite kurtosis, asymptotically normal.",
+derivation:"<strong>Consistency.</strong> $\\hat\\beta_1=\\hat{\\mathrm{cov}}(X,Y)/\\hat{\\mathrm{var}}(X)$. By LLN, numerator $\\to^p\\mathrm{cov}(X,Y)$, denominator $\\to^p\\mathrm{var}(X)$. By Continuous Mapping, $\\hat\\beta_1\\to^p\\rho_1$. Under OR, $\\rho_1=\\beta_1$.<br><br><strong>Asymptotic normality.</strong> Substitute $Y_i=\\beta_0+\\beta_1X_i+u_i$ to get $\\hat\\beta_1-\\beta_1=\\hat{\\mathrm{cov}}(X,u)/\\hat{\\mathrm{var}}(X)$. Multiply by $\\sqrt n$: $\\sqrt n(\\hat\\beta_1-\\beta_1)=\\frac{n^{-1/2}\\sum(X_i-\\overline X)u_i}{n^{-1}\\sum(X_i-\\overline X)^2}$. Denominator $\\to^p\\sigma_X^2$. Numerator: $(X_i-\\mu_X)u_i$ are iid mean zero (by OR + LIE), variance $\\mathbb{E}(X-\\mu_X)^2u^2$. By CLT, numerator $\\to^d N(0,\\mathbb{E}(X-\\mu_X)^2u^2)$. By Slutsky: $$\\boxed{\\sqrt n(\\hat\\beta_1-\\beta_1)\\to^d N\\!\\Big(0,\\frac{\\mathbb{E}(X-\\mu_X)^2u^2}{[\\mathrm{var}(X)]^2}\\Big)=:N(0,\\omega_{\\beta_1}^2).}$$",
+intuition:"Each observation gives a noisy moment estimate; LLN tames denominators, CLT handles the numerator, Slutsky combines them. The $\\sqrt n$ scaling is exactly what makes the noise survive the limit.",
+visualise:"Replication panel: distribution of $\\hat\\beta_1$ shrinks toward $\\rho_1$ as $n$ grows and approaches a Normal shape.",
+prereqs:["0.11","0.12","1.4","1.6"],forward:["2.1","2.2","2.4","3.14","4.1","4.6"]},
+
+{id:"1.8",m:1,title:"Multiple regression mechanics",
+idea:"Same minimisation but with $k$ regressors; coefficients reinterpreted 'holding others constant'.",
+formal:"$Y=\\beta_0+\\beta_1X_1+\\dots+\\beta_kX_k+u$. Population: $k+1$ orthogonality conditions $\\mathbb{E}u=0$, $\\mathbb{E}X_lu=0$. Sample FOCs: $\\sum\\hat u_i=0$, $\\sum X_{l,i}\\hat u_i=0$.",
+visualise:"3D plane fit through a point cloud (two regressors); user rotates between marginal and partial perspectives.",
+prereqs:["1.6"],forward:["1.9","2.1","2.4","2.7","2.8","2.9","2.12","2.15"]},
+
+{id:"1.9",m:1,title:"Frisch-Waugh-Lovell theorem",
+idea:"A multiple-regression coefficient equals the simple-regression coefficient of the residualised regressor.",
+formal:"In $Y=\\beta_0+\\beta_1X_1+\\beta_2X_2+u$, let $\\tilde X_1=X_1-(\\pi_0+\\pi_2X_2)$ be the residual from regressing $X_1$ on $X_2$. Then $\\beta_1=\\mathrm{cov}(Y,\\tilde X_1)/\\mathrm{var}(\\tilde X_1)$.",
+derivation:"Auxiliary regression $X_1=\\pi_0+\\pi_2X_2+\\tilde X_1$ has $\\mathbb{E}\\tilde X_1=0$ and $\\mathbb{E}X_2\\tilde X_1=0$ by construction. Substitute into the structural equation: $$Y=\\beta_0+\\beta_1(\\pi_0+\\pi_2X_2+\\tilde X_1)+\\beta_2X_2+u=(\\beta_0+\\beta_1\\pi_0)+\\beta_1\\tilde X_1+(\\beta_2+\\beta_1\\pi_2)X_2+u.$$ Take covariance with $\\tilde X_1$: $$\\mathrm{cov}(Y,\\tilde X_1)=\\beta_1\\mathrm{var}(\\tilde X_1)+(\\beta_2+\\beta_1\\pi_2)\\underbrace{\\mathrm{cov}(X_2,\\tilde X_1)}_{=0}+\\underbrace{\\mathrm{cov}(u,\\tilde X_1)}_{=0\\text{ under OR}}.$$ Hence $\\boxed{\\beta_1=\\mathrm{cov}(Y,\\tilde X_1)/\\mathrm{var}(\\tilde X_1)}$.",
+intuition:"Strip out the influence of the other regressors from $X_1$; the leftover variation gives an unconfounded view of how $Y$ moves with $X_1$. This is what multiple regression does internally.",
+visualise:"Animated two-step regression: residualise $X_1$ on $X_2$, then regress $Y$ on $\\tilde X_1$; final slope identical to multiple regression.",
+prereqs:["1.6","1.8"],forward:["2.2","3.6","3.13"],examRole:"QT2 §2.5"},
+
+{id:"1.10",m:1,title:"Confounding and Omitted Variable Bias",
+idea:"Omitting a determinant of $Y$ correlated with $X$ contaminates $\\hat\\beta_1$.",
+formal:"Long causal model $Y=\\beta_0+\\beta_1X_1+\\beta_2X_2+u$. Short regression $Y=\\gamma_0+\\gamma_1X_1+e$.",
+derivation:"$\\gamma_1=\\mathrm{cov}(Y,X_1)/\\mathrm{var}(X_1)$. Substitute the long model: $$\\mathrm{cov}(Y,X_1)=\\mathrm{cov}(\\beta_0+\\beta_1X_1+\\beta_2X_2+u,X_1)=\\beta_1\\mathrm{var}(X_1)+\\beta_2\\mathrm{cov}(X_1,X_2)+\\underbrace{\\mathrm{cov}(u,X_1)}_{=0}.$$ Divide: $$\\boxed{\\gamma_1=\\beta_1+\\beta_2\\frac{\\mathrm{cov}(X_1,X_2)}{\\mathrm{var}(X_1)}=\\beta_1+\\beta_2\\pi_1,}$$ where $\\pi_1$ is the slope from regressing $X_2$ on $X_1$. Bias direction: $\\mathrm{sign}(\\beta_2)\\cdot\\mathrm{sign}(\\pi_1)$.",
+intuition:"Omitting $X_2$ shoves it into the error term, where it acts as a hidden confounder if it correlates with $X_1$. The short regression sees the combined effect and cannot disentangle.",
+visualise:"Bias forecaster with two sliders for $\\mathrm{sign}(\\beta_2)$ and $\\mathrm{sign}(\\pi_1)$; the bias arrow points up or down accordingly.",
+widget:"ovb-direction",
+prereqs:["1.4","1.8","1.9"],forward:["1.11","1.12","3.1","3.10"],examRole:"QT1 §1.4, QT3 §1"},
+
+{id:"1.11",m:1,title:"Proxy variables for omitted controls",
+idea:"When $X_2$ is unobserved but a proxy $W_2$ tracks it, including $W_2$ can restore consistency for $\\beta_1$.",
+formal:"Long $Y=\\beta_0+\\beta_1X_1+\\beta_2X_2+u$. Auxiliary $X_2=\\pi_0+\\pi_1X_1+\\pi_2W_2+v$ with $\\mathbb{E}v=\\mathbb{E}X_1v=\\mathbb{E}W_2v=0$.",
+derivation:"Substitute into the long model: $$Y=(\\beta_0+\\beta_2\\pi_0)+(\\beta_1+\\beta_2\\pi_1)X_1+\\beta_2\\pi_2W_2+(u+\\beta_2v)=:\\delta_0+\\delta_1X_1+\\delta_2W_2+\\eta.$$ Three conditions secure $\\delta_1=\\beta_1$ and OLS consistency: (i) $\\pi_2\\ne 0$; (ii) $\\mathrm{cov}(W_2,u)=0$ (so $\\mathrm{cov}(W_2,\\eta)=0$); (iii) $\\pi_1=0$ (so $\\delta_1=\\beta_1$ rather than $\\beta_1+\\beta_2\\pi_1$). Then OR holds for $\\eta$ and OLS is consistent.",
+intuition:"The proxy soaks up the variation in the unobserved confounder that would have biased $\\hat\\beta_1$. If conditions (i) to (iii) hold, the part of $X_2$ left over is uncorrelated with $X_1$ and harmless.",
+visualise:"Monte Carlo panel: toggle each proxy condition on/off and watch the bias shrink or persist.",
+prereqs:["1.10"],forward:["3.10"],examRole:"QT3 §6"},
+
+{id:"1.12",m:1,title:"Bad controls",
+idea:"Post-treatment variables that lie on the causal pathway should not be included.",
+formal:"With a mediator $M$ on $X\\to M\\to Y$, conditioning on $M$ blocks part of the effect of $X$ on $Y$ and creates a residual correlated with $M$, breaking OR.",
+visualise:"DAG widget where $X\\to M\\to Y$; toggling 'control for $M$' recolours the surviving causal path; a counter shows the implied bias on $\\hat\\beta_X$.",
+prereqs:["1.2","1.10"],forward:["3.6","3.17"],examRole:"QT1 §2.5"},
+
+{id:"1.13",m:1,title:"The 'regression recipe'",
+idea:"Duffy's checklist for going from causal model to regression and assessing whether $\\hat\\beta_1$ is causal.",
+formal:"(a) Write the causal model. (b) List determinants in $u$. (c) For each, ask if it is correlated with $X$. (d) Include / proxy / instrument as needed. (e) Check OR. (f) Interpret accordingly.",
+visualise:"Checklist UI applied to any worked example; each tick or fail flags the corresponding diagnostic.",
+prereqs:["1.1","1.2","1.3","1.4","1.5","1.6","1.7","1.8","1.9","1.10","1.11","1.12"],forward:["1.14","3.10","3.17","3.18"],examRole:"QT1 §1.2, §4.1, §4.3"},
+
+{id:"1.14",m:1,title:"Descriptive interpretation language",
+idea:"How to write a coefficient interpretation when causal interpretation is not justified.",
+formal:"Template: 'On average, an [object's] having one unit higher [X] is <strong>associated with</strong> [coefficient] [higher/lower] [Y], holding each other regressor constant.' Avoid 'causes' without OR.",
+visualise:"Coefficient interpreter: user enters variable names, units, sign, magnitude; the widget emits a correctly worded sentence.",
+prereqs:["1.6","1.13"],forward:[],examRole:"QT1 §1.3"},
+
+/* MODULE 2 */
+{id:"2.1",m:2,title:"Sampling distribution of OLS",
+idea:"$\\hat\\beta$ varies across hypothetical samples; the variance of that distribution is what standard errors estimate.",
+formal:"Under iid, OR, finite kurtosis: $\\sqrt n(\\hat\\beta_l-\\beta_l)\\to^d N(0,\\omega_{\\beta_l}^2)$.",
+derivation:"See 1.7 (full derivation via LLN, CLT, Slutsky).",
+visualise:"Replication histogram: each replication of size $n$ yields one $\\hat\\beta_l$; histogram approaches Normal as $n$ grows.",
+prereqs:["0.12","0.13","1.7"],forward:["2.2","2.3","2.4","2.5","2.6","2.15","3.14"]},
+
+{id:"2.2",m:2,title:"Homoskedastic vs heteroskedasticity-robust SEs",
+idea:"$\\mathrm{var}(u\\mid X)$ may depend on $X$; the homoskedastic formula is wrong if it does, the robust formula is always right.",
+formal:"Homoskedastic: $\\mathrm{se}(\\hat\\beta_l)=n^{-1/2}\\sqrt{\\hat{\\mathrm{var}}(\\hat u)/\\hat{\\mathrm{var}}(\\hat{\\tilde X}_l)}$. Heteroskedasticity-robust: $\\mathrm{se}(\\hat\\beta_l)=n^{-1/2}\\sqrt{\\hat{\\mathrm{var}}(\\hat{\\tilde X}_l\\hat u)/[\\hat{\\mathrm{var}}(\\hat{\\tilde X}_l)]^2}$.",
+derivation:"From 1.7, $\\omega_{\\beta_1}^2=\\mathbb{E}(X-\\mu_X)^2u^2/[\\mathrm{var}(X)]^2$. Under homoskedasticity $\\mathbb{E}[u^2\\mid X]=\\sigma_u^2$, so by LIE: $\\mathbb{E}(X-\\mu_X)^2u^2=\\mathbb{E}[(X-\\mu_X)^2\\mathbb{E}[u^2\\mid X]]=\\sigma_u^2\\mathrm{var}(X)$. Hence $\\omega_{\\beta_1}^2=\\sigma_u^2/\\mathrm{var}(X)$. Multivariate generalisation: by FWL, $\\hat\\beta_l=\\hat{\\mathrm{cov}}(Y,\\tilde X_l)/\\hat{\\mathrm{var}}(\\tilde X_l)$, so the formula carries over with $X$ replaced by $\\tilde X_l$.",
+intuition:"Homoskedastic formula assumes a single noise level $\\sigma_u^2$ everywhere. Robust formula keeps $u_i^2$ inside the average so the SE correctly weights each observation's contribution.",
+visualise:"Scatter where the user adds fanning-out variance; two SE bars (homo, robust) update; coverage tracker shows which delivers nominal coverage.",
+prereqs:["1.6","1.9","2.1"],forward:["2.3","2.15","3.6","3.14"],examRole:"QT2 §6"},
+
+{id:"2.3",m:2,title:"Heteroskedasticity: definition and consequences",
+idea:"$\\mathrm{var}(u\\mid X)$ depends on $X$; OLS is still consistent but inefficient and naive SEs are wrong.",
+formal:"Definition; consistency unaffected (proof via 1.7 still goes through under OR alone); homoskedastic SE under- or over-estimates the true variance, biasing t-stats.",
+visualise:"Simulation toggling homoskedastic and heteroskedastic regimes; rejection rate of naive vs robust test displayed.",
+prereqs:["2.2"],forward:[],examRole:"QT2 §6.1"},
+
+{id:"2.4",m:2,title:"t-tests on a single coefficient",
+idea:"Test $H_0:\\beta_l=c$ via $t=(\\hat\\beta_l-c)/\\mathrm{se}(\\hat\\beta_l)$.",
+formal:"Under $H_0$, $t\\to^d N(0,1)$. Two-sided: reject if $|t|>c_\\alpha$ ($c_{.05}=1.96$, $c_{.01}=2.576$). One-sided: reject in the relevant tail ($c_{.05}=1.645$).",
+derivation:"<strong>Two-sided.</strong> Under $H_0$, $\\beta_l=c$, so $t=\\sqrt n(\\hat\\beta_l-\\beta_l)/\\hat\\omega_{\\beta_l}$. Numerator $\\to^d N(0,\\omega^2)$ by 1.7; denominator $\\to^p\\omega$ by SE consistency. By Slutsky, $t\\to^d N(0,1)$.<br><br><strong>One-sided.</strong> Same algebra; under $H_1:\\beta_l>c$ the deterministic part $\\sqrt n(\\beta_l-c)/\\hat\\omega\\to+\\infty$, giving power against the alternative.",
+intuition:"$t$ counts standard errors between $\\hat\\beta_l$ and the null. Under the null the count is approximately standard normal.",
+visualise:"Density-with-shaded-tails diagram; user toggles one-sided and two-sided; rejection region and p-value update.",
+prereqs:["0.14","2.1","2.2"],forward:["2.5","2.6","2.7","2.11"],examRole:"QT2 §3.1, §3.5, §3.6"},
+
+{id:"2.5",m:2,title:"Confidence intervals for a coefficient",
+idea:"Dual of the t-test; the set of null values not rejected.",
+formal:"$\\mathcal{C}_n=\\{b:|t(b)|\\le c_\\alpha\\}=[\\hat\\beta_l\\pm c_\\alpha\\,\\mathrm{se}(\\hat\\beta_l)]$, with coverage $\\to 1-\\alpha$.",
+derivation:"See 0.15 (full inversion).",
+visualise:"Replication panel: many CIs; coverage counter approaches $1-\\alpha$.",
+prereqs:["2.4"],forward:["2.11"],examRole:"QT2 §3.3"},
+
+{id:"2.6",m:2,title:"p-values",
+idea:"Probability under the null of observing something at least as extreme as the data.",
+formal:"Two-sided: $p=2\\Phi(-|t_{\\mathrm{obs}}|)$. One-sided: $p=\\Phi(-t_{\\mathrm{obs}})$ for upper-tail.",
+derivation:"By definition of the null distribution $T\\to^d N(0,1)$, the area in the appropriate tail is read from $\\Phi$. The p-value is the smallest $\\alpha$ at which $H_0$ would be rejected: $\\alpha\\le p\\Leftrightarrow c_\\alpha\\le|t_{\\mathrm{obs}}|$.",
+visualise:"Shaded-tail widget; user types $t_{\\mathrm{obs}}$, p-value updates instantly.",
+prereqs:["2.4"],forward:[],examRole:"QT2 §3.2"},
+
+{id:"2.7",m:2,title:"F-tests for joint hypotheses",
+idea:"Test $q$ linear restrictions simultaneously by comparing fit of restricted and unrestricted models.",
+formal:"$F=\\frac{(SSR_r-SSR_u)/q}{SSR_u/(n-k-1)}$. Under $H_0$, $F\\to^d F_{q,\\infty}$. Equivalently $F=\\frac{(R^2_u-R^2_r)/q}{(1-R^2_u)/(n-k-1)}$.",
+derivation:"Imposing $q$ restrictions cannot decrease $SSR$. Under $H_0$ the increase is statistical noise; the scaled difference is asymptotically $\\chi^2_q/q$, equal to $F_{q,\\infty}$ in the limit. Combined with $SSR_u/(n-k-1)\\to^p\\sigma_u^2$, the statistic is pivotal. Equivalence to $R^2$ form: $SSR=TSS(1-R^2)$.",
+intuition:"How much fit do you sacrifice imposing the restrictions? Big sacrifice $\\Rightarrow$ restrictions inconsistent with data $\\Rightarrow$ reject.",
+visualise:"Restricted vs unrestricted regression panels; SSR values feed into a live F formula; user adjusts $q$ and watches the critical value.",
+prereqs:["2.4","1.8","2.12"],forward:["3.15","3.16","4.11","4.12","4.13"],examRole:"QT2 §3.4, §3.7"},
+
+{id:"2.8",m:2,title:"Perfect multicollinearity and the dummy variable trap",
+idea:"When one regressor is a perfect linear combination of others, OLS is not unique; software drops a column.",
+formal:"Rank deficiency of the design matrix; with $K$ exhaustive category dummies and an intercept, the dummies sum to the intercept column, so include only $K-1$.",
+visualise:"Design-matrix viewer that highlights linearly dependent columns in red; toggle the intercept on or off.",
+prereqs:["1.8"],forward:["2.9"],examRole:"QT1 §3.4, QT2 §6"},
+
+{id:"2.9",m:2,title:"Dummy variables and interactions",
+idea:"Encode categories with $0/1$ regressors; interactions let the slope of one regressor depend on another.",
+formal:"For $D\\in\\{0,1\\}$ and continuous $X$: $\\beta_D$ is the conditional mean shift. With interaction $\\beta_3 DX$: $\\partial Y/\\partial X=\\beta_2+\\beta_3 D$. Test $H_0:\\beta_3=0$ to test whether the slope differs across groups.",
+visualise:"Two-panel scatter (D=0, D=1) with one regression line per group; switching to 'interaction model' shows two slopes; switching off shows parallel lines.",
+prereqs:["1.8","2.4","2.8"],forward:["2.10","2.11"],examRole:"QT1 §3.1 to §3.3, QT2 §5"},
+
+{id:"2.10",m:2,title:"Polynomials, logs, and elasticities",
+idea:"Nonlinear specifications stay linear in parameters so OLS still applies.",
+formal:"Quadratic $Y=\\beta_0+\\beta_1X+\\beta_2X^2+u$. Log-log $\\ln Y=\\beta_0+\\beta_1\\ln X+u$ (elasticity $\\beta_1$). Log-linear $\\ln Y=\\beta_0+\\beta_1X+u$ (semi-elasticity). Linear-log $Y=\\beta_0+\\beta_1\\ln X+u$.",
+visualise:"Specification dropdown over a fixed scatter; live formula for the marginal effect at a chosen $X$.",
+prereqs:["1.8","2.9"],forward:["2.11"],examRole:"QT2 §5.1, §5.4"},
+
+{id:"2.11",m:2,title:"Marginal effects in nonlinear models",
+idea:"In any nonlinear-in-$X$ specification the partial derivative depends on $X$ (and other regressors).",
+derivation:"For $Y=\\beta_0+\\beta_1X+\\beta_2X^2+u$: $\\partial Y/\\partial X=\\beta_1+2\\beta_2X$. Estimated effect at $X=x$: $\\hat\\beta_1+2\\hat\\beta_2x$. Test $H_0:\\beta_1+2\\beta_2x=b$ uses $$t=\\frac{\\hat\\beta_1+2\\hat\\beta_2x-b}{\\mathrm{se}(\\hat\\beta_1+2\\hat\\beta_2x)},\\quad\\mathrm{var}(\\hat\\beta_1+2\\hat\\beta_2x)=\\mathrm{var}(\\hat\\beta_1)+4x^2\\mathrm{var}(\\hat\\beta_2)+4x\\,\\mathrm{cov}(\\hat\\beta_1,\\hat\\beta_2).$$ CI for the marginal effect at $x$: $\\hat\\beta_1+2\\hat\\beta_2x\\pm c_\\alpha\\,\\mathrm{se}(\\hat\\beta_1+2\\hat\\beta_2x)$.",
+intuition:"In a quadratic the slope tilts with $X$; in an interaction it tilts with the other variable. Always evaluate at a meaningful value (mean, percentile, or specific case).",
+visualise:"At-a-point evaluator: pick $x^*$, the widget reports the marginal effect, its SE, and a 95% CI.",
+prereqs:["2.10","2.7"],forward:[],examRole:"QT2 §5.2, QT1 §3.2"},
+
+{id:"2.12",m:2,title:"Goodness of fit: $R^2$, adjusted $R^2$, SER",
+idea:"Relative measure of fit, penalised version, and absolute residual size.",
+formal:"$TSS=ESS+SSR$. $R^2=ESS/TSS=1-SSR/TSS\\in[0,1]$. $\\bar R^2=1-\\frac{n-1}{n-k-1}\\frac{SSR}{TSS}$. SER $=\\sqrt{SSR/(n-k-1)}$.",
+derivation:"$Y_i-\\overline Y=(Y_i-\\hat Y_i)+(\\hat Y_i-\\overline Y)=\\hat u_i+(\\hat Y_i-\\overline Y)$. Square and sum: $\\sum(Y_i-\\overline Y)^2=\\sum\\hat u_i^2+\\sum(\\hat Y_i-\\overline Y)^2+2\\sum\\hat u_i(\\hat Y_i-\\overline Y)$. The cross term vanishes because $\\sum\\hat u_i=0$ and $\\sum X_{l,i}\\hat u_i=0$ (so $\\sum\\hat Y_i\\hat u_i=0$ since $\\hat Y_i$ is a linear combination of regressors and $\\overline Y\\sum\\hat u_i=0$). Therefore $TSS=SSR+ESS$ and $R^2=ESS/TSS=1-SSR/TSS$.",
+intuition:"$R^2$ = share of variance the model explains. $\\bar R^2$ penalises adding regressors that do not pull their weight. SER tells you the typical residual in $Y$ units.",
+visualise:"Add-a-regressor sandbox: add noise variables one by one, watch $R^2$ creep up while $\\bar R^2$ falls and SER barely moves.",
+prereqs:["1.6","1.8"],forward:["2.7","2.13","2.14","4.9"],examRole:"QT2 §4"},
+
+{id:"2.13",m:2,title:"Model specification: overfitting and underfitting",
+idea:"Bias-variance tradeoff in linear modelling.",
+formal:"Overfit: low SER, high $R^2$, but generalises poorly. Underfit: systematic bias, high SER. Holdout error is U-shaped in model complexity.",
+visualise:"Training vs holdout error vs degree of polynomial; the U-shape of holdout error.",
+prereqs:["2.12"],forward:["4.9"]},
+
+{id:"2.14",m:2,title:"Effect of data transformations",
+idea:"How $\\hat\\beta$, SER, $R^2$ react to rescaling, recentring, or non-linear transformations.",
+formal:"$Y^*=aY+c$, $X^*=bX+d$: $\\hat\\beta_1^*=(a/b)\\hat\\beta_1$, $\\hat\\beta_0^*=a\\hat\\beta_0+c-(a/b)\\hat\\beta_1 d$, SER scales by $|a|$, $R^2$ unchanged.",
+derivation:"$R^2=\\hat{\\mathrm{corr}}(X,Y)^2$ in simple regression, and correlation is invariant to affine transformations. Multivariate case follows by FWL applied componentwise.",
+visualise:"Transform panel: pick $a,b,c,d$ and a tabular before/after view appears.",
+prereqs:["1.6","2.12"],forward:["2.10"],examRole:"QT2 §2.6, §4.3"},
+
+{id:"2.15",m:2,title:"Conditions for valid inference (the four-item list)",
+idea:"The package of assumptions that justify CLT-based standard errors for OLS.",
+formal:"(i) Causal model satisfies OR. (ii) iid sample. (iii) Finite kurtosis ($\\mathbb{E}X^4<\\infty$, $\\mathbb{E}u^4<\\infty$). (iv) No perfect multicollinearity.",
+visualise:"Compliance dashboard with four lights, each fed by a Monte Carlo that violates one assumption and shows the consequent breakdown of inference.",
+prereqs:["1.4","1.7","2.1","2.8"],forward:[],examRole:"Scaffolding for almost every Part B question"},
+
+/* MODULE 3 */
+{id:"3.1",m:3,title:"Endogeneity: definition and sources",
+idea:"Any failure of OR; structural, not a sampling issue, so larger $n$ does not fix it.",
+formal:"$\\mathrm{cov}(X,u)\\ne 0$. Sources: omitted variables, simultaneity, measurement error in $X$, sample selection, bad controls.",
+derivation:"$\\hat\\beta_1\\to^p\\mathrm{cov}(X,Y)/\\mathrm{var}(X)=\\beta_1+\\mathrm{cov}(X,u)/\\mathrm{var}(X)\\ne\\beta_1$. The bias is exactly $\\mathrm{cov}(X,u)/\\mathrm{var}(X)$ and persists in the limit.",
+intuition:"Bias is structural; more data shrinks variance but not the wrong centre.",
+visualise:"Menu of endogeneity: each source is a switch; flipping it on regenerates data and the OLS bias appears as a drift between $\\hat\\beta_1$ and the true $\\beta_1$.",
+prereqs:["1.4","1.10"],forward:["3.2","3.7","3.8","3.9","3.10"],examRole:"QT3 §1"},
+
+{id:"3.2",m:3,title:"Randomised Control Trials: identification",
+idea:"Random assignment severs $\\mathrm{cov}(D,u)$ by construction.",
+formal:"With binary $D$ and $D\\perp u$, the OLS coefficient on $D$ in $Y=\\beta_0+\\beta_1D+u$ equals $\\overline Y_1-\\overline Y_0$, which is consistent for $\\mathbb{E}[Y\\mid D=1]-\\mathbb{E}[Y\\mid D=0]$.",
+derivation:"For binary $D$: $\\mathbb{E}[Y\\mid D]=\\mathbb{E}[Y\\mid D=0]\\,(1-D)+\\mathbb{E}[Y\\mid D=1]\\,D=\\mathbb{E}[Y\\mid D=0]+(\\mathbb{E}[Y\\mid D=1]-\\mathbb{E}[Y\\mid D=0])D$. This is linear in $D$, so the population regression coincides with the CEF (1.5). Thus $\\rho_0=\\mathbb{E}[Y\\mid D=0]$ and $\\rho_1=\\mathbb{E}[Y\\mid D=1]-\\mathbb{E}[Y\\mid D=0]$. Under random assignment OR holds, so $\\beta_1=\\rho_1$.",
+intuition:"Without confounding, the only systematic difference between treated and control means is the treatment itself.",
+visualise:"Assignment simulator: shuffle button randomly assigns $D$; OLS estimate displays alongside true treatment effect; repeated shuffles centre on the true value.",
+prereqs:["0.16","1.4","1.5","3.1"],forward:["3.3","3.4","3.5","3.6","3.17"],examRole:"QT1 §2.1, §2.2"},
+
+{id:"3.3",m:3,title:"RCT internal validity threats",
+idea:"Noncompliance, attrition, spillovers, Hawthorne effects, experimenter effects all break $\\mathrm{cov}(D,u)=0$.",
+formal:"<strong>Noncompliance</strong>: assigned $\\ne$ actual $D$. <strong>Attrition</strong>: non-random sample. <strong>Spillovers</strong>: SUTVA fails. <strong>Hawthorne</strong>: subjects respond to being studied.",
+visualise:"Threat sliders: each one widens the gap between estimated and true effect, with a written explanation.",
+prereqs:["3.2"],forward:[],examRole:"QT1 §2.3"},
+
+{id:"3.4",m:3,title:"RCT external validity",
+idea:"Even an internally valid RCT may not generalise.",
+formal:"Heterogeneity across populations; spillovers; failure of surrogate outcomes (intermediate measure does not capture policy outcome).",
+visualise:"Transport widget: treatment effect estimated in population A, slider warps moderator distribution to population B, and the effect changes.",
+prereqs:["3.2"],forward:[],examRole:"QT1 §4.3"},
+
+{id:"3.5",m:3,title:"Optimal treatment-control allocation",
+idea:"With equal variance across arms, splitting $N$ in half minimises $\\mathrm{var}(\\hat\\tau)$.",
+derivation:"$\\mathrm{var}(\\hat\\tau)=\\sigma^2(1/n_T+1/n_C)$ s.t. $n_T+n_C=N$. Substitute $n_C=N-n_T$: $f(n_T)=\\sigma^2[1/n_T+1/(N-n_T)]$, $f'(n_T)=\\sigma^2[-1/n_T^2+1/(N-n_T)^2]=0$. So $(N-n_T)^2=n_T^2\\Rightarrow n_T=N/2$. Unequal variances $\\sigma_0^2\\ne\\sigma_1^2$: the same Lagrangian gives Neyman allocation $n_T/n_C=\\sigma_1/\\sigma_0$.",
+intuition:"The variance has a U-shape in the split; symmetry forces the minimum at the midpoint when both arms are equally noisy.",
+visualise:"Convex curve of $\\mathrm{var}(\\hat\\tau)$ vs $n_T$; user drags the split, the curve highlights the optimum.",
+prereqs:["0.7","0.16","3.2"],forward:[],examRole:"QT1 §2.6"},
+
+{id:"3.6",m:3,title:"Conditional random assignment, balance, and pre-treatment controls",
+idea:"Randomisation can be stratified; pre-treatment covariates improve precision and check balance.",
+formal:"Treatment $X=\\gamma_0+\\gamma_1W_1+\\dots+\\gamma_kW_k+\\tilde X$ with $\\tilde X$ orthogonal to $W$. Outcome $Y=\\beta_0+\\beta_1X+u$.",
+derivation:"<strong>Need to control for stratifiers.</strong> Regressing $Y$ on $X$ alone leaves $\\mathrm{cov}(X,u)\\ne 0$ if both depend on $W$. By FWL, in regression of $Y$ on $(X,W)$ the slope on $X$ is $\\mathrm{cov}(Y,\\tilde X)/\\mathrm{var}(\\tilde X)=\\beta_1$ since $\\mathrm{cov}(X,\\tilde X)=\\mathrm{var}(\\tilde X)$ and $\\mathrm{cov}(u,\\tilde X)=0$.<br><br><strong>Precision gain.</strong> By 2.2, $\\mathrm{var}(\\hat\\beta_1)\\propto\\mathrm{var}(u)/\\mathrm{var}(\\tilde X_1)$. Including $W$ correlated with $Y$ but not with treatment shrinks $\\mathrm{var}(\\hat u)$ without much shrinking $\\mathrm{var}(\\tilde X_1)$, so the SE falls.",
+intuition:"When probability of treatment depends on $W$, you must condition on $W$; otherwise observed differences confound treatment with $W$.",
+visualise:"Stratify toggle: split the sample by a covariate, re-randomise within strata; a balance-test F-statistic appears.",
+prereqs:["1.9","2.2","3.2"],forward:["3.13"],examRole:"QT1 §2.4"},
+
+{id:"3.7",m:3,title:"Measurement error in the dependent variable",
+idea:"Classical error in $Y$ adds noise but does not bias the slope.",
+derivation:"Causal $Y=\\beta_0+\\beta_1X+u$ with OR. Observed $Y^*=Y+e_y$. Then $Y^*=\\beta_0+\\beta_1X+(u+e_y)=\\beta_0+\\beta_1X+\\eta$. If $\\mathrm{cov}(X,e_y)=0$ then $\\mathrm{cov}(X,\\eta)=0$, OR holds in the estimable model, OLS consistent. Variance $\\mathrm{var}(u)+\\mathrm{var}(e_y)>\\mathrm{var}(u)$, SE inflates.",
+intuition:"Noise in $Y$ is just bigger residuals, not a wrong tilt of the line.",
+visualise:"Noise slider on $Y$; estimate stays centred; SE grows.",
+prereqs:["3.1"],forward:[],examRole:"QT3 §2.3"},
+
+{id:"3.8",m:3,title:"Measurement error in a regressor: attenuation bias",
+idea:"Classical error in $X$ biases $\\hat\\beta_1$ toward zero.",
+derivation:"Causal $Y=\\beta_0+\\beta_1X+u$, OR. Observed $X^*=X+e_x$ with $e_x$ independent of $X,u$, mean zero. Substitute $X=X^*-e_x$: $Y=\\beta_0+\\beta_1X^*+(u-\\beta_1 e_x)=\\beta_0+\\beta_1X^*+\\varepsilon$. The error $\\varepsilon=u-\\beta_1e_x$ is correlated with $X^*$ because $\\mathrm{cov}(X^*,e_x)=\\mathrm{var}(e_x)\\ne 0$. The population regression slope: $$\\beta_1^*=\\frac{\\mathrm{cov}(Y,X^*)}{\\mathrm{var}(X^*)}.$$ Numerator: $\\mathrm{cov}(Y,X^*)=\\mathrm{cov}(\\beta_0+\\beta_1X+u,X+e_x)=\\beta_1\\mathrm{var}(X)$ (other terms zero by independence). Denominator: $\\mathrm{var}(X^*)=\\mathrm{var}(X)+\\mathrm{var}(e_x)$. Therefore $$\\boxed{\\beta_1^*=\\beta_1\\,\\frac{\\mathrm{var}(X)}{\\mathrm{var}(X)+\\mathrm{var}(e_x)}.}$$ The factor in $[0,1]$ gives attenuation.",
+intuition:"Only the signal part of $X^*$ moves with $Y$; the noise part dilutes the apparent slope.",
+visualise:"Noise slider on $X$; $\\hat\\beta_1$ visibly attenuates; a bar shows the reliability ratio $\\mathrm{var}(X)/\\mathrm{var}(X^*)$.",
+prereqs:["0.7","3.1"],forward:["3.10"],examRole:"QT3 §2"},
+
+{id:"3.9",m:3,title:"Simultaneity bias",
+idea:"$X$ and $Y$ jointly determined; OLS conflates structural parameters.",
+derivation:"<strong>Demand-supply.</strong> Demand $Q_d=\\beta_0+\\beta_1P+\\beta_2X+u$; supply $Q_s=\\gamma_0+\\gamma_1P+v$; clearing $Q_d=Q_s=Q$. Equate and solve for $P$: $$(\\gamma_1-\\beta_1)P=(\\beta_0-\\gamma_0)+\\beta_2X+(u-v),\\quad P=\\frac{\\beta_0-\\gamma_0}{\\gamma_1-\\beta_1}+\\frac{\\beta_2}{\\gamma_1-\\beta_1}X+\\frac{u-v}{\\gamma_1-\\beta_1}.$$ Therefore $\\mathrm{cov}(P,u)=\\mathrm{var}(u)/(\\gamma_1-\\beta_1)\\ne 0$ even when $\\mathbb{E}[u\\mid v]=0$. OLS of $Q$ on $P$ does not consistently estimate $\\beta_1$.",
+intuition:"A demand shock pushes both quantity and price; $P$ and $u$ co-move; the regression cannot tell which curve it traces without additional information.",
+visualise:"Moving-equilibrium plot: supply or demand shocks shift the curves; OLS through the cloud of equilibria recovers neither slope.",
+prereqs:["0.7","3.1"],forward:["3.10"],examRole:"QT3 §5"},
+
+{id:"3.10",m:3,title:"Instrumental variables: relevance, exogeneity, exclusion",
+idea:"A valid instrument $Z$ identifies the causal effect without observing the confounder.",
+formal:"<strong>Z1 Relevance</strong>: $\\mathrm{cov}(X,Z)\\ne 0$. <strong>Z2 Exogeneity</strong>: $\\mathrm{cov}(Z,u)=0$. <strong>Z3 Exclusion</strong>: $Z$ does not appear directly in the structural equation.",
+visualise:"DAG with $Z\\to X\\to Y$ and possible arrows from confounder $U$; user drags arrows to test which violations break IV identification.",
+prereqs:["3.1","1.13"],forward:["3.11","3.12","3.17","3.18"],examRole:"QT3 §3.1"},
+
+{id:"3.11",m:3,title:"Indirect Least Squares (ILS)",
+idea:"Divide reduced form by first-stage to recover the structural effect.",
+derivation:"Structural $Y=\\beta_0+\\beta_1X+u$ with $\\mathrm{cov}(Z,u)=0$, $\\mathrm{cov}(X,Z)\\ne 0$. First stage $X=\\pi_0+\\pi_1Z+v$ with $\\pi_1\\ne 0$. Substitute first stage into structural: $$Y=(\\beta_0+\\beta_1\\pi_0)+\\beta_1\\pi_1Z+(\\beta_1v+u)=\\gamma_0+\\gamma_1Z+\\varepsilon.$$ By exogeneity $\\mathrm{cov}(Z,\\varepsilon)=\\beta_1\\mathrm{cov}(Z,v)+\\mathrm{cov}(Z,u)=0$, so OR holds and $\\hat\\gamma_1\\to^p\\gamma_1=\\beta_1\\pi_1$. Similarly $\\hat\\pi_1\\to^p\\pi_1$. Continuous mapping: $$\\boxed{\\hat\\beta_1^{ILS}:=\\frac{\\hat\\gamma_1}{\\hat\\pi_1}\\to^p\\beta_1=\\frac{\\mathrm{cov}(Y,Z)}{\\mathrm{cov}(X,Z)}.}$$",
+intuition:"$Z$ touches $Y$ only through $X$. Move $Z$ by 1, $X$ moves by $\\pi_1$, $Y$ moves by $\\beta_1\\pi_1$. Divide $Y$-effect by $X$-effect to recover $\\beta_1$.",
+visualise:"Side-by-side first-stage and reduced-form scatters; two slopes feed into a divisor; structural estimate appears.",
+prereqs:["3.10"],forward:["3.12"],examRole:"QT3 §3.2"},
+
+{id:"3.12",m:3,title:"Two-Stage Least Squares (2SLS)",
+idea:"Replace $X$ with its projection on $Z$, then run OLS.",
+derivation:"Define $X^*=\\pi_0+\\pi_1Z$ and $v=X-X^*$. Substitute $X=X^*+v$ into the structural equation: $Y=\\beta_0+\\beta_1X^*+(u+\\beta_1v)=\\beta_0+\\beta_1X^*+\\varepsilon$. $X^*$ is a function of $Z$ alone, so $\\mathrm{cov}(X^*,\\varepsilon)=\\beta_1\\mathrm{cov}(X^*,v)+\\mathrm{cov}(X^*,u)=0$ (first term zero because $v\\perp X^*$ by construction; second by Z2). OR holds for the regression of $Y$ on $X^*$, so OLS of $Y$ on $\\hat X^*$ is consistent. With one instrument, 2SLS coincides with ILS numerically; with multiple instruments the same logic generalises.",
+intuition:"Stage 2 uses only the part of $X$ predicted by exogenous instruments; that part is by construction uncorrelated with the structural error.",
+visualise:"Two-stage flowchart: each stage has its own scatter; arrows connect them; final estimate at the bottom.",
+prereqs:["3.10","3.11"],forward:["3.13","3.14","3.15","3.16"],examRole:"QT3 §3.3, §3.4"},
+
+{id:"3.13",m:3,title:"Multiple instruments and exogenous controls",
+idea:"Include exogenous controls in both stages; 2SLS extends naturally.",
+formal:"With $m$ instruments $Z_1,\\dots,Z_m$ and $r$ exogenous controls $W_1,\\dots,W_r$: first stage $X=\\pi_0+\\sum_j\\pi_jZ_j+\\sum_l\\pi_{m+l}W_l+v$; second stage replaces $X$ with $\\hat X$ and keeps $W$. Identification requires $m\\ge$ number of endogenous regressors.",
+visualise:"Stage builder: user adds instruments and controls; counter tracks identification status (under, just, over).",
+prereqs:["1.9","3.12"],forward:["3.16"],examRole:"QT3 §4.6"},
+
+{id:"3.14",m:3,title:"Inference for 2SLS",
+idea:"Same CLT machinery, but with $X$ replaced by its first-stage projection in the SE formula.",
+formal:"Homoskedastic: $\\mathrm{se}(\\hat\\beta_1)=n^{-1/2}\\sqrt{\\hat{\\mathrm{var}}(\\hat u)/\\hat{\\mathrm{var}}(\\tilde X^*)}$. Robust analogue parallels 2.2.",
+derivation:"$\\sqrt n(\\hat\\beta_1^{2SLS}-\\beta_1)\\to^d N(0,\\sigma_u^2/\\mathrm{var}(\\tilde X^*))$ under homoskedasticity. The key change from OLS: $\\mathrm{var}(\\tilde X^*)<\\mathrm{var}(\\tilde X)$ in general, so 2SLS SEs are typically larger.",
+visualise:"Side-by-side OLS and 2SLS SE bars over the same data.",
+prereqs:["2.2","3.12"],forward:["3.15"]},
+
+{id:"3.15",m:3,title:"Test of relevance and weak instruments",
+idea:"Relevance is testable by F on the first stage; weak instruments break asymptotic normality even when relevance holds.",
+formal:"F-test of $H_0:\\pi_1=\\dots=\\pi_m=0$ in the first stage. Rule of thumb: reject and accept $F>10$ for credible 2SLS inference.",
+derivation:"With one instrument, the 2SLS asymptotic variance is $\\omega_{\\beta_1,IV}^2=\\sigma_u^2/[\\pi_1^2\\mathrm{var}(Z)]$. As $\\pi_1\\to 0$, $\\omega^2\\to\\infty$; the limiting Normal approximation breaks down.",
+intuition:"Weak instruments exploit almost no variation in $X$; everything is amplified noise.",
+visualise:"Instrument-strength dial: as user weakens it, the 2SLS sampling distribution becomes non-Normal and shifts; F falls below 10.",
+prereqs:["2.7","3.12","3.14"],forward:["3.16"],examRole:"QT3 §4.4"},
+
+{id:"3.16",m:3,title:"Test of exogeneity (overidentifying restrictions)",
+idea:"With more instruments than endogenous regressors, can test consistency across instruments.",
+formal:"Regress 2SLS residuals $\\hat u$ on instruments and controls by 2SLS; F-stat times $m/(m-1)$ compared to $F_{m-1,\\infty}$.",
+derivation:"With $m$ instruments and 2SLS using all of them, only $m-1$ overid restrictions are testable. Adjustment $F^*=mF/(m-1)$ rescales so the limiting distribution is $F_{m-1,\\infty}$.",
+intuition:"Non-rejection is not unambiguous evidence: all instruments could be invalid in offsetting ways. Useful diagnostic, not a guarantee.",
+visualise:"'Sargan-Hansen lite' widget that runs the test, highlights residuals, explains the interpretation caveat.",
+prereqs:["2.7","3.13"],forward:["3.17","3.18"]},
+
+{id:"3.17",m:3,title:"Internal vs external validity (study design)",
+idea:"The two halves of 'is this study any good?'.",
+formal:"Internal validity: consistency of causal estimates inside the study. External validity: portability of those estimates.",
+visualise:"2x2 quadrant diagram; user places real studies (Project STAR, Angrist-Krueger 1991, Oreopoulos 2006) into the quadrants and checks against lecture answers.",
+prereqs:["3.2","3.4","3.10"],forward:["3.18"],examRole:"QT1 §4.3"},
+
+{id:"3.18",m:3,title:"Canonical instrument examples",
+idea:"Have a stable mental library of good and bad instruments.",
+formal:"Quarter of birth (Angrist-Krueger 1991, schooling on earnings); Butler Act (Oreopoulos 2006, compulsory schooling on earnings); distance to college; sales tax for cigarettes; lottery draws; court assignments; weather. Run the relevance / exogeneity / exclusion checklist for each.",
+visualise:"Flashcard deck: each card states the instrument, the endogenous variable, and the relevance / exogeneity / exclusion arguments.",
+prereqs:["3.10","3.17"],forward:[],examRole:"QT3 §4.5"},
+
+/* MODULE 4 */
+{id:"4.1",m:4,title:"What makes time series different",
+idea:"Ordering matters, observations are dependent, and we usually have one realisation rather than a random sample of histories.",
+formal:"Lose the iid assumption; need a substitute (stationarity). Sample analogues use $T$ rather than $n$ in denominators with adjustments below.",
+visualise:"Side-by-side iid scatter and a UK GDP series; reshuffling the iid one is fine; reshuffling GDP destroys the structure.",
+prereqs:["0.10","1.7"],forward:["4.2"]},
+
+{id:"4.2",m:4,title:"Weak (and strict) stationarity",
+idea:"Weak stationarity: time-invariant first two moments and autocovariance.",
+formal:"$\\{Y_t\\}$ weakly stationary iff $\\mathbb{E}Y_t$, $\\mathrm{var}(Y_t)$, and $\\mathrm{cov}(Y_t,Y_{t-h})$ depend only on $h$, not $t$. Joint stationarity adds $\\mathrm{cov}(Y_t,X_{t-h})$. Strict stationarity is shift-invariant joint distribution.",
+visualise:"Rolling-window moments: stationary AR(1) vs unit-root process; rolling means/variances of the former hover, of the latter wander.",
+prereqs:["4.1"],forward:["4.3","4.4","4.14"],examRole:"QT4 §1.2, §7.1, §7.4"},
+
+{id:"4.3",m:4,title:"Sample autocovariance and autocorrelation",
+idea:"Empirical analogues with denominator $T$ rather than $T-h$.",
+formal:"$\\hat\\gamma_h=\\frac{1}{T}\\sum_{t=h+1}^T(Y_t-\\overline Y_T)(Y_{t-h}-\\overline Y_T)$. $\\hat\\gamma_0=\\hat{\\mathrm{var}}(Y_t)$. Sample autocorrelation $\\hat\\rho_h=\\hat\\gamma_h/\\hat\\gamma_0$.",
+visualise:"ACF bar chart for a chosen process; user moves $h$, the highlighted bar updates beside the corresponding scatter of $Y_t$ vs $Y_{t-h}$.",
+prereqs:["0.9","4.2"],forward:["4.4","4.5"],examRole:"QT4 §1.4"},
+
+{id:"4.4",m:4,title:"AR(1) and AR(p) models",
+idea:"Today's value is a linear function of past values plus a martingale-difference shock.",
+formal:"$Y_t=\\beta_0+\\sum_{i=1}^p\\beta_iY_{t-i}+u_t$ with $\\mathbb{E}[u_t\\mid\\mathcal{Y}_{t-1}]=0$. Stationarity requires roots of the characteristic polynomial outside the unit circle. AR(1): $|\\beta_1|<1$.",
+derivation:"<strong>Repeated substitution for AR(1).</strong> From $Y_t=\\beta_0+\\beta_1Y_{t-1}+u_t$: $$Y_t=\\beta_0(1+\\beta_1+\\dots+\\beta_1^{t-1})+\\beta_1^tY_0+\\sum_{s=0}^{t-1}\\beta_1^s u_{t-s}.$$ For $|\\beta_1|<1$ the geometric series converges to $\\beta_0/(1-\\beta_1)$ and $Y_0$'s impact vanishes. $|\\beta_1|=1$: shocks accumulate (random walk). $|\\beta_1|>1$: shocks compound (explosive).",
+intuition:"AR(1) memory decays at rate $\\beta_1$. Rate $<1$: forgets, reaches stable distribution. Rate $=1$: never forgets. Rate $>1$: shocks blow up.",
+visualise:"AR(1) trajectory simulator: sliders for $\\beta_0,\\beta_1$; user pushes $\\beta_1$ across 1 and watches the explosion.",
+widget:"ar1-sim",
+prereqs:["4.2"],forward:["4.5","4.6","4.7","4.10","4.14"],examRole:"QT4 §1, §1.7"},
+
+{id:"4.5",m:4,title:"Mean, variance, autocovariances of stationary AR(1)",
+idea:"Closed-form moments under stationarity.",
+derivation:"<strong>Mean.</strong> Stationarity: $\\mathbb{E}Y_t=\\mu$. Take expectation of $Y_t=\\beta_0+\\beta_1Y_{t-1}+u_t$: $\\mu=\\beta_0+\\beta_1\\mu\\Rightarrow\\boxed{\\mu=\\beta_0/(1-\\beta_1)}$ for $\\beta_1\\ne 1$.<br><br><strong>Variance.</strong> $\\mathrm{var}(Y_t)=\\beta_1^2\\mathrm{var}(Y_{t-1})+\\mathrm{var}(u_t)$ (cross term zero by martingale-difference). Stationarity: $\\sigma_Y^2=\\beta_1^2\\sigma_Y^2+\\sigma_u^2\\Rightarrow\\boxed{\\sigma_Y^2=\\sigma_u^2/(1-\\beta_1^2)}$ for $|\\beta_1|<1$.<br><br><strong>Autocovariance.</strong> $\\mathrm{cov}(Y_t,Y_{t-h})=\\beta_1\\mathrm{cov}(Y_{t-1},Y_{t-h})$. Iterate $h$ times: $\\boxed{\\gamma_h=\\beta_1^h\\sigma_Y^2}$.",
+intuition:"$\\sigma_Y^2$ blown up by $1/(1-\\beta_1^2)$ vs shock variance, reflecting accumulation; autocorrelation decays geometrically.",
+visualise:"Simulate, measure, compare: theoretical curves overlaid with sample estimates from a long simulation.",
+prereqs:["0.7","4.4"],forward:["4.6","4.7","4.14"],examRole:"QT4 §1.1"},
+
+{id:"4.6",m:4,title:"Estimating AR(p): OLS by construction",
+idea:"Every AR(p) satisfies OR by construction since $u_t$ is mean-zero conditional on lagged regressors.",
+derivation:"$\\mathbb{E}[u_t\\mid\\mathcal{Y}_{t-1}]=0$ implies (by LIE and conditioning rule) $\\mathbb{E}u_t=0$ and $\\mathbb{E}Y_{t-i}u_t=0$ for $i=1,\\dots,p$. Population AR(p) coefficients equal structural $\\beta_i$. Sample averages converge by an LLN for stationary processes, so $\\hat\\beta_i\\to^p\\beta_i$.",
+intuition:"OR is built into AR specs because lags are predetermined. Stationarity gives the LLN; finite kurtosis gives the CLT.",
+visualise:"Walk-forward fit: as sample grows, $\\hat\\beta$ converges; residual ACF plot underneath confirms specification.",
+prereqs:["1.4","1.7","4.4"],forward:["4.7","4.10"]},
+
+{id:"4.7",m:4,title:"Forecasting: optimal h-step forecast and MSFE",
+idea:"Conditional expectation is the MSE-optimal forecast.",
+derivation:"<strong>Optimal forecast = CEF.</strong> See 0.8: $Y_{T+1\\mid T}=\\mathbb{E}[Y_{T+1}\\mid\\mathcal{Y}_T]$ minimises $\\mathbb{E}[Y_{T+1}-m(\\mathcal{Y}_T)]^2$.<br><br><strong>h-step AR(1) forecast.</strong> $Y_{T+h\\mid T}=\\beta_0+\\beta_1 Y_{T+h-1\\mid T}$. Subtract $\\mu=\\beta_0/(1-\\beta_1)$: $Y_{T+h\\mid T}-\\mu=\\beta_1(Y_{T+h-1\\mid T}-\\mu)$. Iterate to $Y_{T\\mid T}=Y_T$: $$\\boxed{Y_{T+h\\mid T}=\\mu+\\beta_1^h(Y_T-\\mu).}$$ As $h\\to\\infty$ with $|\\beta_1|<1$: $Y_{T+h\\mid T}\\to\\mu$.<br><br><strong>MSFE decomposition.</strong> $\\hat e_{T+1\\mid T}=u_{T+1}+(Y_{T+1\\mid T}-\\hat Y_{T+1\\mid T})$. The two parts are uncorrelated (one is independent of past data, the other depends only on past data). Therefore $\\mathrm{MSFE}=\\mathrm{var}(u)+\\mathbb{E}(\\hat Y_{T+1\\mid T}-Y_{T+1\\mid T})^2$.",
+intuition:"Short-horizon forecasts use recent values heavily; at long horizons the best forecast is the unconditional mean. MSFE = irreducible noise + parameter-estimation slack.",
+visualise:"Forecast fan: each horizon has a band of forecast uncertainty; user moves $h$, bands widen.",
+prereqs:["0.8","4.5","4.6"],forward:["4.8","4.9","4.10"],examRole:"QT4 §2"},
+
+{id:"4.8",m:4,title:"Pseudo out-of-sample forecast evaluation",
+idea:"In-sample residuals understate true forecast error; do walk-forward, out-of-sample residuals.",
+formal:"Pick $P\\in[0.1T,0.2T]$. For each $s\\in\\{T-P,\\dots,T-1\\}$, estimate on $\\{1,\\dots,s\\}$, forecast $\\hat Y_{s+1\\mid s}$. $\\hat{\\mathrm{MSFE}}=\\frac{1}{P}\\sum\\hat e_{s+1\\mid s}^2$.",
+derivation:"In-sample $\\hat u_t$ is computed using parameters fitted to the same data, so it understates the parameter-uncertainty term in 4.7. Out-of-sample residuals lack this contamination.",
+visualise:"Scrubbing timeline: for each split, fit on left, forecast right, accumulate MSE.",
+prereqs:["4.7"],forward:[],examRole:"QT4 §2.4 to §2.5"},
+
+{id:"4.9",m:4,title:"Lag selection: AIC, BIC",
+idea:"Penalised model fit; AIC under-penalises, BIC consistent.",
+formal:"$AIC_m=\\ln(SSR_m/T)+2m/T$. $BIC_m=\\ln(SSR_m/T)+m\\ln T/T$. Minimise over $m$. BIC selects the true order with probability $\\to 1$ as $T\\to\\infty$; AIC may pick larger models.",
+intuition:"Adding parameters always reduces $SSR_m$. Information criteria penalise complexity. BIC's $\\ln T$ penalty dominates AIC's $2$ for $T>e^2\\approx 7.4$, so BIC tends to pick smaller models in big samples.",
+visualise:"Bar chart of AIC and BIC across orders; arrows mark each minimum; sample-size slider shows BIC convergence.",
+prereqs:["2.13","4.7"],forward:["4.19"],examRole:"QT4 §2.5"},
+
+{id:"4.10",m:4,title:"ADL(p,q) models",
+idea:"Include lags of an external variable $X$.",
+formal:"$Y_t=\\beta_0+\\sum_{i=1}^p\\beta_iY_{t-i}+\\sum_{i=1}^q\\delta_iX_{t-i}+u_t$ with $\\mathbb{E}[u_t\\mid\\mathcal{Y}_{t-1},\\mathcal{X}_{t-1}]=0$. OR by construction; OLS consistent under joint stationarity.",
+visualise:"Dual time-series: toggle AR-only vs ADL; forecast accuracy ribbon updates.",
+prereqs:["4.4","4.7"],forward:["4.11","4.12"],examRole:"QT4 §2.6, §6"},
+
+{id:"4.11",m:4,title:"Granger causality and its F-test",
+idea:"Does $\\{X_t\\}$ help forecast $\\{Y_t\\}$ beyond $\\{Y_t\\}$'s own past?",
+formal:"$X$ does not Granger-cause $Y$ iff $\\mathbb{E}[Y_{T+1}\\mid\\mathcal{Y}_T,\\mathcal{X}_T]=\\mathbb{E}[Y_{T+1}\\mid\\mathcal{Y}_T]$. In ADL(p,q): $\\delta_1=\\dots=\\delta_q=0$.",
+derivation:"Unrestricted: ADL(p,q). Restricted: AR(p). Under joint stationarity and finite kurtosis, $$F=\\frac{(SSR_r-SSR_u)/q}{SSR_u/(T-p-q-1)}\\to^d F_{q,\\infty}.$$ Reject if $F$ exceeds the critical value.",
+intuition:"Predictive, not necessarily structural. A common confounder, reverse causality, or feedback can produce Granger causality without true causation.",
+visualise:"Pick two real series (e.g., UK unemployment and US industrial production); dashboard runs both directions and reports both p-values.",
+prereqs:["2.7","4.10"],forward:["4.12","4.13"],examRole:"QT4 §6"},
+
+{id:"4.12",m:4,title:"Structural breaks: Chow test",
+idea:"Parameters change abruptly at a known date $\\tau$.",
+formal:"F-test of $H_0:\\gamma_0=\\gamma_1=\\dots=0$ in $$Y_t=\\beta_0+\\sum\\beta_iY_{t-i}+\\sum\\delta_iX_{t-i}+\\mathbb{1}[t>\\tau](\\gamma_0+\\sum\\gamma_iY_{t-i}+\\sum\\theta_iX_{t-i})+u_t.$$ Reject under joint stationarity using $F_{q,\\infty}$.",
+visualise:"Slider for $\\tau$: regression line snaps into two segments; F statistic appears.",
+prereqs:["2.7","4.10"],forward:["4.13"],examRole:"QT4 §7.6"},
+
+{id:"4.13",m:4,title:"Quandt Likelihood Ratio (QLR)",
+idea:"Break date unknown: take supremum of Chow F-statistics over a candidate window $[\\tau_0,\\tau_1]$.",
+formal:"$QLR=\\max_{\\tau\\in[\\tau_0,\\tau_1]}F(\\tau)$. Critical values exceed $F_{q,\\infty}$, depending on $q$, $k$, and trim fractions $\\tau_0/T,\\tau_1/T$. Gap between QLR and Chow critical values widens with the candidate window.",
+intuition:"Naive 'repeat Chow at each $\\tau$' inflates Type I rate; QLR adjusts for the multiple testing implicit in the search.",
+visualise:"Plot $F(\\tau)$ over the window; maximum highlighted; critical-value slider shows whether QLR clears it.",
+prereqs:["4.12"],forward:[],examRole:"QT4 §7.6"},
+
+{id:"4.14",m:4,title:"Unit roots and random walks",
+idea:"$\\beta_1=1$ means $Y_t=Y_{t-1}+u_t$; variance grows linearly with $t$, no stationary distribution.",
+formal:"AR(p) has a unit root iff $\\sum\\beta_i=1$. If so, $\\Delta Y_t$ is AR(p-1).",
+derivation:"<strong>Random-walk decomposition.</strong> With $\\beta_1=1$ and drift $\\beta_0$, recursive substitution gives $$Y_t=Y_0+\\beta_0t+\\sum_{s=1}^t u_s=Y_0+\\beta_0t+U_t,$$ where $U_t=\\sum_{s=1}^t u_s$. Properties: $\\mathbb{E}U_t=0$, $\\mathrm{var}(U_t)=t\\sigma_u^2$, no mean reversion.",
+intuition:"Unit-root process permanently remembers shocks; each innovation joins a cumulative sum that never decays.",
+visualise:"Trajectory simulator with $\\beta_1\\in\\{0.5,0.95,1,1.05\\}$; their dispersion across many draws diverges visibly.",
+prereqs:["4.4","4.5"],forward:["4.15","4.16","4.17","4.18"],examRole:"QT4 §1.5, §3.5"},
+
+{id:"4.15",m:4,title:"Order of integration",
+idea:"How many times to difference to reach stationarity.",
+formal:"$Y_t\\sim I(d)$ if $\\Delta^d Y_t$ is stationary but $\\Delta^{d-1}Y_t$ is not.",
+visualise:"Pick a real series: levels, first differences, second differences side by side with rolling moments.",
+prereqs:["4.14"],forward:["4.18","4.19","4.20","4.21"],examRole:"QT4 §3.2"},
+
+{id:"4.16",m:4,title:"Deterministic vs stochastic trends",
+idea:"A series can drift because of $\\alpha t$ (deterministic) or because of accumulated shocks (stochastic).",
+formal:"Trend-stationary $Y_t=\\alpha t+u_t$ with $u_t$ stationary. Difference-stationary $Y_t$ has a unit root and persistent shocks. Distinguishable via ADF (4.18, 4.19).",
+visualise:"Two simulated series labelled 'A' and 'B'; user guesses; reveal shows the underlying process.",
+prereqs:["4.14"],forward:["4.19"],examRole:"QT4 §3.5, §3.7"},
+
+{id:"4.17",m:4,title:"Spurious regression",
+idea:"Regressing two independent $I(1)$ series often yields significant t-statistics.",
+formal:"Stochastic trends generate matching swings by chance; $R^2$ can be high; standard t-statistics do not converge to $N(0,1)$ but to functionals of Brownian motion.",
+intuition:"Random walks take long excursions; two independent walks will, by chance, look like they trend together over any finite window.",
+visualise:"Simulate two independent random walks; show scatter and regression line; replication histogram of t-statistics has fat tails.",
+prereqs:["4.14"],forward:["4.20","4.21"],examRole:"QT4 §5"},
+
+{id:"4.18",m:4,title:"Dickey-Fuller (constant only) test",
+idea:"Test the null of a unit root against a stationary alternative.",
+formal:"t-test of $\\delta=0$ in $\\Delta Y_t=\\beta_0+\\delta Y_{t-1}+u_t$ where $\\delta=\\beta_1-1$. One-sided $H_1:\\delta<0$. Under $H_0$, $t(0)\\to^d DF_{cm}$, not $N(0,1)$.",
+derivation:"<strong>Transformation.</strong> Subtract $Y_{t-1}$ from both sides of $Y_t=\\beta_0+\\beta_1Y_{t-1}+u_t$: $\\Delta Y_t=\\beta_0+(\\beta_1-1)Y_{t-1}+u_t=\\beta_0+\\delta Y_{t-1}+u_t$.",
+intuition:"Under unit-root null, $Y_{t-1}$ has variance growing with $t$, so standard CLT and homoskedastic SE assumptions break. Limit is the Dickey-Fuller distribution, with critical values shifted left of $N(0,1)$. Using Normal CVs would over-reject. One-sided because economic series rarely explode; the relevant alternative is mean-reversion.",
+visualise:"DF distribution overlaid with $N(0,1)$; user sees how Normal CVs would over-reject.",
+prereqs:["2.4","4.14"],forward:["4.19","4.21"],examRole:"QT4 §3"},
+
+{id:"4.19",m:4,title:"Dickey-Fuller (constant and trend) and ADF tests",
+idea:"Extend DF to allow a deterministic trend and to allow higher-order autoregressive structure.",
+derivation:"<strong>ADF transformation (Appendix F).</strong> AR(p): $Y_t=\\beta_0+\\sum_{i=1}^p\\beta_iY_{t-i}+u_t$. Define $\\delta=\\sum_{i=1}^p\\beta_i-1$ and $\\gamma_i=-\\sum_{j=i+1}^p\\beta_j$ for $i=1,\\dots,p-1$. Telescoping identity $\\beta_i=\\gamma_i-\\gamma_{i-1}$ where $\\gamma_0=\\delta+1$. Substituting: $$\\sum_{i=1}^p\\beta_iY_{t-i}=-\\gamma_0Y_{t-1}+\\sum_{i=1}^{p-1}\\gamma_i\\Delta Y_{t-i}.$$ Subtracting $Y_{t-1}$: $$\\boxed{\\Delta Y_t=\\beta_0+\\delta Y_{t-1}+\\sum_{i=1}^{p_\\Delta}\\gamma_i\\Delta Y_{t-i}+u_t,\\quad p_\\Delta=p-1.}$$ Adding $\\alpha t$ on the right gives the constant-and-trend variant.<br><br><strong>Test.</strong> t-test of $H_0:\\delta=0$ against $H_1:\\delta<0$. Under $H_0$, $t(0)\\to^d DF_{cn}$ (constant only) or $DF_{tr}$ (constant and trend).",
+intuition:"Lagged differences absorb short-run AR dynamics, leaving $\\delta$ to capture the unit-root question. Trend variant tests 'unit root' against 'trend stationary'.",
+visualise:"Specification picker (trend/lags switches) with annotated regression equation; help text spells out which DF table applies.",
+prereqs:["4.18","4.9"],forward:["4.21"],examRole:"QT4 §3.1, §3.4, §3.7"},
+
+{id:"4.20",m:4,title:"Cointegration",
+idea:"Two $I(1)$ series share a stochastic trend if some linear combination is $I(0)$.",
+formal:"$Y_t,X_t\\sim I(1)$ are cointegrated iff $\\exists\\theta$ with $\\xi_t=Y_t-\\theta X_t$ stationary; $\\theta$ is the cointegrating coefficient.",
+intuition:"Two random walks can wander, but cointegration says their gap is anchored. Examples: stock prices and dividends; log income and log consumption; spot and futures.",
+visualise:"Two series with shared trend; slider for $\\theta$; residual $\\xi_t$ becomes visibly stationary at the right $\\theta$.",
+prereqs:["4.15","4.17"],forward:["4.21","4.22"],examRole:"QT4 §4"},
+
+{id:"4.21",m:4,title:"Cointegration test (Engle-Granger)",
+idea:"Test stationarity of the equilibrium error.",
+formal:"If $\\theta$ hypothesised: ADF on $\\xi_t=Y_t-\\theta X_t$ with ordinary CVs. If $\\theta$ unknown: regress $Y$ on $X$ by OLS; ADF on residuals $\\hat\\xi_t$ with Engle-Granger CVs (more negative; $-3.37$ at 5%).",
+derivation:"Estimating $\\hat\\theta$ uses up degrees of freedom and shifts the ADF limiting distribution on $\\hat\\xi_t$. Engle-Granger tabulated CVs correct for this.",
+visualise:"Two paths through the test (hypothesised vs estimated $\\theta$); flowchart highlights chosen path.",
+prereqs:["4.19","4.20"],forward:["4.22"],examRole:"QT4 §4.1, §4.2"},
+
+{id:"4.22",m:4,title:"Implications of cointegration for OLS",
+idea:"Regressing $Y$ on $X$ in levels is valid when they are cointegrated; the OLS estimator of $\\theta$ is super-consistent.",
+formal:"$\\hat\\theta\\to^p\\theta$ at rate $T$ (rather than $\\sqrt T$); standard t-stats not asymptotically Normal without adjustments.",
+intuition:"Cointegrated series share a stochastic trend; OLS picks up that trend rapidly; hence super-consistent.",
+visualise:"Replication panel comparing convergence rate of OLS slope under iid, stationary, and cointegrated cases.",
+prereqs:["4.20"],forward:["4.23"],examRole:"QT4 §4.4, §4.5"},
+
+{id:"4.23",m:4,title:"Putting it together: the time-series workflow",
+idea:"A single decision tree for any applied series.",
+formal:"(a) Plot. (b) Test for unit roots and structural breaks. (c) Choose AR(p) on levels (if $I(0)$), ADL on differences, or cointegrating regression. (d) Lag order via AIC/BIC. (e) Residual diagnostics (ACF, normality). (f) Forecast and evaluate by pseudo OOS MSFE.",
+visualise:"Guided wizard that walks through each step on a chosen real series (UK GDP growth, S&P 500 dividends, term spread, US industrial production).",
+prereqs:["4.1","4.2","4.3","4.4","4.5","4.6","4.7","4.8","4.9","4.10","4.11","4.12","4.13","4.14","4.15","4.16","4.17","4.18","4.19","4.20","4.21","4.22"],forward:[],examRole:"QT4 §7"}
+
+];
+
+/* Module metadata */
+const MODULES = [
+  {n:0, title:"Probability and Statistics Primer", desc:"Notes-prob-stats, Y1 P&S, Notes-5 Appendix, Stock & Watson Ch 2-3, Key Facts §Probability, §Statistics. Covers QT2 §Big Type 1."},
+  {n:1, title:"Linear Regression and Causality", desc:"Slides 1, Notes 1, Key Facts §Linear Regression Mechanics. Covers all of Question Types 1."},
+  {n:2, title:"Linear Regression and Statistical Inference", desc:"Slides 2, Notes 2, Key Facts §Diagnostics & Inference. Covers QT2 Big Types 2 to 6."},
+  {n:3, title:"Endogeneity, RCTs, and IV", desc:"Slides 3, Notes 3, Key Facts §Endogeneity, §IV, §RCTs. Covers QT1 §Types 2 & 4 and all of QT3."},
+  {n:4, title:"Time Series", desc:"Slides 4, Notes 4, Notes-5 Appendix F, Key Facts §Stationary & §Non-Stationary TS. Covers all of QT4."}
+];
+
+/* Question Type cross-reference */
+const QTS = [
+{section:"Question Types 1: Linear Regression and Causality",blocks:[
+  {name:"Big Type 1: Causal interpretation", lessons:["1.1","1.2","1.3","1.4","1.5","1.6","1.10","1.13","1.14"]},
+  {name:"Big Type 2: RCTs", lessons:["0.16","1.4","1.5","1.13","3.1","3.2","3.3","3.4","3.5","3.6","1.12"]},
+  {name:"Big Type 3: Dummies, interactions, specification", lessons:["1.8","2.4","2.7","2.8","2.9","2.10","2.11"]},
+  {name:"Big Type 4: Applied policy evaluation", lessons:["1.13","3.1","3.7","3.8","3.9","3.10","3.17","3.18"]}
+]},
+{section:"Question Types 2: Linear Regression and Statistical Inference",blocks:[
+  {name:"Big Type 1: Probability distribution derivation", lessons:["0.3","0.4","0.5","0.6","0.7","0.8","0.9","0.10","0.11","0.12","0.13","0.14","0.15","0.16"]},
+  {name:"Big Type 2: OLS properties", lessons:["1.3","1.4","1.6","1.7","1.8","1.9","2.14"]},
+  {name:"Big Type 3: Hypothesis testing", lessons:["0.14","0.15","0.16","2.4","2.5","2.6","2.7"]},
+  {name:"Big Type 4: R², SER, diagnostics", lessons:["2.12","2.13","2.14"]},
+  {name:"Big Type 5: Nonlinear models", lessons:["2.7","2.9","2.10","2.11"]},
+  {name:"Big Type 6: Heteroskedasticity", lessons:["2.2","2.3","2.15"]}
+]},
+{section:"Question Types 3: Endogeneity",blocks:[
+  {name:"Big Type 1: Identify endogeneity", lessons:["1.4","1.10","3.1","3.7","3.8"]},
+  {name:"Big Type 2: Measurement error", lessons:["3.7","3.8"]},
+  {name:"Big Type 3: IV theory", lessons:["3.10","3.11","3.12","3.14"]},
+  {name:"Big Type 4: IV applied", lessons:["3.10","3.12","3.13","3.15","3.16","3.17","3.18"]},
+  {name:"Big Type 5: Simultaneity", lessons:["3.9","3.10"]},
+  {name:"Big Type 6: Proxies", lessons:["1.11"]},
+  {name:"Big Type 7: Endogeneity derivations", lessons:["1.10","3.1","3.8","3.11","3.12"]}
+]},
+{section:"Question Types 4: Time Series",blocks:[
+  {name:"Big Type 1: AR properties", lessons:["4.2","4.3","4.4","4.5","4.14"]},
+  {name:"Big Type 2: Forecasting", lessons:["4.7","4.8","4.9","4.10"]},
+  {name:"Big Type 3: Unit roots and stationarity tests", lessons:["4.14","4.15","4.16","4.17","4.18","4.19"]},
+  {name:"Big Type 4: Cointegration", lessons:["4.20","4.21","4.22"]},
+  {name:"Big Type 5: Spurious regression", lessons:["4.17","4.20"]},
+  {name:"Big Type 6: Granger causality", lessons:["4.10","4.11"]},
+  {name:"Big Type 7: Applied TS analysis", lessons:["4.23","4.1","4.2","4.3","4.4","4.5","4.6","4.7","4.8","4.9","4.10","4.11","4.12","4.13","4.14","4.15","4.16","4.17","4.18","4.19","4.20","4.21","4.22"]}
+]}
+];
+
+/* ============================================================
+   RENDERING
+============================================================ */
+function lessonIdToAnchor(id){return "lesson-"+id.replace(/\\./g,"-");}
+
+function renderSidebar(){
+  const sb = document.getElementById('sidebar');
+  let html = '<input class="search" id="search" placeholder="Search lessons..." />';
+  for(const mod of MODULES){
+    const lessons = LESSONS.filter(l=>l.m===mod.n);
+    html += `<div class="module-block">
+      <div class="module-title m${mod.n}">Module ${mod.n}: ${mod.title.split(":")[0]}</div>
+      <ol>`;
+    for(const l of lessons){
+      html += `<li onclick="jumpTo('${l.id}')"><span class="lid">${l.id}</span> ${l.title}</li>`;
+    }
+    html += `</ol></div>`;
+  }
+  sb.innerHTML = html;
+  document.getElementById('search').addEventListener('input', onSearch);
+}
+
+function tab(cls, label, content){
+  return `<div class="tab ${cls}"><h4>${label}</h4>${content}</div>`;
+}
+
+function renderLessonHead(l){
+  return `<div class="lesson-head" onclick="toggleLesson('${l.id}')">
+    <div class="lh-left"><span class="lid-pill m${l.m}">${l.id}</span><span class="lesson-title">${l.title}</span></div>
+    <div class="toggle">▶</div>
+  </div>`;
+}
+
+function renderLessonBody(l){
+  let body = '';
+  if(l.idea) body += tab('idea','Idea','<p>'+l.idea+'</p>');
+  if(l.formal) body += tab('formal','Formal','<p>'+l.formal+'</p>');
+  if(l.derivation) body += tab('derivation','Derivation','<div>'+l.derivation+'</div>');
+  if(l.intuition) body += tab('intuition','Intuition','<p>'+l.intuition+'</p>');
+  if(l.visualise){
+    let inner = '<p>'+l.visualise+'</p>';
+    if(l.widget) inner += `<div class="demo" id="widget-${l.id.replace(/\\./g,'-')}"></div>`;
+    body += tab('visualise','Visualise',inner);
+  }
+  // Why it matters: links + exam role
+  let why = '';
+  if(l.prereqs && l.prereqs.length){
+    why += '<p><strong>Prerequisites:</strong></p><div class="links">';
+    for(const p of l.prereqs) why += `<span class="linkpill" onclick="jumpTo('${p}')">${p}</span>`;
+    why += '</div>';
+  }
+  if(l.forward && l.forward.length){
+    why += '<p style="margin-top:.5rem"><strong>Forward links:</strong></p><div class="links">';
+    for(const f of l.forward) why += `<span class="linkpill" onclick="jumpTo('${f}')">${f}</span>`;
+    why += '</div>';
+  }
+  if(l.examRole){
+    why += `<p style="margin-top:.5rem"><strong>Exam role:</strong> ${l.examRole}</p>`;
+  }
+  if(why) body += tab('why','Why it matters',why);
+  return `<div class="lesson-body">${body}</div>`;
+}
+
+function renderLessons(){
+  const c = document.getElementById('lessons');
+  let html = '';
+  let lastM = -1;
+  for(const l of LESSONS){
+    if(l.m !== lastM){
+      const mod = MODULES[l.m];
+      html += `<div class="module-section m${l.m}" id="module-${l.m}">
+        <h2>Module ${l.m}: ${mod.title}</h2>
+        <p>${mod.desc}</p>
+      </div>`;
+      lastM = l.m;
+    }
+    html += `<div class="lesson" id="${lessonIdToAnchor(l.id)}">${renderLessonHead(l)}${renderLessonBody(l)}</div>`;
+  }
+  c.innerHTML = html;
+}
+
+function renderEdges(){
+  const e = document.getElementById('edges');
+  let html = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.6rem;margin-top:.6rem">';
+  for(const l of LESSONS){
+    if(!l.forward || !l.forward.length) continue;
+    html += `<div style="font-size:.86rem;line-height:1.7"><span class="linkpill" onclick="jumpTo('${l.id}')">${l.id}</span> →`;
+    for(const f of l.forward) html += ` <span class="linkpill" onclick="jumpTo('${f}')">${f}</span>`;
+    html += `</div>`;
+  }
+  html += '</div>';
+  e.innerHTML = html;
+}
+
+function renderQTs(){
+  const c = document.getElementById('qts');
+  let html = '';
+  for(const sec of QTS){
+    html += `<h3>${sec.section}</h3>`;
+    for(const b of sec.blocks){
+      html += `<div class="qt-block"><span class="qt-name">${b.name}</span> &mdash; <span class="qt-lessons">`;
+      for(const id of b.lessons) html += `<span class="linkpill" onclick="jumpTo('${id}')">${id}</span> `;
+      html += `</span></div>`;
+    }
+  }
+  c.innerHTML = html;
+}
+
+function jumpTo(id){
+  const el = document.getElementById(lessonIdToAnchor(id));
+  if(!el) return;
+  el.classList.add('open');
+  el.scrollIntoView({behavior:'smooth', block:'start'});
+  // Render any widget that lives inside it
+  const w = LESSONS.find(l=>l.id===id);
+  if(w && w.widget) setTimeout(()=>buildWidget(w.id, w.widget), 200);
+  // re-render math
+  if(window.renderMathInElement) renderMathInElement(el,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+}
+
+function toggleLesson(id){
+  const el = document.getElementById(lessonIdToAnchor(id));
+  el.classList.toggle('open');
+  if(el.classList.contains('open')){
+    const w = LESSONS.find(l=>l.id===id);
+    if(w && w.widget) setTimeout(()=>buildWidget(w.id, w.widget), 100);
+    if(window.renderMathInElement) renderMathInElement(el,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  }
+}
+
+function openAll(){
+  for(const l of LESSONS){
+    document.getElementById(lessonIdToAnchor(l.id)).classList.add('open');
+    if(l.widget) setTimeout(()=>buildWidget(l.id, l.widget), 100);
+  }
+  if(window.renderMathInElement) renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+}
+
+function closeAll(){
+  for(const l of LESSONS) document.getElementById(lessonIdToAnchor(l.id)).classList.remove('open');
+}
+
+function onSearch(e){
+  const q = e.target.value.toLowerCase().trim();
+  for(const l of LESSONS){
+    const matches = !q || l.title.toLowerCase().includes(q) || l.id.includes(q) || (l.idea||'').toLowerCase().includes(q);
+    document.getElementById(lessonIdToAnchor(l.id)).style.display = matches?'block':'none';
+  }
+}
+
+/* ============================================================
+   INTERACTIVE WIDGETS (Plotly)
+============================================================ */
+const builtWidgets = new Set();
+function buildWidget(lessonId, kind){
+  const targetId = "widget-" + lessonId.replace(/\\./g,'-');
+  if(builtWidgets.has(targetId)) return;
+  const target = document.getElementById(targetId);
+  if(!target || typeof Plotly === 'undefined') return;
+  builtWidgets.add(targetId);
+  if(kind==='dist-explorer') return widgetDistExplorer(target);
+  if(kind==='binomial-normal') return widgetBinomialNormal(target);
+  if(kind==='clt-sim') return widgetCLT(target);
+  if(kind==='ols-line') return widgetOLS(target);
+  if(kind==='ovb-direction') return widgetOVB(target);
+  if(kind==='ar1-sim') return widgetAR1(target);
+}
+
+/* Distribution explorer */
+function widgetDistExplorer(t){
+  t.innerHTML = `<div class="controls">
+    <div class="ctrl"><label>Distribution</label><select id="de-d"><option>Normal</option><option>Bernoulli</option><option>Binomial</option><option>Uniform</option></select></div>
+    <div class="ctrl"><label>Param 1: <span class="val" id="de-p1v">0</span></label><input type="range" id="de-p1" min="-3" max="3" step=".1" value="0"></div>
+    <div class="ctrl"><label>Param 2: <span class="val" id="de-p2v">1</span></label><input type="range" id="de-p2" min=".1" max="5" step=".1" value="1"></div>
+  </div><div class="plot" id="de-plot"></div>`;
+  const draw=()=>{
+    const d=t.querySelector('#de-d').value;
+    const p1=+t.querySelector('#de-p1').value;
+    const p2=+t.querySelector('#de-p2').value;
+    t.querySelector('#de-p1v').textContent=p1.toFixed(2);
+    t.querySelector('#de-p2v').textContent=p2.toFixed(2);
+    let xs=[], pdf=[], cdf=[];
+    if(d==='Normal'){
+      const mu=p1, sigma=p2;
+      for(let x=-6;x<=6;x+=.05){xs.push(x); const v=Math.exp(-((x-mu)**2)/(2*sigma*sigma))/(sigma*Math.sqrt(2*Math.PI)); pdf.push(v);}
+      let acc=0; for(let i=0;i<xs.length;i++){acc+=pdf[i]*0.05; cdf.push(acc);}
+    } else if(d==='Bernoulli'){
+      const p=Math.min(Math.max(p1*0+0.5+p2*0.1,0.01),0.99);
+      xs=[0,1]; pdf=[1-p,p]; cdf=[1-p,1];
+    } else if(d==='Binomial'){
+      const n=Math.max(2,Math.round(p2*5)); const p=Math.min(Math.max((p1+3)/6,0.01),0.99);
+      const C=(n,k)=>{let r=1; for(let i=0;i<k;i++) r=r*(n-i)/(i+1); return r;};
+      let acc=0;
+      for(let k=0;k<=n;k++){xs.push(k); const v=C(n,k)*Math.pow(p,k)*Math.pow(1-p,n-k); pdf.push(v); acc+=v; cdf.push(acc);}
+    } else {
+      const a=p1, b=p1+Math.max(p2,0.5);
+      xs=[a-1,a,a,b,b,b+1]; pdf=[0,0,1/(b-a),1/(b-a),0,0];
+      cdf=[0,0,0,1,1,1];
+    }
+    Plotly.newPlot(t.querySelector('#de-plot'),[
+      {x:xs,y:pdf,type:(d==='Bernoulli'||d==='Binomial')?'bar':'scatter',name:'PMF/PDF',marker:{color:'#2b6cb0'}},
+      {x:xs,y:cdf,type:'scatter',name:'CDF',line:{color:'#c05621',width:2},yaxis:'y2'}
+    ],{
+      margin:{t:20,r:50,b:35,l:40},height:280,
+      yaxis:{title:'PMF/PDF'},yaxis2:{title:'CDF',overlaying:'y',side:'right',range:[0,1.05]},
+      legend:{orientation:'h',y:-0.2}
+    },{displayModeBar:false});
+  };
+  t.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* Binomial vs Normal */
+function widgetBinomialNormal(t){
+  t.innerHTML = `<div class="controls">
+    <div class="ctrl"><label>n: <span class="val" id="bn-nv">20</span></label><input type="range" id="bn-n" min="2" max="200" step="1" value="20"></div>
+    <div class="ctrl"><label>p: <span class="val" id="bn-pv">0.5</span></label><input type="range" id="bn-p" min=".05" max=".95" step=".01" value=".5"></div>
+  </div><div class="plot" id="bn-plot"></div>`;
+  const draw=()=>{
+    const n=+t.querySelector('#bn-n').value, p=+t.querySelector('#bn-p').value;
+    t.querySelector('#bn-nv').textContent=n; t.querySelector('#bn-pv').textContent=p.toFixed(2);
+    const C=(n,k)=>{let r=1; for(let i=0;i<k;i++) r=r*(n-i)/(i+1); return r;};
+    const ks=[],binom=[];
+    for(let k=0;k<=n;k++){ks.push(k); binom.push(C(n,k)*Math.pow(p,k)*Math.pow(1-p,n-k));}
+    const mu=n*p, sigma=Math.sqrt(n*p*(1-p));
+    const xs=[],normal=[];
+    for(let x=Math.max(0,mu-4*sigma);x<=Math.min(n,mu+4*sigma);x+=.2){
+      xs.push(x); normal.push(Math.exp(-((x-mu)**2)/(2*sigma*sigma))/(sigma*Math.sqrt(2*Math.PI)));
+    }
+    Plotly.newPlot(t.querySelector('#bn-plot'),[
+      {x:ks,y:binom,type:'bar',name:'Binomial PMF',marker:{color:'#2b6cb0',opacity:0.7}},
+      {x:xs,y:normal,type:'scatter',name:'Normal approx',line:{color:'#c05621',width:2}}
+    ],{margin:{t:20,r:30,b:35,l:40},height:300,legend:{orientation:'h',y:-0.18}},{displayModeBar:false});
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* CLT simulator */
+function widgetCLT(t){
+  t.innerHTML = `<div class="controls">
+    <div class="ctrl"><label>Source distribution</label><select id="clt-src"><option>Exponential</option><option>Bernoulli(.2)</option><option>Uniform</option></select></div>
+    <div class="ctrl"><label>n: <span class="val" id="clt-nv">5</span></label><input type="range" id="clt-n" min="1" max="200" step="1" value="5"></div>
+    <div class="ctrl"><label>Replications</label><input type="range" id="clt-r" min="500" max="20000" step="500" value="5000"></div>
+  </div><div class="plot" id="clt-plot"></div>`;
+  const draw=()=>{
+    const src=t.querySelector('#clt-src').value;
+    const n=+t.querySelector('#clt-n').value, R=+t.querySelector('#clt-r').value;
+    t.querySelector('#clt-nv').textContent=n;
+    let mu, sigma2, sample;
+    if(src==='Exponential'){mu=1; sigma2=1; sample=()=>-Math.log(Math.random());}
+    else if(src==='Bernoulli(.2)'){mu=.2; sigma2=.16; sample=()=>Math.random()<.2?1:0;}
+    else {mu=.5; sigma2=1/12; sample=()=>Math.random();}
+    const sigma=Math.sqrt(sigma2);
+    const zs=[];
+    for(let r=0;r<R;r++){
+      let s=0; for(let i=0;i<n;i++) s+=sample();
+      zs.push(((s/n)-mu)/(sigma/Math.sqrt(n)));
+    }
+    const xs=[],normal=[];
+    for(let x=-4;x<=4;x+=.1){xs.push(x); normal.push(Math.exp(-x*x/2)/Math.sqrt(2*Math.PI));}
+    Plotly.newPlot(t.querySelector('#clt-plot'),[
+      {x:zs,type:'histogram',histnorm:'probability density',name:'Standardised mean',nbinsx:50,marker:{color:'#2b6cb0',opacity:.7}},
+      {x:xs,y:normal,type:'scatter',name:'N(0,1)',line:{color:'#c05621',width:2}}
+    ],{margin:{t:20,r:30,b:35,l:40},height:300,legend:{orientation:'h',y:-0.18}},{displayModeBar:false});
+  };
+  t.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* OLS line */
+function widgetOLS(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>Slope $\\beta_1$: <span class="val" id="ols-b1v">1</span></label><input type="range" id="ols-b1" min="-2" max="2" step=".05" value="1"></div>
+    <div class="ctrl"><label>Noise $\\sigma$: <span class="val" id="ols-sv">.5</span></label><input type="range" id="ols-s" min=".1" max="2" step=".05" value=".5"></div>
+    <div class="ctrl"><label>n: <span class="val" id="ols-nv">50</span></label><input type="range" id="ols-n" min="10" max="500" step="10" value="50"></div>
+    <button class="btn" id="ols-resample">Resample</button>
+  </div><div class="plot" id="ols-plot"></div><div class="stats" id="ols-stats"></div>`;
+  let seed=12345;
+  const rand=()=>{seed=(seed*9301+49297)%233280; return seed/233280;}
+  const normal=()=>{let u=0,v=0; while(!u) u=rand(); while(!v) v=rand(); return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+  const draw=()=>{
+    const b1=+t.querySelector('#ols-b1').value, s=+t.querySelector('#ols-s').value, n=+t.querySelector('#ols-n').value;
+    t.querySelector('#ols-b1v').textContent=b1.toFixed(2);
+    t.querySelector('#ols-sv').textContent=s.toFixed(2);
+    t.querySelector('#ols-nv').textContent=n;
+    seed=12345;
+    const xs=[], ys=[];
+    for(let i=0;i<n;i++){const x=normal()*1.5; const y=0.3+b1*x+s*normal(); xs.push(x); ys.push(y);}
+    const mx=xs.reduce((a,b)=>a+b,0)/n, my=ys.reduce((a,b)=>a+b,0)/n;
+    let sxy=0, sxx=0;
+    for(let i=0;i<n;i++){sxy+=(xs[i]-mx)*(ys[i]-my); sxx+=(xs[i]-mx)*(xs[i]-mx);}
+    const bhat=sxy/sxx, ahat=my-bhat*mx;
+    const xline=[Math.min(...xs), Math.max(...xs)];
+    const yline=xline.map(x=>ahat+bhat*x);
+    Plotly.newPlot(t.querySelector('#ols-plot'),[
+      {x:xs,y:ys,mode:'markers',type:'scatter',name:'Data',marker:{color:'#2b6cb0',size:6,opacity:.6}},
+      {x:xline,y:yline,mode:'lines',type:'scatter',name:'OLS fit',line:{color:'#c05621',width:2}}
+    ],{margin:{t:20,r:30,b:35,l:40},height:280,legend:{orientation:'h',y:-0.18}},{displayModeBar:false});
+    t.querySelector('#ols-stats').innerHTML=`
+      <div class="stat"><span class="stat-label">True $\\beta_1$</span><span class="stat-value">${b1.toFixed(3)}</span></div>
+      <div class="stat"><span class="stat-label">$\\hat\\beta_1$</span><span class="stat-value">${bhat.toFixed(3)}</span></div>
+      <div class="stat"><span class="stat-label">$\\hat\\beta_0$</span><span class="stat-value">${ahat.toFixed(3)}</span></div>
+      <div class="stat"><span class="stat-label">Bias</span><span class="stat-value">${(bhat-b1).toFixed(3)}</span></div>`;
+    if(window.renderMathInElement) renderMathInElement(t.querySelector('#ols-stats'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  t.querySelector('#ols-resample').addEventListener('click',()=>{seed=Math.floor(Math.random()*99999); draw();});
+  draw();
+}
+
+/* OVB direction */
+function widgetOVB(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>$\\beta_2$: <span class="val" id="ovb-b2v">1</span></label><input type="range" id="ovb-b2" min="-2" max="2" step=".1" value="1"></div>
+    <div class="ctrl"><label>$\\pi_1=\\mathrm{cov}(X_1,X_2)/\\mathrm{var}(X_1)$: <span class="val" id="ovb-p1v">.5</span></label><input type="range" id="ovb-p1" min="-1" max="1" step=".05" value=".5"></div>
+    <div class="ctrl"><label>True $\\beta_1$: <span class="val" id="ovb-b1v">1</span></label><input type="range" id="ovb-b1" min="-2" max="2" step=".1" value="1"></div>
+  </div><div class="stats" id="ovb-stats"></div>`;
+  const draw=()=>{
+    const b2=+t.querySelector('#ovb-b2').value;
+    const p1=+t.querySelector('#ovb-p1').value;
+    const b1=+t.querySelector('#ovb-b1').value;
+    t.querySelector('#ovb-b2v').textContent=b2.toFixed(2);
+    t.querySelector('#ovb-p1v').textContent=p1.toFixed(2);
+    t.querySelector('#ovb-b1v').textContent=b1.toFixed(2);
+    const bias=b2*p1, gamma=b1+bias;
+    const dir = bias>0.001?'<span style="color:#c05621">↑ upward</span>':bias<-0.001?'<span style="color:#2b6cb0">↓ downward</span>':'<span style="color:#38a169">≈ none</span>';
+    t.querySelector('#ovb-stats').innerHTML=`
+      <div class="stat"><span class="stat-label">Bias $\\beta_2\\pi_1$</span><span class="stat-value">${bias.toFixed(3)}</span></div>
+      <div class="stat"><span class="stat-label">$\\gamma_1=\\beta_1+\\beta_2\\pi_1$</span><span class="stat-value">${gamma.toFixed(3)}</span></div>
+      <div class="stat"><span class="stat-label">Direction</span><span class="stat-value">${dir}</span></div>`;
+    if(window.renderMathInElement) renderMathInElement(t.querySelector('#ovb-stats'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* AR(1) simulator */
+function widgetAR1(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>$\\beta_0$ (drift): <span class="val" id="ar-b0v">0</span></label><input type="range" id="ar-b0" min="-1" max="1" step=".05" value="0"></div>
+    <div class="ctrl"><label>$\\beta_1$: <span class="val" id="ar-b1v">.7</span></label><input type="range" id="ar-b1" min="-1.05" max="1.05" step=".01" value=".7"></div>
+    <div class="ctrl"><label>$\\sigma_u$: <span class="val" id="ar-sv">1</span></label><input type="range" id="ar-s" min=".1" max="2" step=".05" value="1"></div>
+    <div class="ctrl"><label>T: <span class="val" id="ar-tv">200</span></label><input type="range" id="ar-t" min="50" max="1000" step="10" value="200"></div>
+    <button class="btn" id="ar-resample">Resample</button>
+  </div><div class="plot" id="ar-plot"></div><div class="stats" id="ar-stats"></div>`;
+  let seed=42;
+  const rand=()=>{seed=(seed*9301+49297)%233280; return seed/233280;}
+  const normal=()=>{let u=0,v=0; while(!u) u=rand(); while(!v) v=rand(); return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+  const draw=()=>{
+    const b0=+t.querySelector('#ar-b0').value, b1=+t.querySelector('#ar-b1').value;
+    const s=+t.querySelector('#ar-s').value, T=+t.querySelector('#ar-t').value;
+    t.querySelector('#ar-b0v').textContent=b0.toFixed(2);
+    t.querySelector('#ar-b1v').textContent=b1.toFixed(2);
+    t.querySelector('#ar-sv').textContent=s.toFixed(2);
+    t.querySelector('#ar-tv').textContent=T;
+    const xs=[], ys=[]; let y=0;
+    for(let i=0;i<T;i++){y=b0+b1*y+s*normal(); xs.push(i); ys.push(y);}
+    const stationary=Math.abs(b1)<1;
+    const mu=stationary?b0/(1-b1):null, sd=stationary?s/Math.sqrt(1-b1*b1):null;
+    const traces=[{x:xs,y:ys,mode:'lines',type:'scatter',name:'$Y_t$',line:{color:'#38a169',width:1.4}}];
+    if(stationary){
+      traces.push({x:[0,T],y:[mu,mu],mode:'lines',type:'scatter',name:'$\\mu$',line:{color:'#c05621',dash:'dash'}});
+    }
+    Plotly.newPlot(t.querySelector('#ar-plot'),traces,{margin:{t:20,r:30,b:35,l:40},height:280,legend:{orientation:'h',y:-0.18}},{displayModeBar:false});
+    t.querySelector('#ar-stats').innerHTML=stationary?`
+      <div class="stat"><span class="stat-label">Stationary?</span><span class="stat-value" style="color:#38a169">yes</span></div>
+      <div class="stat"><span class="stat-label">$\\mu=\\beta_0/(1-\\beta_1)$</span><span class="stat-value">${mu.toFixed(3)}</span></div>
+      <div class="stat"><span class="stat-label">$\\sigma_Y$</span><span class="stat-value">${sd.toFixed(3)}</span></div>`
+      : `<div class="stat"><span class="stat-label">Stationary?</span><span class="stat-value" style="color:#c05621">no (|β₁|≥1)</span></div>
+      <div class="stat"><span class="stat-label">Behaviour</span><span class="stat-value">${Math.abs(b1)===1?'random walk':'explosive'}</span></div>`;
+    if(window.renderMathInElement) renderMathInElement(t.querySelector('#ar-stats'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  t.querySelector('#ar-resample').addEventListener('click',()=>{seed=Math.floor(Math.random()*99999); draw();});
+  draw();
+}
+
+/* ============================================================
+   INIT
+============================================================ */
+renderSidebar();
+renderLessons();
+renderEdges();
+renderQTs();
+// re-render math after content insertion
+window.addEventListener('load',()=>{
+  if(window.renderMathInElement){
+    renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  }
+});
+// support direct anchors
+if(window.location.hash){
+  const id=window.location.hash.replace('#lesson-','').replace(/-/g,'.');
+  setTimeout(()=>jumpTo(id),300);
+}
+</script>
+
+</body>
+</html>
