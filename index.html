@@ -10,6 +10,8 @@
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
         onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
 <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7.8.5/dist/d3.min.js"></script>
+<script src="qt_data.js"></script>
 <style>
 :root{
   --bg:#fafbfc; --fg:#1a202c; --muted:#4a5568;
@@ -98,8 +100,10 @@ main{padding:1.4rem 2rem 4rem;max-width:1100px}
 .tab ol{margin:.3rem 0 .3rem 1.4rem}
 
 .links{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.4rem}
-.linkpill{display:inline-block;font-size:.78rem;padding:.18rem .55rem;border-radius:4px;background:#edf2f7;color:var(--primary);cursor:pointer;border:1px solid var(--border);font-family:'JetBrains Mono','Courier New',monospace}
-.linkpill:hover{background:#e2e8f0}
+.linkpill{display:inline-flex;align-items:center;gap:.35rem;font-size:.78rem;padding:.22rem .6rem;border-radius:14px;background:#edf2f7;color:var(--fg);cursor:pointer;border:1px solid var(--border);max-width:100%;line-height:1.25;transition:all .15s}
+.linkpill:hover{background:#dbeafe;border-color:var(--primary);color:var(--primary)}
+.linkpill .pill-id{font-family:'JetBrains Mono','Courier New',monospace;color:var(--primary);font-weight:700;font-size:.72rem}
+.linkpill .pill-name{font-size:.78rem}
 
 .demo{background:#fff;border:1px solid var(--border);border-radius:8px;padding:1rem 1.2rem;margin:.7rem 0}
 .demo .controls{display:flex;flex-wrap:wrap;gap:1rem;margin-bottom:.8rem}
@@ -121,6 +125,40 @@ main{padding:1.4rem 2rem 4rem;max-width:1100px}
 .qt-block{margin:.6rem 0;font-size:.92rem}
 .qt-block .qt-name{font-weight:600;color:var(--fg)}
 .qt-block .qt-lessons{font-family:'JetBrains Mono','Courier New',monospace;font-size:.85rem;color:var(--muted)}
+
+.qt-section{margin:1.2rem 0;border:1px solid var(--border);border-radius:8px;background:#fff}
+.qt-section-summary{padding:.9rem 1.2rem;font-size:1.1rem;font-weight:700;color:var(--primary);cursor:pointer;background:#f7fafc;border-radius:8px;list-style:none;display:flex;justify-content:space-between;align-items:center}
+.qt-section-summary::after{content:"▶";font-size:.8rem;color:var(--muted);transition:transform .15s}
+.qt-section[open] .qt-section-summary::after{transform:rotate(90deg)}
+.qt-section-summary::-webkit-details-marker{display:none}
+.qt-section-body{padding:.4rem 1rem 1rem}
+.qt-excluded{background:#fed7d7;color:#742a2a;padding:.5rem .8rem;border-radius:6px;font-size:.85rem;margin:.5rem 0}
+
+.qt-big{margin:.7rem 0;border:1px solid var(--border);border-radius:6px;background:#fff;border-left:4px solid var(--accent)}
+.qt-big-summary{padding:.7rem 1rem;cursor:pointer;list-style:none;display:flex;align-items:center;gap:.6rem;font-weight:600;color:var(--fg)}
+.qt-big-summary::-webkit-details-marker{display:none}
+.qt-big-summary::after{content:"▶";font-size:.7rem;color:var(--muted);margin-left:auto;transition:transform .15s}
+.qt-big[open] .qt-big-summary::after{transform:rotate(90deg)}
+.qt-big-summary:hover{background:#fffaf0}
+.qt-big-num{font-family:'JetBrains Mono',monospace;background:var(--accent);color:#fff;padding:.18rem .55rem;border-radius:4px;font-size:.75rem}
+.qt-big-body{padding:0 1rem 1rem;border-top:1px solid var(--border)}
+.qt-desc{margin-top:.7rem;color:var(--muted);font-style:italic;font-size:.92rem}
+.qt-years{font-size:.85rem;color:var(--muted);margin:.3rem 0 .6rem}
+
+.qt-sub{margin:.5rem 0;border:1px solid var(--border);border-radius:5px;background:#fafafa;border-left:3px solid var(--primary)}
+.qt-sub-summary{padding:.55rem .85rem;cursor:pointer;list-style:none;display:flex;align-items:center;gap:.5rem;font-size:.94rem}
+.qt-sub-summary::-webkit-details-marker{display:none}
+.qt-sub-summary::after{content:"▶";font-size:.7rem;color:var(--muted);margin-left:auto;transition:transform .15s}
+.qt-sub[open] .qt-sub-summary::after{transform:rotate(90deg)}
+.qt-sub-summary:hover{background:#ebf4ff}
+.qt-sub-num{font-family:'JetBrains Mono',monospace;background:var(--primary);color:#fff;padding:.14rem .5rem;border-radius:3px;font-size:.7rem;font-weight:700}
+.qt-sub-body{padding:.6rem 1rem 1rem;border-top:1px solid var(--border);background:#fff}
+.qt-asks{padding:.5rem .8rem;background:#f0fff4;border-left:3px solid #38a169;border-radius:0 4px 4px 0;margin:.5rem 0;font-size:.92rem}
+.qt-steps{margin:.7rem 0;padding:.7rem .9rem;background:#ebf4ff;border-radius:5px}
+.qt-steps ol{margin:.4rem 0 0 1.4rem}
+.qt-steps li{margin:.4rem 0;line-height:1.55;font-size:.92rem}
+.qt-concepts{margin:.6rem 0;padding:.5rem .8rem;background:#fffaf0;border-radius:5px}
+.qt-appeared{margin-top:.5rem;padding:.3rem .6rem;font-size:.85rem}
 
 footer{background:#1a202c;color:#cbd5e0;padding:2rem;margin-top:3rem;text-align:center;font-size:.88rem}
 footer a{color:#93c5fd}
@@ -166,14 +204,14 @@ footer a{color:#93c5fd}
   <div id="lessons"></div>
 
   <section class="section-extra" id="concept-map">
-    <h2>5. Concept map (prerequisite edges)</h2>
-    <p>Each line below reads "A is a prerequisite for B". Click any pill to jump to the lesson.</p>
+    <h2>5. Concept map</h2>
+    <p>Force-directed graph (Obsidian-style). Each node is a lesson; each edge means "prerequisite for". Drag, hover, click, scroll to zoom.</p>
     <div id="edges"></div>
   </section>
 
   <section class="section-extra" id="qt-map">
-    <h2>6. Question Type to lesson cross-reference</h2>
-    <p>For each big Question Type, the minimum set of lessons needed to attempt it.</p>
+    <h2>6. Question Types: full step-by-step guides</h2>
+    <p>Each section is a Question Types file. Inside, each <strong>Big Type</strong> opens to its <strong>Sub-types</strong>; each Sub-type expands to "What it asks", the full numbered step-by-step guide, the relevant concepts (linked to lessons by name), and the past papers it appeared in.</p>
     <div id="qts"></div>
   </section>
 
@@ -252,6 +290,7 @@ formal:"$\\mathbb{E}(aX+bY+c)=a\\mathbb{E}X+b\\mathbb{E}Y+c$. $\\mathrm{var}(aX+
 derivation:"$\\mathrm{var}(X+Y)=\\mathbb{E}[(X+Y)-\\mathbb{E}(X+Y)]^2=\\mathbb{E}[(X-\\mathbb{E}X)+(Y-\\mathbb{E}Y)]^2$. Expand: $\\mathbb{E}(X-\\mathbb{E}X)^2+\\mathbb{E}(Y-\\mathbb{E}Y)^2+2\\mathbb{E}(X-\\mathbb{E}X)(Y-\\mathbb{E}Y)$, which equals $\\mathrm{var}(X)+\\mathrm{var}(Y)+2\\mathrm{cov}(X,Y)$. Linearity of $\\mathbb{E}$ comes from linearity of integration; bilinearity of $\\mathrm{cov}$ from expanding products.",
 intuition:"Expand the bracket, take expectations, recombine using definitions. Mastery of this loop is the entire content of the slide-1 advice that you should master $\\mathbb{E},\\mathrm{var},\\mathrm{cov}$.",
 visualise:"Moment calculator: define $W=aX+bY+c$ for chosen distributions and watch the formula expand symbolically alongside a numeric Monte Carlo check.",
+widget:"moment-calc",
 prereqs:["0.6"],forward:["0.8","0.9","1.3","1.7","2.2","2.7","2.14","3.5","3.7","3.8","4.5"]},
 
 {id:"0.8",m:0,title:"Conditional expectation, the CEF, and its properties",
@@ -260,12 +299,14 @@ formal:"$\\mathbb{E}[Y\\mid X=x]=\\int y f_{Y\\mid X}(y\\mid x)\\,dy$. (i) Linea
 derivation:"<strong>LIE.</strong> With joint density $p(y,x)=q(y\\mid x)r(x)$: $\\mathbb{E}Y=\\int\\int y\\,p(y,x)\\,dy\\,dx=\\int r(x)\\Big[\\int y\\,q(y\\mid x)\\,dy\\Big]dx=\\int r(x)\\mathbb{E}[Y\\mid X=x]\\,dx=\\mathbb{E}[\\mathbb{E}[Y\\mid X]]$.<br><br><strong>Conditioning rule.</strong> $\\mathbb{E}[g(X)Y\\mid X=x]=\\int yg(x)q(y\\mid x)\\,dy=g(x)\\int yq(y\\mid x)\\,dy=g(x)\\mathbb{E}[Y\\mid X=x]$.<br><br><strong>CEF as MSE-minimiser.</strong> Let $e=Y-\\mathbb{E}[Y\\mid X]$ and $g(X)=m(X)-\\mathbb{E}[Y\\mid X]$. Then $\\mathbb{E}[Y-m(X)]^2=\\mathbb{E}e^2+\\mathbb{E}g^2-2\\mathbb{E}[eg]$. The cross term: $\\mathbb{E}[eg]=\\mathbb{E}[\\mathbb{E}[eg\\mid X]]=\\mathbb{E}[g\\,\\mathbb{E}[e\\mid X]]=\\mathbb{E}[g\\cdot 0]=0$. So $\\mathbb{E}[Y-m(X)]^2=\\mathbb{E}e^2+\\mathbb{E}g^2\\ge\\mathbb{E}e^2$, equality iff $m(X)=\\mathbb{E}[Y\\mid X]$.",
 intuition:"LIE: take expectations in any order. Conditioning rule: known-given-$X$ pulls out. MSE-minimiser is a Pythagorean decomposition; any deviation from the CEF adds an orthogonal extra error.",
 visualise:"Heatmap with a draggable $x$-line that highlights the conditional slice; side panel plots $\\mathbb{E}[Y\\mid X=x]$ as $x$ moves.",
+widget:"cef-pythagorean",
 prereqs:["0.4","0.6"],forward:["1.4","1.5","4.7"],examRole:"QT1 §1.5"},
 
 {id:"0.9",m:0,title:"Sample estimators",
 idea:"Data-based analogues of population moments; Bessel corrections preserve unbiasedness.",
 formal:"$\\overline{X}_n=\\frac{1}{n}\\sum X_i$. $s_{n,X}^2=\\frac{1}{n-1}\\sum(X_i-\\overline X_n)^2$. Naive variance $\\hat\\sigma_{n,X}^2=\\frac{1}{n}\\sum(X_i-\\overline X_n)^2$. $s_{n,XY}=\\frac{1}{n-1}\\sum(X_i-\\overline X_n)(Y_i-\\overline Y_n)$. $\\hat{\\mathrm{corr}}=s_{n,XY}/(s_{n,X}s_{n,Y})$.",
 visualise:"Bootstrap simulator: pick $n$ and a distribution; the widget draws $B$ samples and overlays the histogram of $\\overline X_n$ with the theoretical sampling distribution.",
+widget:"sampling-dist",
 prereqs:["0.6","0.7"],forward:["0.10","0.13","1.6","4.3"]},
 
 {id:"0.10",m:0,title:"Convergence: in probability and in distribution",
@@ -349,6 +390,7 @@ formal:"OR: $\\mathbb{E}u=0$ and $\\mathbb{E}Xu=0$. MI: $\\mathbb{E}[u\\mid X]=0
 derivation:"<strong>Causal = regression under OR.</strong> Substitute the causal model into the normal equations: $\\mathbb{E}(Y-\\beta_0-\\beta_1X)=\\mathbb{E}u=0$ and $\\mathbb{E}X(Y-\\beta_0-\\beta_1X)=\\mathbb{E}Xu=0$. Both hold by OR. Uniqueness of normal equations gives $(\\beta_0,\\beta_1)=(\\rho_0,\\rho_1)$.<br><br><strong>MI implies OR.</strong> $\\mathbb{E}u=\\mathbb{E}[\\mathbb{E}[u\\mid X]]=0$ by LIE; $\\mathbb{E}Xu=\\mathbb{E}[X\\,\\mathbb{E}[u\\mid X]]=\\mathbb{E}[X\\cdot 0]=0$ by conditioning rule.",
 intuition:"OR is moment-form: 'unmodelled part of $Y$ is uncorrelated with $X$'. MI is conditional: 'no slice of $X$ has a systematic tilt in $u$'. OR suffices for OLS consistency on the structural slope; MI suffices for the CEF to be linear.",
 visualise:"Satisfaction grid: three checkboxes (OR, MI, full independence); user constructs a process violating one without the others.",
+widget:"or-vs-mi",
 prereqs:["1.2","1.3","0.7"],forward:["1.5","1.7","1.10","3.1","3.2","4.6"],examRole:"QT1 §1.1, §1.2, QT3 §1"},
 
 {id:"1.5",m:1,title:"CEF, best linear prediction, and when regression is causal",
@@ -412,6 +454,7 @@ prereqs:["1.10"],forward:["3.10"],examRole:"QT3 §6"},
 idea:"Post-treatment variables that lie on the causal pathway should not be included.",
 formal:"With a mediator $M$ on $X\\to M\\to Y$, conditioning on $M$ blocks part of the effect of $X$ on $Y$ and creates a residual correlated with $M$, breaking OR.",
 visualise:"DAG widget where $X\\to M\\to Y$; toggling 'control for $M$' recolours the surviving causal path; a counter shows the implied bias on $\\hat\\beta_X$.",
+widget:"bad-controls",
 prereqs:["1.2","1.10"],forward:["3.6","3.17"],examRole:"QT1 §2.5"},
 
 {id:"1.13",m:1,title:"The 'regression recipe'",
@@ -455,6 +498,7 @@ formal:"Under $H_0$, $t\\to^d N(0,1)$. Two-sided: reject if $|t|>c_\\alpha$ ($c_
 derivation:"<strong>Two-sided.</strong> Under $H_0$, $\\beta_l=c$, so $t=\\sqrt n(\\hat\\beta_l-\\beta_l)/\\hat\\omega_{\\beta_l}$. Numerator $\\to^d N(0,\\omega^2)$ by 1.7; denominator $\\to^p\\omega$ by SE consistency. By Slutsky, $t\\to^d N(0,1)$.<br><br><strong>One-sided.</strong> Same algebra; under $H_1:\\beta_l>c$ the deterministic part $\\sqrt n(\\beta_l-c)/\\hat\\omega\\to+\\infty$, giving power against the alternative.",
 intuition:"$t$ counts standard errors between $\\hat\\beta_l$ and the null. Under the null the count is approximately standard normal.",
 visualise:"Density-with-shaded-tails diagram; user toggles one-sided and two-sided; rejection region and p-value update.",
+widget:"t-test-shaded",
 prereqs:["0.14","2.1","2.2"],forward:["2.5","2.6","2.7","2.11"],examRole:"QT2 §3.1, §3.5, §3.6"},
 
 {id:"2.5",m:2,title:"Confidence intervals for a coefficient",
@@ -462,6 +506,7 @@ idea:"Dual of the t-test; the set of null values not rejected.",
 formal:"$\\mathcal{C}_n=\\{b:|t(b)|\\le c_\\alpha\\}=[\\hat\\beta_l\\pm c_\\alpha\\,\\mathrm{se}(\\hat\\beta_l)]$, with coverage $\\to 1-\\alpha$.",
 derivation:"See 0.15 (full inversion).",
 visualise:"Replication panel: many CIs; coverage counter approaches $1-\\alpha$.",
+widget:"ci-bands",
 prereqs:["2.4"],forward:["2.11"],examRole:"QT2 §3.3"},
 
 {id:"2.6",m:2,title:"p-values",
@@ -469,6 +514,7 @@ idea:"Probability under the null of observing something at least as extreme as t
 formal:"Two-sided: $p=2\\Phi(-|t_{\\mathrm{obs}}|)$. One-sided: $p=\\Phi(-t_{\\mathrm{obs}})$ for upper-tail.",
 derivation:"By definition of the null distribution $T\\to^d N(0,1)$, the area in the appropriate tail is read from $\\Phi$. The p-value is the smallest $\\alpha$ at which $H_0$ would be rejected: $\\alpha\\le p\\Leftrightarrow c_\\alpha\\le|t_{\\mathrm{obs}}|$.",
 visualise:"Shaded-tail widget; user types $t_{\\mathrm{obs}}$, p-value updates instantly.",
+widget:"pvalue-tail",
 prereqs:["2.4"],forward:[],examRole:"QT2 §3.2"},
 
 {id:"2.7",m:2,title:"F-tests for joint hypotheses",
@@ -490,6 +536,7 @@ prereqs:["1.8"],forward:["2.9"],examRole:"QT1 §3.4, QT2 §6"},
 idea:"Encode categories with $0/1$ regressors; interactions let the slope of one regressor depend on another.",
 formal:"For $D\\in\\{0,1\\}$ and continuous $X$: $\\beta_D$ is the conditional mean shift. With interaction $\\beta_3 DX$: $\\partial Y/\\partial X=\\beta_2+\\beta_3 D$. Test $H_0:\\beta_3=0$ to test whether the slope differs across groups.",
 visualise:"Two-panel scatter (D=0, D=1) with one regression line per group; switching to 'interaction model' shows two slopes; switching off shows parallel lines.",
+widget:"interaction-slopes",
 prereqs:["1.8","2.4","2.8"],forward:["2.10","2.11"],examRole:"QT1 §3.1 to §3.3, QT2 §5"},
 
 {id:"2.10",m:2,title:"Polynomials, logs, and elasticities",
@@ -534,6 +581,7 @@ prereqs:["1.6","2.12"],forward:["2.10"],examRole:"QT2 §2.6, §4.3"},
 idea:"The package of assumptions that justify CLT-based standard errors for OLS.",
 formal:"(i) Causal model satisfies OR. (ii) iid sample. (iii) Finite kurtosis ($\\mathbb{E}X^4<\\infty$, $\\mathbb{E}u^4<\\infty$). (iv) No perfect multicollinearity.",
 visualise:"Compliance dashboard with four lights, each fed by a Monte Carlo that violates one assumption and shows the consequent breakdown of inference.",
+widget:"four-assumptions",
 prereqs:["1.4","1.7","2.1","2.8"],forward:[],examRole:"Scaffolding for almost every Part B question"},
 
 /* MODULE 3 */
@@ -609,6 +657,7 @@ prereqs:["0.7","3.1"],forward:["3.10"],examRole:"QT3 §5"},
 idea:"A valid instrument $Z$ identifies the causal effect without observing the confounder.",
 formal:"<strong>Z1 Relevance</strong>: $\\mathrm{cov}(X,Z)\\ne 0$. <strong>Z2 Exogeneity</strong>: $\\mathrm{cov}(Z,u)=0$. <strong>Z3 Exclusion</strong>: $Z$ does not appear directly in the structural equation.",
 visualise:"DAG with $Z\\to X\\to Y$ and possible arrows from confounder $U$; user drags arrows to test which violations break IV identification.",
+widget:"iv-dag",
 prereqs:["3.1","1.13"],forward:["3.11","3.12","3.17","3.18"],examRole:"QT3 §3.1"},
 
 {id:"3.11",m:3,title:"Indirect Least Squares (ILS)",
@@ -704,6 +753,7 @@ idea:"Closed-form moments under stationarity.",
 derivation:"<strong>Mean.</strong> Stationarity: $\\mathbb{E}Y_t=\\mu$. Take expectation of $Y_t=\\beta_0+\\beta_1Y_{t-1}+u_t$: $\\mu=\\beta_0+\\beta_1\\mu\\Rightarrow\\boxed{\\mu=\\beta_0/(1-\\beta_1)}$ for $\\beta_1\\ne 1$.<br><br><strong>Variance.</strong> $\\mathrm{var}(Y_t)=\\beta_1^2\\mathrm{var}(Y_{t-1})+\\mathrm{var}(u_t)$ (cross term zero by martingale-difference). Stationarity: $\\sigma_Y^2=\\beta_1^2\\sigma_Y^2+\\sigma_u^2\\Rightarrow\\boxed{\\sigma_Y^2=\\sigma_u^2/(1-\\beta_1^2)}$ for $|\\beta_1|<1$.<br><br><strong>Autocovariance.</strong> $\\mathrm{cov}(Y_t,Y_{t-h})=\\beta_1\\mathrm{cov}(Y_{t-1},Y_{t-h})$. Iterate $h$ times: $\\boxed{\\gamma_h=\\beta_1^h\\sigma_Y^2}$.",
 intuition:"$\\sigma_Y^2$ blown up by $1/(1-\\beta_1^2)$ vs shock variance, reflecting accumulation; autocorrelation decays geometrically.",
 visualise:"Simulate, measure, compare: theoretical curves overlaid with sample estimates from a long simulation.",
+widget:"ar1-moments",
 prereqs:["0.7","4.4"],forward:["4.6","4.7","4.14"],examRole:"QT4 §1.1"},
 
 {id:"4.6",m:4,title:"Estimating AR(p): OLS by construction",
@@ -711,6 +761,7 @@ idea:"Every AR(p) satisfies OR by construction since $u_t$ is mean-zero conditio
 derivation:"$\\mathbb{E}[u_t\\mid\\mathcal{Y}_{t-1}]=0$ implies (by LIE and conditioning rule) $\\mathbb{E}u_t=0$ and $\\mathbb{E}Y_{t-i}u_t=0$ for $i=1,\\dots,p$. Population AR(p) coefficients equal structural $\\beta_i$. Sample averages converge by an LLN for stationary processes, so $\\hat\\beta_i\\to^p\\beta_i$.",
 intuition:"OR is built into AR specs because lags are predetermined. Stationarity gives the LLN; finite kurtosis gives the CLT.",
 visualise:"Walk-forward fit: as sample grows, $\\hat\\beta$ converges; residual ACF plot underneath confirms specification.",
+widget:"ar-walkforward",
 prereqs:["1.4","1.7","4.4"],forward:["4.7","4.10"]},
 
 {id:"4.7",m:4,title:"Forecasting: optimal h-step forecast and MSFE",
@@ -726,6 +777,7 @@ idea:"In-sample residuals understate true forecast error; do walk-forward, out-o
 formal:"Pick $P\\in[0.1T,0.2T]$. For each $s\\in\\{T-P,\\dots,T-1\\}$, estimate on $\\{1,\\dots,s\\}$, forecast $\\hat Y_{s+1\\mid s}$. $\\hat{\\mathrm{MSFE}}=\\frac{1}{P}\\sum\\hat e_{s+1\\mid s}^2$.",
 derivation:"In-sample $\\hat u_t$ is computed using parameters fitted to the same data, so it understates the parameter-uncertainty term in 4.7. Out-of-sample residuals lack this contamination.",
 visualise:"Scrubbing timeline: for each split, fit on left, forecast right, accumulate MSE.",
+widget:"pseudo-oos",
 prereqs:["4.7"],forward:[],examRole:"QT4 §2.4 to §2.5"},
 
 {id:"4.9",m:4,title:"Lag selection: AIC, BIC",
@@ -748,12 +800,14 @@ formal:"$X$ does not Granger-cause $Y$ iff $\\mathbb{E}[Y_{T+1}\\mid\\mathcal{Y}
 derivation:"Unrestricted: ADL(p,q). Restricted: AR(p). Under joint stationarity and finite kurtosis, $$F=\\frac{(SSR_r-SSR_u)/q}{SSR_u/(T-p-q-1)}\\to^d F_{q,\\infty}.$$ Reject if $F$ exceeds the critical value.",
 intuition:"Predictive, not necessarily structural. A common confounder, reverse causality, or feedback can produce Granger causality without true causation.",
 visualise:"Pick two real series (e.g., UK unemployment and US industrial production); dashboard runs both directions and reports both p-values.",
+widget:"granger-test",
 prereqs:["2.7","4.10"],forward:["4.12","4.13"],examRole:"QT4 §6"},
 
 {id:"4.12",m:4,title:"Structural breaks: Chow test",
 idea:"Parameters change abruptly at a known date $\\tau$.",
 formal:"F-test of $H_0:\\gamma_0=\\gamma_1=\\dots=0$ in $$Y_t=\\beta_0+\\sum\\beta_iY_{t-i}+\\sum\\delta_iX_{t-i}+\\mathbb{1}[t>\\tau](\\gamma_0+\\sum\\gamma_iY_{t-i}+\\sum\\theta_iX_{t-i})+u_t.$$ Reject under joint stationarity using $F_{q,\\infty}$.",
 visualise:"Slider for $\\tau$: regression line snaps into two segments; F statistic appears.",
+widget:"chow-test",
 prereqs:["2.7","4.10"],forward:["4.13"],examRole:"QT4 §7.6"},
 
 {id:"4.13",m:4,title:"Quandt Likelihood Ratio (QLR)",
@@ -761,6 +815,7 @@ idea:"Break date unknown: take supremum of Chow F-statistics over a candidate wi
 formal:"$QLR=\\max_{\\tau\\in[\\tau_0,\\tau_1]}F(\\tau)$. Critical values exceed $F_{q,\\infty}$, depending on $q$, $k$, and trim fractions $\\tau_0/T,\\tau_1/T$. Gap between QLR and Chow critical values widens with the candidate window.",
 intuition:"Naive 'repeat Chow at each $\\tau$' inflates Type I rate; QLR adjusts for the multiple testing implicit in the search.",
 visualise:"Plot $F(\\tau)$ over the window; maximum highlighted; critical-value slider shows whether QLR clears it.",
+widget:"qlr",
 prereqs:["4.12"],forward:[],examRole:"QT4 §7.6"},
 
 {id:"4.14",m:4,title:"Unit roots and random walks",
@@ -776,12 +831,14 @@ prereqs:["4.4","4.5"],forward:["4.15","4.16","4.17","4.18"],examRole:"QT4 §1.5,
 idea:"How many times to difference to reach stationarity.",
 formal:"$Y_t\\sim I(d)$ if $\\Delta^d Y_t$ is stationary but $\\Delta^{d-1}Y_t$ is not.",
 visualise:"Pick a real series: levels, first differences, second differences side by side with rolling moments.",
+widget:"order-integration",
 prereqs:["4.14"],forward:["4.18","4.19","4.20","4.21"],examRole:"QT4 §3.2"},
 
 {id:"4.16",m:4,title:"Deterministic vs stochastic trends",
 idea:"A series can drift because of $\\alpha t$ (deterministic) or because of accumulated shocks (stochastic).",
 formal:"Trend-stationary $Y_t=\\alpha t+u_t$ with $u_t$ stationary. Difference-stationary $Y_t$ has a unit root and persistent shocks. Distinguishable via ADF (4.18, 4.19).",
 visualise:"Two simulated series labelled 'A' and 'B'; user guesses; reveal shows the underlying process.",
+widget:"trend-guess",
 prereqs:["4.14"],forward:["4.19"],examRole:"QT4 §3.5, §3.7"},
 
 {id:"4.17",m:4,title:"Spurious regression",
@@ -806,6 +863,7 @@ idea:"Extend DF to allow a deterministic trend and to allow higher-order autoreg
 derivation:"<strong>ADF transformation (Appendix F).</strong> AR(p): $Y_t=\\beta_0+\\sum_{i=1}^p\\beta_iY_{t-i}+u_t$. Define $\\delta=\\sum_{i=1}^p\\beta_i-1$ and $\\gamma_i=-\\sum_{j=i+1}^p\\beta_j$ for $i=1,\\dots,p-1$. Telescoping identity $\\beta_i=\\gamma_i-\\gamma_{i-1}$ where $\\gamma_0=\\delta+1$. Substituting: $$\\sum_{i=1}^p\\beta_iY_{t-i}=-\\gamma_0Y_{t-1}+\\sum_{i=1}^{p-1}\\gamma_i\\Delta Y_{t-i}.$$ Subtracting $Y_{t-1}$: $$\\boxed{\\Delta Y_t=\\beta_0+\\delta Y_{t-1}+\\sum_{i=1}^{p_\\Delta}\\gamma_i\\Delta Y_{t-i}+u_t,\\quad p_\\Delta=p-1.}$$ Adding $\\alpha t$ on the right gives the constant-and-trend variant.<br><br><strong>Test.</strong> t-test of $H_0:\\delta=0$ against $H_1:\\delta<0$. Under $H_0$, $t(0)\\to^d DF_{cn}$ (constant only) or $DF_{tr}$ (constant and trend).",
 intuition:"Lagged differences absorb short-run AR dynamics, leaving $\\delta$ to capture the unit-root question. Trend variant tests 'unit root' against 'trend stationary'.",
 visualise:"Specification picker (trend/lags switches) with annotated regression equation; help text spells out which DF table applies.",
+widget:"adf-spec",
 prereqs:["4.18","4.9"],forward:["4.21"],examRole:"QT4 §3.1, §3.4, §3.7"},
 
 {id:"4.20",m:4,title:"Cointegration",
@@ -821,6 +879,7 @@ idea:"Test stationarity of the equilibrium error.",
 formal:"If $\\theta$ hypothesised: ADF on $\\xi_t=Y_t-\\theta X_t$ with ordinary CVs. If $\\theta$ unknown: regress $Y$ on $X$ by OLS; ADF on residuals $\\hat\\xi_t$ with Engle-Granger CVs (more negative; $-3.37$ at 5%).",
 derivation:"Estimating $\\hat\\theta$ uses up degrees of freedom and shifts the ADF limiting distribution on $\\hat\\xi_t$. Engle-Granger tabulated CVs correct for this.",
 visualise:"Two paths through the test (hypothesised vs estimated $\\theta$); flowchart highlights chosen path.",
+widget:"engle-granger",
 prereqs:["4.19","4.20"],forward:["4.22"],examRole:"QT4 §4.1, §4.2"},
 
 {id:"4.22",m:4,title:"Implications of cointegration for OLS",
@@ -828,6 +887,7 @@ idea:"Regressing $Y$ on $X$ in levels is valid when they are cointegrated; the O
 formal:"$\\hat\\theta\\to^p\\theta$ at rate $T$ (rather than $\\sqrt T$); standard t-stats not asymptotically Normal without adjustments.",
 intuition:"Cointegrated series share a stochastic trend; OLS picks up that trend rapidly; hence super-consistent.",
 visualise:"Replication panel comparing convergence rate of OLS slope under iid, stationary, and cointegrated cases.",
+widget:"super-consistent",
 prereqs:["4.20"],forward:["4.23"],examRole:"QT4 §4.4, §4.5"},
 
 {id:"4.23",m:4,title:"Putting it together: the time-series workflow",
@@ -886,7 +946,38 @@ const QTS = [
 /* ============================================================
    RENDERING
 ============================================================ */
-function lessonIdToAnchor(id){return "lesson-"+id.replace(/\\./g,"-");}
+function lessonIdToAnchor(id){return "lesson-"+id.replace(/\./g,"-");}
+const LESSON_TITLES={};
+LESSONS.forEach(l=>LESSON_TITLES[l.id]=l.title);
+// Map concept-file names (e.g. "Orthogonality Condition") -> dashboard lesson IDs
+const CONCEPT_TO_LESSON={
+"Causal vs Descriptive Models":"1.1","Orthogonality Condition":"1.4","OLS Estimators":"1.6",
+"Confounding Variables":"1.10","Endogeneity Definition and Sources":"3.1","Omitted Variable Bias":"1.10",
+"Marginal Effects in Nonlinear Models":"2.11","Hypothesis Testing":"0.14","Properties of Conditional Expectations":"0.8",
+"F-test for Joint Hypotheses":"2.7","Perfect Multicollinearity":"2.8","Frisch-Waugh-Lovell Theorem":"1.9",
+"Bad Controls":"1.12","Conditional Random Assignment":"3.6","Randomised Control Trials":"3.2",
+"Standard Errors":"2.2","Instrumental Variables":"3.10","Measurement Error":"3.8",
+"Measurement Error and Attenuation Bias":"3.8","Proxy Variables":"1.11","Two-Stage Least Squares":"3.12",
+"Weak Instruments":"3.15","Instrument Validity and Testing":"3.10","Heteroskedasticity":"2.3",
+"Distribution Functions":"0.3","Bernoulli and Binomial Distributions":"0.5","Normal Distribution":"0.5",
+"Central Limit Theorem":"0.12","Law of Large Numbers":"0.11","Convergence Concepts":"0.10",
+"Consistency and Asymptotic Normality":"0.13","Sample Estimators":"0.9","Confidence Intervals":"2.5",
+"p-values":"2.6","R-squared and Adjusted R-squared":"2.12","Properties of Expectation":"0.7",
+"Properties of Variance":"0.7","Properties of Covariance":"0.7","AR Processes":"4.4",
+"Autocovariance and Autocorrelation":"4.3","Stationarity":"4.2","Optimal Forecasting and MSFE":"4.7",
+"ADL Models":"4.10","Information Criteria":"4.9","Granger Causality":"4.11",
+"Unit Roots and Random Walks":"4.14","Dickey-Fuller and ADF Tests":"4.19","Spurious Regression":"4.17",
+"Cointegration":"4.20","Structural Breaks":"4.13","Simultaneity Bias":"3.9"
+};
+function pill(id){
+  const t=LESSON_TITLES[id]||"";
+  return `<span class="linkpill" onclick="jumpTo('${id}')" title="${t}"><span class="pill-id">${id}</span> <span class="pill-name">${t}</span></span>`;
+}
+function conceptPill(name){
+  const id=CONCEPT_TO_LESSON[name];
+  if(id){const t=LESSON_TITLES[id]||name; return `<span class="linkpill" onclick="jumpTo('${id}')" title="${t}"><span class="pill-id">${id}</span> <span class="pill-name">${name}</span></span>`;}
+  return `<span class="linkpill" style="cursor:default;background:#fed7d7;color:#742a2a" title="No matching lesson">${name}</span>`;
+}
 
 function renderSidebar(){
   const sb = document.getElementById('sidebar');
@@ -931,12 +1022,12 @@ function renderLessonBody(l){
   let why = '';
   if(l.prereqs && l.prereqs.length){
     why += '<p><strong>Prerequisites:</strong></p><div class="links">';
-    for(const p of l.prereqs) why += `<span class="linkpill" onclick="jumpTo('${p}')">${p}</span>`;
+    for(const p of l.prereqs) why += pill(p);
     why += '</div>';
   }
   if(l.forward && l.forward.length){
     why += '<p style="margin-top:.5rem"><strong>Forward links:</strong></p><div class="links">';
-    for(const f of l.forward) why += `<span class="linkpill" onclick="jumpTo('${f}')">${f}</span>`;
+    for(const f of l.forward) why += pill(f);
     why += '</div>';
   }
   if(l.examRole){
@@ -965,30 +1056,120 @@ function renderLessons(){
 }
 
 function renderEdges(){
+  // Render the D3 force-directed concept graph + a collapsible edge-list fallback
   const e = document.getElementById('edges');
-  let html = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.6rem;margin-top:.6rem">';
+  e.innerHTML = `<div id="graph" style="width:100%;height:620px;background:#0f1620;border-radius:8px;position:relative;overflow:hidden"></div>
+    <div style="margin-top:.6rem;font-size:.85rem;color:var(--muted)">
+      <strong>Tip:</strong> drag nodes to rearrange. Click a node to jump to its lesson. Hover for the title. Scroll to zoom.
+    </div>
+    <details style="margin-top:.8rem"><summary style="cursor:pointer;color:var(--primary);font-weight:600">Show prerequisite edge list (text fallback)</summary>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.6rem;margin-top:.6rem">${LESSONS.filter(l=>l.forward&&l.forward.length).map(l=>`<div style="font-size:.85rem;line-height:1.9">${pill(l.id)} <span style="color:var(--muted)">→</span> ${l.forward.map(pill).join(' ')}</div>`).join('')}</div>
+    </details>`;
+  setTimeout(buildGraph, 50);
+}
+
+function buildGraph(){
+  if(typeof d3==='undefined'){return;}
+  const container=document.getElementById('graph');
+  if(!container) return;
+  container.innerHTML='';
+  const W=container.clientWidth, H=container.clientHeight||620;
+  const moduleColors=['#805ad5','#2b6cb0','#319795','#dd6b20','#38a169'];
+  const nodes=LESSONS.map(l=>({id:l.id,m:l.m,title:l.title}));
+  const links=[];
   for(const l of LESSONS){
-    if(!l.forward || !l.forward.length) continue;
-    html += `<div style="font-size:.86rem;line-height:1.7"><span class="linkpill" onclick="jumpTo('${l.id}')">${l.id}</span> →`;
-    for(const f of l.forward) html += ` <span class="linkpill" onclick="jumpTo('${f}')">${f}</span>`;
-    html += `</div>`;
+    if(l.forward) for(const f of l.forward) if(LESSON_TITLES[f]) links.push({source:l.id,target:f});
   }
-  html += '</div>';
-  e.innerHTML = html;
+  const svg=d3.select(container).append('svg').attr('width',W).attr('height',H).style('cursor','grab');
+  const g=svg.append('g');
+  // zoom
+  svg.call(d3.zoom().scaleExtent([0.2,4]).on('zoom',e=>g.attr('transform',e.transform)));
+  // legend (fixed, on top)
+  const legend=svg.append('g').attr('transform','translate(14,14)');
+  ['Probability','Regression I','Regression II','Endogeneity','Time Series'].forEach((name,i)=>{
+    const row=legend.append('g').attr('transform',`translate(0,${i*22})`);
+    row.append('circle').attr('r',6).attr('cx',6).attr('cy',6).attr('fill',moduleColors[i]);
+    row.append('text').attr('x',18).attr('y',10).attr('fill','#cbd5e0').attr('font-size',11).attr('font-family','Helvetica Neue').text(`Module ${i}: ${name}`);
+  });
+  // arrow marker
+  svg.append('defs').append('marker').attr('id','arrow').attr('viewBox','0 -5 10 10').attr('refX',16).attr('refY',0).attr('markerWidth',5).attr('markerHeight',5).attr('orient','auto').append('path').attr('d','M0,-5L10,0L0,5').attr('fill','#4a5568');
+  const link=g.append('g').selectAll('line').data(links).join('line').attr('stroke','#4a5568').attr('stroke-opacity',0.55).attr('stroke-width',1).attr('marker-end','url(#arrow)');
+  const node=g.append('g').selectAll('g').data(nodes).join('g').attr('cursor','pointer').call(d3.drag().on('start',(e,d)=>{if(!e.active)sim.alphaTarget(0.3).restart();d.fx=d.x;d.fy=d.y;}).on('drag',(e,d)=>{d.fx=e.x;d.fy=e.y;}).on('end',(e,d)=>{if(!e.active)sim.alphaTarget(0);d.fx=null;d.fy=null;}));
+  node.append('circle').attr('r',8).attr('fill',d=>moduleColors[d.m]).attr('stroke','#1a202c').attr('stroke-width',1.5);
+  node.append('text').text(d=>d.id).attr('font-size',10).attr('font-family','JetBrains Mono, monospace').attr('fill','#fff').attr('text-anchor','middle').attr('dy',3).style('pointer-events','none');
+  // tooltip
+  const tip=d3.select(container).append('div').style('position','absolute').style('background','rgba(26,32,44,0.95)').style('color','#fff').style('padding','5px 9px').style('border-radius','5px').style('font-size','12px').style('pointer-events','none').style('opacity',0).style('max-width','260px').style('z-index',10);
+  node.on('mouseover',function(e,d){
+    tip.style('opacity',1).html(`<strong>${d.id}</strong> ${d.title}`);
+    // highlight neighbours
+    const neigh=new Set([d.id]);
+    links.forEach(l=>{if(l.source.id===d.id)neigh.add(l.target.id); if(l.target.id===d.id)neigh.add(l.source.id);});
+    node.style('opacity',n=>neigh.has(n.id)?1:0.18);
+    link.style('stroke-opacity',l=>l.source.id===d.id||l.target.id===d.id?1:0.08).style('stroke',l=>l.source.id===d.id||l.target.id===d.id?'#fff':'#4a5568');
+  }).on('mousemove',function(e){const r=container.getBoundingClientRect();tip.style('left',(e.clientX-r.left+10)+'px').style('top',(e.clientY-r.top+10)+'px');})
+    .on('mouseout',function(){tip.style('opacity',0);node.style('opacity',1);link.style('stroke-opacity',0.55).style('stroke','#4a5568');})
+    .on('click',(e,d)=>jumpTo(d.id));
+  const sim=d3.forceSimulation(nodes)
+    .force('link',d3.forceLink(links).id(d=>d.id).distance(60).strength(0.4))
+    .force('charge',d3.forceManyBody().strength(-220))
+    .force('center',d3.forceCenter(W/2,H/2))
+    .force('collide',d3.forceCollide(14))
+    .force('group',alpha=>{nodes.forEach(d=>{const cx=W/2+Math.cos(d.m*1.25)*180; const cy=H/2+Math.sin(d.m*1.25)*180; d.vx+=(cx-d.x)*0.005*alpha; d.vy+=(cy-d.y)*0.005*alpha;});})
+    .on('tick',()=>{
+      link.attr('x1',d=>d.source.x).attr('y1',d=>d.source.y).attr('x2',d=>d.target.x).attr('y2',d=>d.target.y);
+      node.attr('transform',d=>`translate(${d.x},${d.y})`);
+    });
 }
 
 function renderQTs(){
   const c = document.getElementById('qts');
-  let html = '';
-  for(const sec of QTS){
-    html += `<h3>${sec.section}</h3>`;
-    for(const b of sec.blocks){
-      html += `<div class="qt-block"><span class="qt-name">${b.name}</span> &mdash; <span class="qt-lessons">`;
-      for(const id of b.lessons) html += `<span class="linkpill" onclick="jumpTo('${id}')">${id}</span> `;
-      html += `</span></div>`;
-    }
+  if(typeof QT_DATA==='undefined'){
+    c.innerHTML='<p style="color:#c05621">QT data file not loaded. Make sure qt_data.js is in the same folder as index.html.</p>';
+    return;
   }
+  let html='';
+  QT_DATA.forEach((sec,si)=>{
+    html += `<details class="qt-section" ${si===0?'open':''}>
+      <summary class="qt-section-summary">${sec.section}</summary>
+      <div class="qt-section-body">`;
+    if(sec.excludedTopics && sec.excludedTopics.length){
+      html += `<div class="qt-excluded"><strong>Excluded (no longer examinable):</strong> ${sec.excludedTopics.join('; ')}</div>`;
+    }
+    for(const bt of sec.bigTypes){
+      html += `<details class="qt-big">
+        <summary class="qt-big-summary"><span class="qt-big-num">Big Type ${bt.n}</span> ${bt.name}</summary>
+        <div class="qt-big-body">
+          ${bt.description?`<p class="qt-desc">${bt.description}</p>`:''}
+          ${bt.years?`<p class="qt-years"><strong>Years appeared:</strong> ${bt.years}</p>`:''}`;
+      for(const st of bt.subTypes){
+        html += `<details class="qt-sub">
+          <summary class="qt-sub-summary"><span class="qt-sub-num">${bt.n}.${st.id.split('.').pop?st.id.split('.').pop():st.id}</span> ${st.name}</summary>
+          <div class="qt-sub-body">`;
+        if(st.whatItAsks) html += `<div class="qt-asks"><strong>What it asks:</strong> ${st.whatItAsks}</div>`;
+        if(st.steps && st.steps.length){
+          html += `<div class="qt-steps"><strong>Step-by-step guide:</strong><ol>`;
+          for(const s of st.steps){
+            html += `<li>${s.replace(/\n/g,'<br>')}</li>`;
+          }
+          html += `</ol></div>`;
+        }
+        if(st.concepts && st.concepts.length){
+          html += `<div class="qt-concepts"><strong>Relevant concepts:</strong><div class="links">`;
+          // dedupe
+          const seen=new Set();
+          for(const c of st.concepts){if(!seen.has(c)){seen.add(c);html+=conceptPill(c);}}
+          html += `</div></div>`;
+        }
+        if(st.appearedIn) html += `<div class="qt-appeared"><strong>Appeared in:</strong> <span style="color:var(--muted);font-size:.85rem">${st.appearedIn}</span></div>`;
+        html += `</div></details>`;
+      }
+      html += `</div></details>`;
+    }
+    html += `</div></details>`;
+  });
   c.innerHTML = html;
+  // Render any math in QT content
+  if(window.renderMathInElement) renderMathInElement(c,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
 }
 
 function jumpTo(id){
@@ -1080,6 +1261,28 @@ function buildWidget(lessonId, kind){
   if(kind==='spurious') return widgetSpurious(target);
   if(kind==='df-vs-normal') return widgetDFvsNormal(target);
   if(kind==='cointegration') return widgetCointegration(target);
+  if(kind==='four-assumptions') return widget4Assumptions(target);
+  if(kind==='t-test-shaded') return widgetTTestShaded(target);
+  if(kind==='ci-bands') return widgetCIBands(target);
+  if(kind==='pvalue-tail') return widgetPValueTail(target);
+  if(kind==='interaction-slopes') return widgetInteractionSlopes(target);
+  if(kind==='or-vs-mi') return widgetORvsMI(target);
+  if(kind==='bad-controls') return widgetBadControls(target);
+  if(kind==='iv-dag') return widgetIVDag(target);
+  if(kind==='ar1-moments') return widgetAR1Moments(target);
+  if(kind==='granger-test') return widgetGrangerTest(target);
+  if(kind==='chow-test') return widgetChowTest(target);
+  if(kind==='qlr') return widgetQLR(target);
+  if(kind==='order-integration') return widgetOrderInt(target);
+  if(kind==='adf-spec') return widgetADFSpec(target);
+  if(kind==='engle-granger') return widgetEngleGranger(target);
+  if(kind==='moment-calc') return widgetMomentCalc(target);
+  if(kind==='cef-pythagorean') return widgetCEFPyth(target);
+  if(kind==='sampling-dist') return widgetSamplingDist(target);
+  if(kind==='trend-guess') return widgetTrendGuess(target);
+  if(kind==='ar-walkforward') return widgetARWalkforward(target);
+  if(kind==='pseudo-oos') return widgetPseudoOOS(target);
+  if(kind==='super-consistent') return widgetSuperCons(target);
 }
 
 /* Distribution explorer */
@@ -2304,6 +2507,735 @@ function widgetCointegration(t){
     ],chartLayout({title:`$\\xi_t = Y_t - ${u.toFixed(2)} X_t$ ${Math.abs(u-tt)<0.1?'(stationary)':'(drifts)'}`,height:240}),noBar());
   };
   t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* ============================================================
+   ROUND 2 WIDGETS - covers remaining lessons
+============================================================ */
+
+/* 2.15 Four assumptions: violate each one, see consequence */
+function widget4Assumptions(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>Violate</label><select id="fa-v"><option>None (all hold)</option><option>1. OR (cov(X,u)≠0)</option><option>2. iid (autocorrelated u)</option><option>3. Finite kurtosis (heavy tail)</option><option>4. Multicollinearity (X1=2*X2)</option></select></div>
+    <div class="ctrl"><label>n: <span class="val" id="fa-nv">200</span></label><input type="range" id="fa-n" min="30" max="2000" step="10" value="200"></div>
+    <div class="ctrl"><label>Replications</label><input type="range" id="fa-r" min="200" max="3000" step="100" value="800"></div>
+  </div><div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem"><div class="plot" id="fa-p1"></div><div class="plot" id="fa-p2"></div></div><div class="stats" id="fa-s"></div>`;
+  const draw=()=>{
+    const v=t.querySelector('#fa-v').value;
+    const n=+t.querySelector('#fa-n').value, R=+t.querySelector('#fa-r').value;
+    t.querySelector('#fa-nv').textContent=n;
+    const r=makePRNG(127);
+    const trueB=1.0;
+    const ests=[],ses=[],rejects=[];
+    let consistencyOK=true, normalityOK=true, infoBoxText="";
+    for(let rep=0;rep<R;rep++){
+      const xs=[],ys=[];let X1prev=0,uPrev=0;
+      for(let i=0;i<n;i++){
+        let X,u;
+        // base draws
+        let z=normalDraw(r);
+        if(v.startsWith('3.')){ // heavy tails: t with df=2 (no kurtosis)
+          // Generate Cauchy-ish via z/sqrt(chi2_2)
+          let c=0;for(let k=0;k<2;k++){const g=normalDraw(r);c+=g*g;}
+          z=z/Math.sqrt(c/2);
+        }
+        if(v.startsWith('1.')){ // OR fails: u correlates with X
+          X=z; u=0.7*X+0.5*normalDraw(r);
+        } else if(v.startsWith('2.')){ // autocorrelated u
+          u=0.85*uPrev+normalDraw(r); uPrev=u; X=z;
+        } else if(v.startsWith('4.')){ // multicollinearity (perfect)
+          X=z; u=normalDraw(r);
+        } else { X=z; u=normalDraw(r); }
+        xs.push(X);ys.push(0.3+trueB*X+u);
+      }
+      const fit=olsSlope(xs,ys);
+      ests.push(fit.b1);
+      // Crude SE
+      const resid=xs.map((x,i)=>ys[i]-fit.b0-fit.b1*x);
+      const sig2=mean(resid.map(z=>z*z))*n/(n-2);
+      const sxx=variance(xs);
+      let se=Math.sqrt(sig2/(n*sxx));
+      if(!isFinite(se)||se<=0) se=1e-6;
+      ses.push(se);
+      const tStat=(fit.b1-trueB)/se;
+      rejects.push(Math.abs(tStat)>1.96?1:0);
+    }
+    const m=mean(ests),vEst=variance(ests);
+    if(v.startsWith('1.')) consistencyOK=false;
+    if(v.startsWith('2.')) normalityOK=false; // SE wrong
+    if(v.startsWith('3.')) normalityOK=false;
+    if(v.startsWith('4.')) consistencyOK=false;
+    const xs2=rangeArr(trueB-1,trueB+1,.02);
+    Plotly.newPlot(t.querySelector('#fa-p1'),[
+      {x:ests.filter(e=>Math.abs(e-trueB)<3),type:'histogram',histnorm:'probability density',marker:{color:'#2b6cb0',opacity:.7},nbinsx:50,name:'$\\hat\\beta_1$'},
+      {x:xs2,y:xs2.map(x=>normalPDF(x,trueB,Math.sqrt(vEst))),type:'scatter',mode:'lines',line:{color:'#c05621'},name:'Normal fit'}
+    ],chartLayout({title:`Sampling distribution of $\\hat\\beta_1$ (true=${trueB})`,height:240}),noBar());
+    Plotly.newPlot(t.querySelector('#fa-p2'),[
+      {x:['Empirical','Theoretical'],y:[Math.sqrt(vEst),mean(ses)],type:'bar',marker:{color:['#2b6cb0','#c05621']},text:[Math.sqrt(vEst).toFixed(3),mean(ses).toFixed(3)],textposition:'auto'}
+    ],chartLayout({title:'sd of $\\hat\\beta_1$: empirical vs theoretical (homo SE)',height:240}),noBar());
+    let dx={
+      'None (all hold)':'All four assumptions satisfied. OLS is consistent and t-tests have correct size (~5% rejection at 5% level under the true null).',
+      '1. OR (cov(X,u)≠0)':'OR fails. OLS is biased; the sampling distribution centres OFF the true value. Bigger n does not fix it.',
+      '2. iid (autocorrelated u)':'iid fails. OLS still consistent but standard errors are wrong; t-stats reject too often. Naive empirical sd ≠ theoretical SE.',
+      '3. Finite kurtosis (heavy tail)':'Heavy tails violate the CLT premise. The sampling distribution has fatter tails than Normal; SE estimator becomes unstable.',
+      '4. Multicollinearity (X1=2*X2)':'Perfect multicollinearity. OLS is undefined for the affected column. Numerical fit yields garbage; SE explodes.'
+    };
+    t.querySelector('#fa-s').innerHTML=`<div class="stat"><span class="stat-label">Consistency</span><span class="stat-value" style="color:${consistencyOK?'#38a169':'#c05621'}">${consistencyOK?'YES':'NO (biased)'}</span></div><div class="stat"><span class="stat-label">Normal/correct SE</span><span class="stat-value" style="color:${normalityOK?'#38a169':'#c05621'}">${normalityOK?'YES':'NO'}</span></div><div class="stat"><span class="stat-label">Rejection rate of true null at 5%</span><span class="stat-value">${(mean(rejects)*100).toFixed(1)}%</span></div><div class="stat" style="grid-column:1/-1"><span class="stat-label">Diagnosis</span><span class="stat-value" style="font-family:Helvetica;font-weight:normal;text-align:right">${dx[v]}</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#fa-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 2.4 t-test rejection region */
+function widgetTTestShaded(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>$\\alpha$: <span class="val" id="tt-av">0.05</span></label><input type="range" id="tt-a" min=".01" max=".2" step=".01" value=".05"></div>
+    <div class="ctrl"><label>$t_{obs}$: <span class="val" id="tt-tv">2.1</span></label><input type="range" id="tt-t" min="-4" max="4" step=".1" value="2.1"></div>
+    <div class="ctrl"><label>Test</label><select id="tt-side"><option>Two-sided</option><option>Upper one-sided</option><option>Lower one-sided</option></select></div>
+  </div><div class="plot" id="tt-plot"></div><div class="stats" id="tt-s"></div>`;
+  const draw=()=>{
+    const a=+t.querySelector('#tt-a').value, tObs=+t.querySelector('#tt-t').value, side=t.querySelector('#tt-side').value;
+    t.querySelector('#tt-av').textContent=a.toFixed(2); t.querySelector('#tt-tv').textContent=tObs.toFixed(2);
+    const xs=rangeArr(-4,4,.05);
+    const dens=xs.map(x=>normalPDF(x,0,1));
+    const cv2=1.96, cv1=1.645;
+    const cv = side==='Two-sided'?cv2:cv1;
+    let p, reject;
+    if(side==='Two-sided'){p=2*(1-normalCDF(Math.abs(tObs))); reject=Math.abs(tObs)>cv;}
+    else if(side==='Upper one-sided'){p=1-normalCDF(tObs); reject=tObs>cv;}
+    else {p=normalCDF(tObs); reject=tObs<-cv;}
+    // Build shaded regions
+    const shadeUpper=xs.map((x,i)=>x>cv?dens[i]:null);
+    const shadeLower=xs.map((x,i)=>x<-cv?dens[i]:null);
+    const traces=[{x:xs,y:dens,type:'scatter',mode:'lines',line:{color:'#2b6cb0',width:2},name:'$N(0,1)$ under $H_0$'}];
+    if(side==='Two-sided'||side==='Upper one-sided'){
+      traces.push({x:xs,y:shadeUpper,type:'scatter',fill:'tozeroy',mode:'none',fillcolor:'rgba(192,86,33,0.4)',name:'reject (upper)'});
+    }
+    if(side==='Two-sided'||side==='Lower one-sided'){
+      traces.push({x:xs,y:shadeLower,type:'scatter',fill:'tozeroy',mode:'none',fillcolor:'rgba(192,86,33,0.4)',name:'reject (lower)'});
+    }
+    traces.push({x:[tObs,tObs],y:[0,Math.max(...dens)*1.1],type:'scatter',mode:'lines',line:{color:'#dd6b20',width:3,dash:'dot'},name:`$t_{obs}=${tObs}$`});
+    Plotly.newPlot(t.querySelector('#tt-plot'),traces,chartLayout(),noBar());
+    t.querySelector('#tt-s').innerHTML=`<div class="stat"><span class="stat-label">Critical value</span><span class="stat-value">${cv}</span></div><div class="stat"><span class="stat-label">p-value</span><span class="stat-value">${p.toFixed(4)}</span></div><div class="stat"><span class="stat-label">Decision at $\\alpha=${a.toFixed(2)}$</span><span class="stat-value" style="color:${reject?'#38a169':'#c05621'}">${reject?'REJECT $H_0$':'fail to reject'}</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#tt-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 2.5 CI bands replication */
+function widgetCIBands(t){ widgetCICoverage(t); }
+
+/* 2.6 p-value tail */
+function widgetPValueTail(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>$t_{obs}$: <span class="val" id="pv-tv">1.96</span></label><input type="range" id="pv-t" min="0" max="5" step=".05" value="1.96"></div>
+    <div class="ctrl"><label>Test</label><select id="pv-s"><option>Two-sided</option><option>One-sided</option></select></div>
+  </div><div class="plot" id="pv-plot"></div><div class="stats" id="pv-s2"></div>`;
+  const draw=()=>{
+    const tObs=+t.querySelector('#pv-t').value, side=t.querySelector('#pv-s').value;
+    t.querySelector('#pv-tv').textContent=tObs.toFixed(2);
+    const xs=rangeArr(-5,5,.05);
+    const dens=xs.map(x=>normalPDF(x,0,1));
+    const upper=xs.map((x,i)=>x>=tObs?dens[i]:null);
+    const lower=xs.map((x,i)=>x<=-tObs?dens[i]:null);
+    const traces=[{x:xs,y:dens,type:'scatter',mode:'lines',line:{color:'#2b6cb0'},name:'$N(0,1)$'},
+      {x:xs,y:upper,type:'scatter',fill:'tozeroy',mode:'none',fillcolor:'rgba(221,107,32,0.5)',name:'right tail'}];
+    if(side==='Two-sided') traces.push({x:xs,y:lower,type:'scatter',fill:'tozeroy',mode:'none',fillcolor:'rgba(221,107,32,0.5)',name:'left tail',showlegend:false});
+    Plotly.newPlot(t.querySelector('#pv-plot'),traces,chartLayout(),noBar());
+    const p=side==='Two-sided'?2*(1-normalCDF(Math.abs(tObs))):1-normalCDF(tObs);
+    t.querySelector('#pv-s2').innerHTML=`<div class="stat"><span class="stat-label">p-value</span><span class="stat-value" style="color:${p<0.05?'#38a169':'#c05621'}">${p.toFixed(4)}</span></div><div class="stat"><span class="stat-label">Significant at 5%?</span><span class="stat-value">${p<0.05?'YES':'no'}</span></div>`;
+  };
+  t.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 2.9 Interaction slopes */
+function widgetInteractionSlopes(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>$\\beta_X$: <span class="val" id="is-bv">1</span></label><input type="range" id="is-b" min="-1" max="2" step=".05" value="1"></div>
+    <div class="ctrl"><label>$\\beta_{DX}$: <span class="val" id="is-iv">0.5</span></label><input type="range" id="is-i" min="-1" max="1.5" step=".05" value=".5"></div>
+    <div class="ctrl"><label>$\\beta_D$: <span class="val" id="is-dv">0.5</span></label><input type="range" id="is-d" min="-2" max="2" step=".1" value=".5"></div>
+  </div><div class="plot" id="is-plot"></div><div class="stats" id="is-s"></div>`;
+  const draw=()=>{
+    const bX=+t.querySelector('#is-b').value, bI=+t.querySelector('#is-i').value, bD=+t.querySelector('#is-d').value;
+    t.querySelector('#is-bv').textContent=bX.toFixed(2); t.querySelector('#is-iv').textContent=bI.toFixed(2); t.querySelector('#is-dv').textContent=bD.toFixed(2);
+    const r=makePRNG(131);
+    const x0=[],y0=[],x1=[],y1=[];
+    for(let i=0;i<150;i++){const x=normalDraw(r)*1.5; x0.push(x); y0.push(bX*x+normalDraw(r)*0.5);}
+    for(let i=0;i<150;i++){const x=normalDraw(r)*1.5; x1.push(x); y1.push(bD+(bX+bI)*x+normalDraw(r)*0.5);}
+    const xrange=[-3,3];
+    Plotly.newPlot(t.querySelector('#is-plot'),[
+      {x:x0,y:y0,type:'scatter',mode:'markers',name:'D=0',marker:{color:'#2b6cb0',opacity:.5,size:5}},
+      {x:x1,y:y1,type:'scatter',mode:'markers',name:'D=1',marker:{color:'#c05621',opacity:.5,size:5}},
+      {x:xrange,y:xrange.map(x=>bX*x),type:'scatter',mode:'lines',line:{color:'#2b6cb0'},name:`D=0 slope ${bX.toFixed(2)}`},
+      {x:xrange,y:xrange.map(x=>bD+(bX+bI)*x),type:'scatter',mode:'lines',line:{color:'#c05621'},name:`D=1 slope ${(bX+bI).toFixed(2)}`}
+    ],chartLayout(),noBar());
+    t.querySelector('#is-s').innerHTML=`<div class="stat"><span class="stat-label">Slope for D=0</span><span class="stat-value">${bX.toFixed(3)}</span></div><div class="stat"><span class="stat-label">Slope for D=1</span><span class="stat-value">${(bX+bI).toFixed(3)}</span></div><div class="stat"><span class="stat-label">Difference $\\beta_{DX}$</span><span class="stat-value">${bI.toFixed(3)}</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#is-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 1.4 OR vs MI */
+function widgetORvsMI(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>Generator</label><select id="om-g"><option>Both OR and MI hold</option><option>OR holds, MI fails (heteroskedastic u)</option><option>OR fails (also MI)</option></select></div>
+  </div><div class="plot" id="om-plot"></div><div class="stats" id="om-s"></div>`;
+  const draw=()=>{
+    const g=t.querySelector('#om-g').value;
+    const r=makePRNG(133);const n=600;
+    const xs=[],us=[];
+    for(let i=0;i<n;i++){const x=normalDraw(r);xs.push(x);
+      if(g.startsWith('Both')) us.push(normalDraw(r));
+      else if(g.includes('heteroskedastic')) us.push((1+0.8*Math.abs(x))*normalDraw(r));
+      else us.push(0.6*x+0.5*normalDraw(r));
+    }
+    const Eu=mean(us);
+    const EXu=mean(xs.map((x,i)=>x*us[i]));
+    // bin by X and compute conditional means
+    const bins=8; const minX=Math.min(...xs),maxX=Math.max(...xs);const w=(maxX-minX)/bins;
+    const binC=[],binMean=[];
+    for(let b=0;b<bins;b++){const lo=minX+b*w,hi=minX+(b+1)*w;const subset=us.filter((_,i)=>xs[i]>=lo&&xs[i]<hi);
+      if(subset.length){binC.push((lo+hi)/2);binMean.push(mean(subset));}}
+    Plotly.newPlot(t.querySelector('#om-plot'),[
+      {x:xs,y:us,type:'scatter',mode:'markers',marker:{color:'#cbd5e0',size:5,opacity:.5},name:'$(X,u)$'},
+      {x:binC,y:binMean,type:'scatter',mode:'lines+markers',line:{color:'#c05621',width:2.5},name:'$\\mathbb{E}[u\\mid X]$'},
+      {x:[Math.min(...xs),Math.max(...xs)],y:[0,0],type:'scatter',mode:'lines',line:{color:'#1a202c',dash:'dash'},name:'zero',showlegend:false}
+    ],chartLayout({yaxis:{title:'u'}}),noBar());
+    const orHolds = Math.abs(Eu)<0.1 && Math.abs(EXu)<0.15;
+    const miHolds = Math.max(...binMean.map(m=>Math.abs(m)))<0.25;
+    t.querySelector('#om-s').innerHTML=`<div class="stat"><span class="stat-label">$\\mathbb{E}u$</span><span class="stat-value">${Eu.toFixed(3)}</span></div><div class="stat"><span class="stat-label">$\\mathbb{E}Xu$</span><span class="stat-value">${EXu.toFixed(3)}</span></div><div class="stat"><span class="stat-label">OR holds?</span><span class="stat-value" style="color:${orHolds?'#38a169':'#c05621'}">${orHolds?'YES':'no'}</span></div><div class="stat"><span class="stat-label">MI holds?</span><span class="stat-value" style="color:${miHolds?'#38a169':'#c05621'}">${miHolds?'YES':'no'}</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#om-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('select').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 1.12 Bad controls DAG */
+function widgetBadControls(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>Direct effect $X\\to Y$: <span class="val" id="bc-dv">0.4</span></label><input type="range" id="bc-d" min="0" max="1.5" step=".05" value=".4"></div>
+    <div class="ctrl"><label>Effect through M ($X\\to M\\to Y$): <span class="val" id="bc-mv">0.6</span></label><input type="range" id="bc-m" min="0" max="1.5" step=".05" value=".6"></div>
+    <div class="ctrl"><label>Control for M?</label><select id="bc-c"><option>NO</option><option>YES</option></select></div>
+  </div><div class="plot" id="bc-plot"></div><div class="stats" id="bc-s"></div>`;
+  const draw=()=>{
+    const d=+t.querySelector('#bc-d').value, m=+t.querySelector('#bc-m').value, ctrl=t.querySelector('#bc-c').value==='YES';
+    t.querySelector('#bc-dv').textContent=d.toFixed(2); t.querySelector('#bc-mv').textContent=m.toFixed(2);
+    const totalTrue=d+m;
+    const r=makePRNG(137);const n=400;
+    const X=[],M=[],Y=[];
+    for(let i=0;i<n;i++){const x=normalDraw(r);X.push(x);M.push(0.8*x+normalDraw(r)*0.5);Y.push(d*x+m*M[i]/0.8+normalDraw(r)*0.5);}
+    let est;
+    if(ctrl){
+      // partial out M from X then regress Y on residual
+      const aux=olsSlope(M,X);
+      const tX=X.map((x,i)=>x-(aux.b0+aux.b1*M[i]));
+      est=olsSlope(tX,Y).b1;
+    } else {
+      est=olsSlope(X,Y).b1;
+    }
+    Plotly.newPlot(t.querySelector('#bc-plot'),[
+      {x:X,y:Y,type:'scatter',mode:'markers',marker:{color:'#cbd5e0',size:5,opacity:.5},showlegend:false}
+    ],chartLayout({title:`${ctrl?'Controlling for M (BAD)':'NOT controlling for M'}: $\\hat\\beta_X$ = ${est.toFixed(2)}`,height:280}),noBar());
+    t.querySelector('#bc-s').innerHTML=`<div class="stat"><span class="stat-label">True total effect $X\\to Y$</span><span class="stat-value">${totalTrue.toFixed(3)}</span></div><div class="stat"><span class="stat-label">Direct effect</span><span class="stat-value">${d.toFixed(3)}</span></div><div class="stat"><span class="stat-label">Estimated $\\hat\\beta_X$</span><span class="stat-value">${est.toFixed(3)}</span></div><div class="stat" style="grid-column:1/-1"><span class="stat-label">Interpretation</span><span class="stat-value" style="font-family:Helvetica;font-weight:normal;text-align:right">${ctrl?'Controlling for the mediator M blocks the indirect path. The estimate misses the through-M effect.':'Not controlling: estimate captures the FULL effect of X (direct + through M).'}</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#bc-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 3.10 IV DAG */
+function widgetIVDag(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>Relevance ($Z\\to X$): <span class="val" id="dg-rv">1</span></label><input type="range" id="dg-r" min="0" max="2" step=".05" value="1"></div>
+    <div class="ctrl"><label>Exclusion violation ($Z\\to Y$ direct): <span class="val" id="dg-ev">0</span></label><input type="range" id="dg-e" min="0" max="1.5" step=".05" value="0"></div>
+    <div class="ctrl"><label>Exogeneity violation ($U\\to Z$): <span class="val" id="dg-uv">0</span></label><input type="range" id="dg-u" min="0" max="1.5" step=".05" value="0"></div>
+  </div><div class="plot" id="dg-plot"></div><div class="stats" id="dg-s"></div>`;
+  const draw=()=>{
+    const rel=+t.querySelector('#dg-r').value, exV=+t.querySelector('#dg-e').value, exoV=+t.querySelector('#dg-u').value;
+    t.querySelector('#dg-rv').textContent=rel.toFixed(2);
+    t.querySelector('#dg-ev').textContent=exV.toFixed(2);
+    t.querySelector('#dg-uv').textContent=exoV.toFixed(2);
+    const trueB=1.0;
+    const r=makePRNG(139);const n=500;
+    const Z=[],X=[],Y=[],U=[];
+    for(let i=0;i<n;i++){const u=normalDraw(r);U.push(u);const z=0.5*u*exoV+normalDraw(r);Z.push(z);
+      const x=rel*z+0.7*u+0.5*normalDraw(r);X.push(x);
+      Y.push(trueB*x+exV*z+u);
+    }
+    const fs=olsSlope(Z,X);const rf=olsSlope(Z,Y);
+    const ils=fs.b1!==0?rf.b1/fs.b1:NaN;
+    const ols=olsSlope(X,Y).b1;
+    Plotly.newPlot(t.querySelector('#dg-plot'),[
+      {x:[100,300],y:[200,200],type:'scatter',mode:'lines+markers+text',marker:{size:30,color:rel>0.1?'#38a169':'#c05621'},text:['Z','X'],textposition:'middle center',textfont:{color:'#fff',size:14},showlegend:false},
+      {x:[300,500],y:[200,200],type:'scatter',mode:'lines+markers+text',marker:{size:30,color:'#dd6b20'},text:['','Y'],textposition:'middle center',textfont:{color:'#fff',size:14},line:{color:'#dd6b20',width:2},showlegend:false},
+      {x:[300,300,500],y:[100,100,200],type:'scatter',mode:'lines+markers+text',marker:{size:30,color:'#805ad5'},text:['U','',''],textposition:'middle center',textfont:{color:'#fff',size:14},line:{color:'#805ad5',width:1.5,dash:'dash'},showlegend:false},
+      // Z->Y violation arrow
+      ...(exV>0.05?[{x:[100,500],y:[200,200],type:'scatter',mode:'lines',line:{color:'#c05621',width:1.5,dash:'dot'},showlegend:false}]:[]),
+      // U->Z violation arrow
+      ...(exoV>0.05?[{x:[300,100],y:[100,200],type:'scatter',mode:'lines',line:{color:'#c05621',width:1.5,dash:'dot'},showlegend:false}]:[])
+    ],chartLayout({xaxis:{showticklabels:false,range:[0,600]},yaxis:{showticklabels:false,range:[0,300]},title:'$Z\\to X\\to Y$ (with confounder U)',height:280,showlegend:false}),noBar());
+    t.querySelector('#dg-s').innerHTML=`<div class="stat"><span class="stat-label">True $\\beta$</span><span class="stat-value">${trueB.toFixed(3)}</span></div><div class="stat"><span class="stat-label">OLS (biased)</span><span class="stat-value">${ols.toFixed(3)}</span></div><div class="stat"><span class="stat-label">IV ($\\hat\\gamma_1/\\hat\\pi_1$)</span><span class="stat-value">${(isFinite(ils)?ils.toFixed(3):'undefined')}</span></div><div class="stat"><span class="stat-label">First-stage F (rough)</span><span class="stat-value">${(rel*rel*n).toFixed(0)}</span></div><div class="stat" style="grid-column:1/-1"><span class="stat-label">Status</span><span class="stat-value" style="font-family:Helvetica;font-weight:normal;text-align:right">${rel<0.1?'Z is irrelevant -- IV undefined.':(exV>0.05||exoV>0.05)?'Exclusion or exogeneity violated -- IV biased.':'All three conditions OK -- IV consistent.'}</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#dg-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 4.5 AR(1) moments theory vs simulation */
+function widgetAR1Moments(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>$\\beta_0$: <span class="val" id="am-b0v">0.5</span></label><input type="range" id="am-b0" min="-2" max="2" step=".05" value=".5"></div>
+    <div class="ctrl"><label>$\\beta_1$: <span class="val" id="am-b1v">0.7</span></label><input type="range" id="am-b1" min="-0.95" max="0.95" step=".01" value=".7"></div>
+    <div class="ctrl"><label>$\\sigma_u$: <span class="val" id="am-sv">1</span></label><input type="range" id="am-s" min=".2" max="2" step=".05" value="1"></div>
+    <div class="ctrl"><label>T: <span class="val" id="am-tv">2000</span></label><input type="range" id="am-t" min="200" max="10000" step="100" value="2000"></div>
+  </div><div class="plot" id="am-plot"></div><div class="stats" id="am-s"></div>`;
+  const draw=()=>{
+    const b0=+t.querySelector('#am-b0').value, b1=+t.querySelector('#am-b1').value, sig=+t.querySelector('#am-s').value, T=+t.querySelector('#am-t').value;
+    t.querySelector('#am-b0v').textContent=b0.toFixed(2); t.querySelector('#am-b1v').textContent=b1.toFixed(2);
+    t.querySelector('#am-sv').textContent=sig.toFixed(2); t.querySelector('#am-tv').textContent=T;
+    const muT=b0/(1-b1), varT=sig*sig/(1-b1*b1);
+    const r=makePRNG(149);const y=[];let yt=muT;
+    for(let i=0;i<T;i++){yt=b0+b1*yt+sig*normalDraw(r);y.push(yt);}
+    const muE=mean(y),varE=variance(y);
+    const lags=rangeArr(0,12,1);
+    const acfTheory=lags.map(h=>Math.pow(b1,h));
+    const acfEmp=lags.map(h=>{if(h===0)return 1;let s=0;for(let i=h;i<T;i++)s+=(y[i]-muE)*(y[i-h]-muE);return (s/T)/varE;});
+    Plotly.newPlot(t.querySelector('#am-plot'),[
+      {x:lags,y:acfEmp,type:'bar',name:'empirical $\\hat\\rho_h$',marker:{color:'#2b6cb0'}},
+      {x:lags,y:acfTheory,type:'scatter',mode:'lines+markers',name:'theory $\\beta_1^h$',line:{color:'#c05621',width:2}}
+    ],chartLayout({xaxis:{title:'lag h'},yaxis:{range:[-1,1.05]}}),noBar());
+    t.querySelector('#am-s').innerHTML=`<div class="stat"><span class="stat-label">Theory $\\mu=\\beta_0/(1-\\beta_1)$</span><span class="stat-value">${muT.toFixed(3)}</span></div><div class="stat"><span class="stat-label">Empirical mean</span><span class="stat-value">${muE.toFixed(3)}</span></div><div class="stat"><span class="stat-label">Theory $\\sigma^2_Y=\\sigma_u^2/(1-\\beta_1^2)$</span><span class="stat-value">${varT.toFixed(3)}</span></div><div class="stat"><span class="stat-label">Empirical var</span><span class="stat-value">${varE.toFixed(3)}</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#am-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 4.11 Granger test */
+function widgetGrangerTest(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>True $X\\to Y$ effect: <span class="val" id="gt-xv">0.4</span></label><input type="range" id="gt-x" min="0" max="1" step=".05" value=".4"></div>
+    <div class="ctrl"><label>True $Y\\to X$ effect: <span class="val" id="gt-yv">0</span></label><input type="range" id="gt-y" min="0" max="1" step=".05" value="0"></div>
+    <div class="ctrl"><label>T: <span class="val" id="gt-tv">300</span></label><input type="range" id="gt-t" min="100" max="2000" step="50" value="300"></div>
+  </div><div class="stats" id="gt-s"></div>`;
+  const draw=()=>{
+    const x2y=+t.querySelector('#gt-x').value, y2x=+t.querySelector('#gt-y').value, T=+t.querySelector('#gt-t').value;
+    t.querySelector('#gt-xv').textContent=x2y.toFixed(2);t.querySelector('#gt-yv').textContent=y2x.toFixed(2);t.querySelector('#gt-tv').textContent=T;
+    const r=makePRNG(151);
+    const X=[0],Y=[0];
+    for(let i=1;i<T;i++){X.push(0.5*X[i-1]+y2x*Y[i-1]+normalDraw(r));Y.push(0.4*Y[i-1]+x2y*X[i-1]+normalDraw(r));}
+    // Test X->Y: regress Y_t on Y_{t-1} and X_{t-1}
+    function gt(yArr,xArr){
+      const yt=yArr.slice(1), ylag=yArr.slice(0,-1), xlag=xArr.slice(0,-1);
+      const ymean=mean(yt);
+      const ssrR=yt.reduce((s,y)=>s+(y-ymean)*(y-ymean),0);
+      // Unrestricted via simple FWL
+      const auxY=olsSlope(ylag,yt);
+      const yres=yt.map((y,i)=>y-auxY.b0-auxY.b1*ylag[i]);
+      const auxX=olsSlope(ylag,xlag);
+      const xres=xlag.map((x,i)=>x-auxX.b0-auxX.b1*ylag[i]);
+      const slope=olsSlope(xres,yres).b1;
+      const fitted=yt.map((y,i)=>auxY.b0+auxY.b1*ylag[i]+slope*xres[i]);
+      const ssrU=yt.reduce((s,y,i)=>s+(y-fitted[i])*(y-fitted[i]),0);
+      const F=((ssrR-ssrU)/1)/(ssrU/(yt.length-3));
+      return {F, p:1-(F>1?(F>50?1:0.99-Math.exp(-F/3)):0.5)};
+    }
+    const xToY=gt(Y,X);
+    const yToX=gt(X,Y);
+    t.querySelector('#gt-s').innerHTML=`<div class="stat"><span class="stat-label">$X\\to Y$ F-stat</span><span class="stat-value" style="color:${xToY.F>3.84?'#38a169':'#c05621'}">${xToY.F.toFixed(2)}</span></div><div class="stat"><span class="stat-label">$X$ Granger-causes $Y$?</span><span class="stat-value">${xToY.F>3.84?'YES (reject $H_0$)':'no'}</span></div><div class="stat"><span class="stat-label">$Y\\to X$ F-stat</span><span class="stat-value" style="color:${yToX.F>3.84?'#38a169':'#c05621'}">${yToX.F.toFixed(2)}</span></div><div class="stat"><span class="stat-label">$Y$ Granger-causes $X$?</span><span class="stat-value">${yToX.F>3.84?'YES (reject $H_0$)':'no'}</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#gt-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 4.12 Chow test */
+function widgetChowTest(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>Pre-break slope: <span class="val" id="ch-pv">0.5</span></label><input type="range" id="ch-p" min="-1" max="2" step=".05" value=".5"></div>
+    <div class="ctrl"><label>Post-break slope: <span class="val" id="ch-qv">1.2</span></label><input type="range" id="ch-q" min="-1" max="2" step=".05" value="1.2"></div>
+    <div class="ctrl"><label>True break $\\tau$: <span class="val" id="ch-tv">100</span></label><input type="range" id="ch-t" min="20" max="180" step="5" value="100"></div>
+    <div class="ctrl"><label>Test at $\\tau$: <span class="val" id="ch-uv">100</span></label><input type="range" id="ch-u" min="20" max="180" step="5" value="100"></div>
+  </div><div class="plot" id="ch-plot"></div><div class="stats" id="ch-s"></div>`;
+  const draw=()=>{
+    const p=+t.querySelector('#ch-p').value, q=+t.querySelector('#ch-q').value, tau=+t.querySelector('#ch-t').value, test=+t.querySelector('#ch-u').value;
+    t.querySelector('#ch-pv').textContent=p.toFixed(2); t.querySelector('#ch-qv').textContent=q.toFixed(2);
+    t.querySelector('#ch-tv').textContent=tau; t.querySelector('#ch-uv').textContent=test;
+    const T=200; const r=makePRNG(157);
+    const xs=[],ys=[];for(let i=0;i<T;i++){xs.push(i/T*4); ys.push((i<tau?p:q)*xs[i]+normalDraw(r)*0.5);}
+    // Restricted: single OLS
+    const fitR=olsSlope(xs,ys);
+    const SSRr=ys.reduce((s,y,i)=>{const yh=fitR.b0+fitR.b1*xs[i];return s+(y-yh)*(y-yh);},0);
+    // Unrestricted: two pieces split at test
+    const x1=xs.slice(0,test),y1=ys.slice(0,test);
+    const x2=xs.slice(test),y2=ys.slice(test);
+    const f1=olsSlope(x1,y1),f2=olsSlope(x2,y2);
+    const SSRu=y1.reduce((s,y,i)=>{const yh=f1.b0+f1.b1*x1[i];return s+(y-yh)*(y-yh);},0)+y2.reduce((s,y,i)=>{const yh=f2.b0+f2.b1*x2[i];return s+(y-yh)*(y-yh);},0);
+    const F=((SSRr-SSRu)/2)/(SSRu/(T-4));
+    Plotly.newPlot(t.querySelector('#ch-plot'),[
+      {x:xs,y:ys,type:'scatter',mode:'markers',marker:{color:'#cbd5e0',size:4,opacity:.5},showlegend:false},
+      {x:[xs[0],xs[test-1]],y:[f1.b0+f1.b1*xs[0],f1.b0+f1.b1*xs[test-1]],type:'scatter',mode:'lines',line:{color:'#2b6cb0',width:2},name:'pre-break fit'},
+      {x:[xs[test],xs[T-1]],y:[f2.b0+f2.b1*xs[test],f2.b0+f2.b1*xs[T-1]],type:'scatter',mode:'lines',line:{color:'#c05621',width:2},name:'post-break fit'}
+    ],chartLayout(),noBar());
+    t.querySelector('#ch-s').innerHTML=`<div class="stat"><span class="stat-label">F-statistic</span><span class="stat-value" style="color:${F>3?'#38a169':'#c05621'}">${F.toFixed(2)}</span></div><div class="stat"><span class="stat-label">$F_{2,\\infty}$ at 5%</span><span class="stat-value">3.00</span></div><div class="stat"><span class="stat-label">Decision</span><span class="stat-value">${F>3?'REJECT (break detected)':'fail to reject'}</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#ch-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 4.13 QLR */
+function widgetQLR(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>True break: <span class="val" id="ql-tv">100</span></label><input type="range" id="ql-t" min="20" max="180" step="5" value="100"></div>
+    <div class="ctrl"><label>Trim fraction: <span class="val" id="ql-fv">0.15</span></label><input type="range" id="ql-f" min=".05" max=".3" step=".01" value=".15"></div>
+  </div><div class="plot" id="ql-plot"></div><div class="stats" id="ql-s"></div>`;
+  const draw=()=>{
+    const tau=+t.querySelector('#ql-t').value, frac=+t.querySelector('#ql-f').value;
+    t.querySelector('#ql-tv').textContent=tau; t.querySelector('#ql-fv').textContent=frac.toFixed(2);
+    const T=200, r=makePRNG(163);
+    const xs=[],ys=[];for(let i=0;i<T;i++){xs.push(i/T*4); ys.push((i<tau?0.5:1.2)*xs[i]+normalDraw(r)*0.5);}
+    const t0=Math.floor(T*frac),t1=Math.floor(T*(1-frac));
+    const taus=[],Fs=[];
+    for(let tt=t0;tt<=t1;tt+=2){
+      const x1=xs.slice(0,tt),y1=ys.slice(0,tt),x2=xs.slice(tt),y2=ys.slice(tt);
+      if(x1.length<3||x2.length<3) continue;
+      const f1=olsSlope(x1,y1),f2=olsSlope(x2,y2);
+      const SSRu=y1.reduce((s,y,i)=>s+(y-f1.b0-f1.b1*x1[i])**2,0)+y2.reduce((s,y,i)=>s+(y-f2.b0-f2.b1*x2[i])**2,0);
+      const fR=olsSlope(xs,ys);
+      const SSRr=ys.reduce((s,y,i)=>s+(y-fR.b0-fR.b1*xs[i])**2,0);
+      const F=((SSRr-SSRu)/2)/(SSRu/(T-4));
+      taus.push(tt);Fs.push(F);
+    }
+    const Fmax=Math.max(...Fs); const tauMax=taus[Fs.indexOf(Fmax)];
+    Plotly.newPlot(t.querySelector('#ql-plot'),[
+      {x:taus,y:Fs,type:'scatter',mode:'lines',line:{color:'#dd6b20',width:2},name:'$F(\\tau)$'},
+      {x:[tauMax],y:[Fmax],type:'scatter',mode:'markers',marker:{color:'#c05621',size:12},name:'QLR = max'},
+      {x:[tau,tau],y:[0,Math.max(Fmax,4)*1.05],type:'scatter',mode:'lines',line:{color:'#1a202c',dash:'dash'},name:'true $\\tau$'}
+    ],chartLayout({xaxis:{title:'$\\tau$'},yaxis:{title:'$F(\\tau)$'}}),noBar());
+    t.querySelector('#ql-s').innerHTML=`<div class="stat"><span class="stat-label">QLR statistic</span><span class="stat-value">${Fmax.toFixed(2)}</span></div><div class="stat"><span class="stat-label">$\\hat\\tau$ (argmax)</span><span class="stat-value">${tauMax}</span></div><div class="stat"><span class="stat-label">QLR 5% CV (q=2, trim 15%)</span><span class="stat-value">~6.0</span></div><div class="stat"><span class="stat-label">vs naive Chow CV</span><span class="stat-value">3.0</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#ql-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 4.15 Order of integration */
+function widgetOrderInt(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>Series</label><select id="oi-s"><option>I(0): stationary AR(1)</option><option>I(1): random walk</option><option>I(2): integrated random walk (price level)</option></select></div>
+    <div class="ctrl"><label>T: <span class="val" id="oi-tv">300</span></label><input type="range" id="oi-t" min="50" max="1000" step="50" value="300"></div>
+  </div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.4rem"><div class="plot" id="oi-p1"></div><div class="plot" id="oi-p2"></div><div class="plot" id="oi-p3"></div></div>`;
+  const draw=()=>{
+    const s=t.querySelector('#oi-s').value, T=+t.querySelector('#oi-t').value;
+    t.querySelector('#oi-tv').textContent=T;
+    const r=makePRNG(167);
+    const y=[];let yt=0,yt1=0;
+    for(let i=0;i<T;i++){const u=normalDraw(r);
+      if(s.startsWith('I(0)')){yt=0.6*yt+u;}
+      else if(s.startsWith('I(1)')){yt=yt+u;}
+      else {yt1=yt1+u; yt=yt+yt1;}
+      y.push(yt);
+    }
+    const dy=y.slice(1).map((v,i)=>v-y[i]);
+    const ddy=dy.slice(1).map((v,i)=>v-dy[i]);
+    const xs=rangeArr(0,T-1,1);
+    Plotly.newPlot(t.querySelector('#oi-p1'),[{x:xs,y:y,type:'scatter',mode:'lines',line:{color:'#2b6cb0'},showlegend:false}],chartLayout({title:'levels',height:200}),noBar());
+    Plotly.newPlot(t.querySelector('#oi-p2'),[{x:rangeArr(1,T-1,1),y:dy,type:'scatter',mode:'lines',line:{color:'#c05621'},showlegend:false}],chartLayout({title:'$\\Delta Y_t$',height:200}),noBar());
+    Plotly.newPlot(t.querySelector('#oi-p3'),[{x:rangeArr(2,T-1,1),y:ddy,type:'scatter',mode:'lines',line:{color:'#38a169'},showlegend:false}],chartLayout({title:'$\\Delta^2 Y_t$',height:200}),noBar());
+  };
+  t.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 4.19 ADF spec picker */
+function widgetADFSpec(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>Include trend?</label><select id="ad-tr"><option>NO (constant only)</option><option>YES</option></select></div>
+    <div class="ctrl"><label>Lagged differences $p_\\Delta$: <span class="val" id="ad-pv">2</span></label><input type="range" id="ad-p" min="0" max="6" step="1" value="2"></div>
+  </div><div class="stats" id="ad-s"></div>`;
+  const draw=()=>{
+    const tr=t.querySelector('#ad-tr').value==='YES';
+    const p=+t.querySelector('#ad-p').value;
+    t.querySelector('#ad-pv').textContent=p;
+    const lagTerm=p===0?'':`+\\sum_{i=1}^{${p}}\\gamma_i\\Delta Y_{t-i}`;
+    const trTerm=tr?'+\\alpha t':'';
+    const eqn=`\\Delta Y_t=\\beta_0${trTerm}+\\delta Y_{t-1}${lagTerm}+u_t`;
+    const dist=tr?'DF_{tr}':'DF_{cm}';
+    const cv5=tr?'-3.41':'-2.86';
+    t.querySelector('#ad-s').innerHTML=`<div class="stat" style="grid-column:1/-1"><span class="stat-label">Regression</span><span class="stat-value" style="font-family:Helvetica;font-size:1.05rem">$${eqn}$</span></div><div class="stat"><span class="stat-label">Test</span><span class="stat-value">$H_0:\\delta=0$ vs $H_1:\\delta<0$</span></div><div class="stat"><span class="stat-label">Limiting distribution</span><span class="stat-value">$${dist}$</span></div><div class="stat"><span class="stat-label">5% one-sided CV</span><span class="stat-value">${cv5}</span></div><div class="stat" style="grid-column:1/-1"><span class="stat-label">Use trend variant when</span><span class="stat-value" style="font-family:Helvetica;font-weight:normal;text-align:right">${tr?'series visibly trends. The test now distinguishes "unit root" from "trend stationary".':'series fluctuates around a constant mean. Adding a trend would lower test power.'}</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#ad-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 4.21 Engle-Granger */
+function widgetEngleGranger(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>True $\\theta$: <span class="val" id="eg-tv">1</span></label><input type="range" id="eg-t" min="0" max="3" step=".1" value="1"></div>
+    <div class="ctrl"><label>T: <span class="val" id="eg-Tv">300</span></label><input type="range" id="eg-T" min="100" max="1000" step="50" value="300"></div>
+    <div class="ctrl"><label>Cointegrated?</label><select id="eg-c"><option>YES (xi stationary)</option><option>NO (independent walks)</option></select></div>
+  </div><div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem"><div class="plot" id="eg-p1"></div><div class="plot" id="eg-p2"></div></div><div class="stats" id="eg-s"></div>`;
+  const draw=()=>{
+    const tt=+t.querySelector('#eg-t').value, T=+t.querySelector('#eg-T').value;
+    const coint=t.querySelector('#eg-c').value.startsWith('YES');
+    t.querySelector('#eg-tv').textContent=tt.toFixed(2);t.querySelector('#eg-Tv').textContent=T;
+    const r=makePRNG(173);
+    const X=[],Y=[];let xt=0,yt=0,xi=0;
+    for(let i=0;i<T;i++){xt+=normalDraw(r); X.push(xt);
+      if(coint){xi=0.6*xi+normalDraw(r)*0.5; Y.push(tt*xt+xi);}
+      else {yt+=normalDraw(r); Y.push(yt);}
+    }
+    // Estimate theta by OLS
+    const fit=olsSlope(X,Y);
+    const resid=X.map((x,i)=>Y[i]-fit.b0-fit.b1*x);
+    // ADF on residuals - use simple 1-lag DF without lagged diffs
+    const dr=resid.slice(1).map((v,i)=>v-resid[i]);
+    const rlag=resid.slice(0,-1);
+    const dfFit=olsSlope(rlag,dr);
+    const dResid=rlag.map((x,i)=>dr[i]-dfFit.b0-dfFit.b1*x);
+    const sig2=mean(dResid.map(z=>z*z))*(T-1)/(T-3);
+    const sxxR=variance(rlag);
+    const seD=Math.sqrt(sig2/((T-1)*sxxR));
+    const tstat=dfFit.b1/seD;
+    const xs=rangeArr(0,T-1,1);
+    Plotly.newPlot(t.querySelector('#eg-p1'),[
+      {x:xs,y:X,type:'scatter',mode:'lines',line:{color:'#2b6cb0'},name:'X'},
+      {x:xs,y:Y,type:'scatter',mode:'lines',line:{color:'#c05621'},name:'Y'}
+    ],chartLayout({title:'X and Y in levels',height:240}),noBar());
+    Plotly.newPlot(t.querySelector('#eg-p2'),[
+      {x:xs.slice(0,resid.length),y:resid,type:'scatter',mode:'lines',line:{color:'#805ad5'},showlegend:false}
+    ],chartLayout({title:`residuals $\\hat\\xi_t = Y_t - ${fit.b1.toFixed(2)} X_t$`,height:240}),noBar());
+    t.querySelector('#eg-s').innerHTML=`<div class="stat"><span class="stat-label">$\\hat\\theta$ (OLS)</span><span class="stat-value">${fit.b1.toFixed(3)}</span></div><div class="stat"><span class="stat-label">ADF on residuals: t-stat</span><span class="stat-value">${tstat.toFixed(2)}</span></div><div class="stat"><span class="stat-label">Engle-Granger 5% CV</span><span class="stat-value">-3.37</span></div><div class="stat"><span class="stat-label">Conclusion</span><span class="stat-value" style="color:${tstat<-3.37?'#38a169':'#c05621'}">${tstat<-3.37?'Cointegrated':'Not cointegrated'}</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#eg-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 0.7 Moment calculator */
+function widgetMomentCalc(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>$a$: <span class="val" id="mc-av">2</span></label><input type="range" id="mc-a" min="-3" max="3" step=".1" value="2"></div>
+    <div class="ctrl"><label>$b$: <span class="val" id="mc-bv">1</span></label><input type="range" id="mc-b" min="-3" max="3" step=".1" value="1"></div>
+    <div class="ctrl"><label>$c$: <span class="val" id="mc-cv">0</span></label><input type="range" id="mc-c" min="-3" max="3" step=".1" value="0"></div>
+    <div class="ctrl"><label>$\\rho(X,Y)$: <span class="val" id="mc-rv">0.5</span></label><input type="range" id="mc-r" min="-0.95" max="0.95" step=".05" value=".5"></div>
+  </div><div class="stats" id="mc-s"></div>`;
+  const draw=()=>{
+    const a=+t.querySelector('#mc-a').value, b=+t.querySelector('#mc-b').value, c=+t.querySelector('#mc-c').value, rho=+t.querySelector('#mc-r').value;
+    t.querySelector('#mc-av').textContent=a.toFixed(2);t.querySelector('#mc-bv').textContent=b.toFixed(2);t.querySelector('#mc-cv').textContent=c.toFixed(2);t.querySelector('#mc-rv').textContent=rho.toFixed(2);
+    // Assume X,Y ~ N(0,1) with corr rho
+    const EW = c;
+    const varW = a*a + b*b + 2*a*b*rho;
+    // Verify by simulation
+    const r=makePRNG(179);const W=[];const N=10000;
+    for(let i=0;i<N;i++){const z1=normalDraw(r),z2=normalDraw(r);const X=z1; const Y=rho*z1+Math.sqrt(1-rho*rho)*z2; W.push(a*X+b*Y+c);}
+    const empE=mean(W), empV=variance(W);
+    t.querySelector('#mc-s').innerHTML=`<div class="stat" style="grid-column:1/-1"><span class="stat-label">$W=aX+bY+c$ with $X,Y\\sim N(0,1)$, $\\mathrm{corr}=\\rho$</span><span class="stat-value"></span></div><div class="stat"><span class="stat-label">$\\mathbb{E}W = a\\mathbb{E}X+b\\mathbb{E}Y+c$</span><span class="stat-value">${EW.toFixed(3)}</span></div><div class="stat"><span class="stat-label">Empirical $\\mathbb{E}W$</span><span class="stat-value">${empE.toFixed(3)}</span></div><div class="stat" style="grid-column:1/-1"><span class="stat-label">$\\mathrm{var}(W)=a^2\\mathrm{var}(X)+b^2\\mathrm{var}(Y)+2ab\\,\\mathrm{cov}(X,Y) = a^2+b^2+2ab\\rho$</span><span class="stat-value">${varW.toFixed(3)}</span></div><div class="stat"><span class="stat-label">Empirical var</span><span class="stat-value">${empV.toFixed(3)}</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#mc-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 0.8 CEF Pythagorean (MSE decomposition) */
+function widgetCEFPyth(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>Predictor</label><select id="cp-p"><option>True CEF (optimal)</option><option>Constant predictor</option><option>Linear approximation</option><option>Wrong nonlinear</option></select></div>
+  </div><div class="plot" id="cp-plot"></div><div class="stats" id="cp-s"></div>`;
+  const draw=()=>{
+    const p=t.querySelector('#cp-p').value;
+    const r=makePRNG(181);const n=400;
+    const xs=[],ys=[];const cef=x=>1+0.5*x-0.3*x*x;
+    for(let i=0;i<n;i++){const x=normalDraw(r)*1.5;xs.push(x);ys.push(cef(x)+normalDraw(r)*0.6);}
+    const grid=rangeArr(-4,4,.05);
+    let predFn;
+    if(p==='True CEF (optimal)') predFn=cef;
+    else if(p==='Constant predictor') predFn=x=>mean(ys);
+    else if(p==='Linear approximation'){const fit=olsSlope(xs,ys); predFn=x=>fit.b0+fit.b1*x;}
+    else predFn=x=>2*Math.sin(x*2);
+    const mse=mean(xs.map((x,i)=>(ys[i]-predFn(x))**2));
+    Plotly.newPlot(t.querySelector('#cp-plot'),[
+      {x:xs,y:ys,type:'scatter',mode:'markers',marker:{color:'#cbd5e0',size:4,opacity:.5},name:'data'},
+      {x:grid,y:grid.map(cef),type:'scatter',mode:'lines',line:{color:'#2b6cb0',width:2},name:'true CEF'},
+      {x:grid,y:grid.map(predFn),type:'scatter',mode:'lines',line:{color:'#c05621',dash:'dash',width:2},name:p}
+    ],chartLayout(),noBar());
+    const noiseMSE=mean(xs.map((x,i)=>(ys[i]-cef(x))**2));
+    t.querySelector('#cp-s').innerHTML=`<div class="stat"><span class="stat-label">MSE of selected predictor</span><span class="stat-value">${mse.toFixed(3)}</span></div><div class="stat"><span class="stat-label">Irreducible noise (CEF MSE)</span><span class="stat-value">${noiseMSE.toFixed(3)}</span></div><div class="stat"><span class="stat-label">Excess MSE = $\\mathbb{E}g(X)^2$</span><span class="stat-value">${(mse-noiseMSE).toFixed(3)}</span></div><div class="stat" style="grid-column:1/-1"><span class="stat-label">Pythagorean decomp</span><span class="stat-value" style="font-family:Helvetica;font-weight:normal;text-align:right">$\\mathbb{E}[Y-m(X)]^2 = \\mathbb{E}e^2 + \\mathbb{E}g(X)^2$. Only when $m=\\mathbb{E}[Y\\mid X]$ is the second term zero.</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#cp-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('select').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 0.9 Sampling distribution bootstrap */
+function widgetSamplingDist(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>n: <span class="val" id="sd-nv">30</span></label><input type="range" id="sd-n" min="3" max="500" step="1" value="30"></div>
+    <div class="ctrl"><label>Replications</label><input type="range" id="sd-r" min="500" max="5000" step="100" value="2000"></div>
+    <div class="ctrl"><label>Source</label><select id="sd-s"><option>Normal</option><option>Exponential</option><option>Uniform</option></select></div>
+  </div><div class="plot" id="sd-plot"></div><div class="stats" id="sd-s"></div>`;
+  const draw=()=>{
+    const n=+t.querySelector('#sd-n').value, R=+t.querySelector('#sd-r').value, src=t.querySelector('#sd-s').value;
+    t.querySelector('#sd-nv').textContent=n;
+    const r=makePRNG(191);
+    let mu,sigma2,sample;
+    if(src==='Normal'){mu=0;sigma2=1;sample=()=>normalDraw(r);}
+    else if(src==='Exponential'){mu=1;sigma2=1;sample=()=>expDraw(r);}
+    else {mu=0.5;sigma2=1/12;sample=()=>uniDraw(r);}
+    const means=[];
+    for(let rep=0;rep<R;rep++){let s=0;for(let i=0;i<n;i++)s+=sample();means.push(s/n);}
+    const empMean=mean(means), empVar=variance(means), seThy=Math.sqrt(sigma2/n);
+    Plotly.newPlot(t.querySelector('#sd-plot'),[
+      {x:means,type:'histogram',histnorm:'probability density',marker:{color:'#805ad5',opacity:.7},nbinsx:50,name:'$\\overline X_n$ across reps'},
+      {x:rangeArr(mu-4*seThy,mu+4*seThy,.02),y:rangeArr(mu-4*seThy,mu+4*seThy,.02).map(x=>normalPDF(x,mu,seThy)),type:'scatter',mode:'lines',line:{color:'#c05621'},name:`Theory $N(\\mu, \\sigma^2/n)$`}
+    ],chartLayout(),noBar());
+    t.querySelector('#sd-s').innerHTML=`<div class="stat"><span class="stat-label">Empirical mean of $\\overline X_n$</span><span class="stat-value">${empMean.toFixed(3)}</span></div><div class="stat"><span class="stat-label">True $\\mu$</span><span class="stat-value">${mu.toFixed(3)}</span></div><div class="stat"><span class="stat-label">Empirical sd</span><span class="stat-value">${Math.sqrt(empVar).toFixed(3)}</span></div><div class="stat"><span class="stat-label">Theory $\\sigma/\\sqrt{n}$</span><span class="stat-value">${seThy.toFixed(3)}</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#sd-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 4.16 Trend guess */
+function widgetTrendGuess(t){
+  t.innerHTML=`<div class="controls"><button class="btn" id="tg-new">New pair</button><button class="btn" id="tg-rev">Reveal</button></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem"><div class="plot" id="tg-A"></div><div class="plot" id="tg-B"></div></div><div class="stats" id="tg-s"></div>`;
+  let revealed=false;
+  let typeA, typeB;
+  const newPair=()=>{
+    revealed=false;
+    const r=makePRNG(Math.floor(Math.random()*99999));
+    const T=200;
+    const isAStoch = Math.random()<0.5;
+    typeA = isAStoch?'I(1) stochastic trend':'trend-stationary';
+    typeB = isAStoch?'trend-stationary':'I(1) stochastic trend';
+    const ya=[],yb=[];let xa=0;
+    for(let i=0;i<T;i++){
+      if(typeA.startsWith('I')){xa+=normalDraw(r); ya.push(0.02*i+xa);}
+      else {ya.push(0.05*i+normalDraw(r)*1.5);}
+    }
+    let xb=0;
+    for(let i=0;i<T;i++){
+      if(typeB.startsWith('I')){xb+=normalDraw(r); yb.push(0.02*i+xb);}
+      else {yb.push(0.05*i+normalDraw(r)*1.5);}
+    }
+    const xs=rangeArr(0,T-1,1);
+    Plotly.newPlot(t.querySelector('#tg-A'),[{x:xs,y:ya,type:'scatter',mode:'lines',line:{color:'#2b6cb0'},showlegend:false}],chartLayout({title:'Series A',height:240}),noBar());
+    Plotly.newPlot(t.querySelector('#tg-B'),[{x:xs,y:yb,type:'scatter',mode:'lines',line:{color:'#c05621'},showlegend:false}],chartLayout({title:'Series B',height:240}),noBar());
+    t.querySelector('#tg-s').innerHTML='<div class="stat" style="grid-column:1/-1"><span class="stat-value" style="font-family:Helvetica;font-weight:normal;text-align:left">Which is the random walk with drift, and which is the trend-stationary process? Click "Reveal" to find out.</span></div>';
+  };
+  const reveal=()=>{
+    if(revealed)return;
+    revealed=true;
+    t.querySelector('#tg-s').innerHTML=`<div class="stat"><span class="stat-label">Series A</span><span class="stat-value">${typeA}</span></div><div class="stat"><span class="stat-label">Series B</span><span class="stat-value">${typeB}</span></div><div class="stat" style="grid-column:1/-1"><span class="stat-value" style="font-family:Helvetica;font-weight:normal;text-align:right">Trend-stationary returns to the trend; the I(1) drifts away and never comes back. ADF test distinguishes them formally.</span></div>`;
+  };
+  t.querySelector('#tg-new').addEventListener('click',newPair);
+  t.querySelector('#tg-rev').addEventListener('click',reveal);
+  newPair();
+}
+
+/* 4.6 AR walk-forward */
+function widgetARWalkforward(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>True $\\beta_1$: <span class="val" id="aw-bv">0.7</span></label><input type="range" id="aw-b" min="-0.95" max="0.95" step=".01" value=".7"></div>
+    <div class="ctrl"><label>T: <span class="val" id="aw-tv">500</span></label><input type="range" id="aw-t" min="50" max="2000" step="50" value="500"></div>
+  </div><div class="plot" id="aw-plot"></div>`;
+  const draw=()=>{
+    const trueB=+t.querySelector('#aw-b').value, T=+t.querySelector('#aw-t').value;
+    t.querySelector('#aw-bv').textContent=trueB.toFixed(2);t.querySelector('#aw-tv').textContent=T;
+    const r=makePRNG(193);const y=[];let yt=0;
+    for(let i=0;i<T;i++){yt=trueB*yt+normalDraw(r);y.push(yt);}
+    const ts=[],ests=[];
+    for(let n=20;n<=T;n+=10){
+      const sub=y.slice(0,n);
+      const ylag=sub.slice(0,-1),yt2=sub.slice(1);
+      const fit=olsSlope(ylag,yt2);
+      ts.push(n);ests.push(fit.b1);
+    }
+    Plotly.newPlot(t.querySelector('#aw-plot'),[
+      {x:ts,y:ests,type:'scatter',mode:'lines+markers',line:{color:'#38a169'},name:'$\\hat\\beta_1$'},
+      {x:[ts[0],ts[ts.length-1]],y:[trueB,trueB],type:'scatter',mode:'lines',line:{color:'#c05621',dash:'dash'},name:'true $\\beta_1$'}
+    ],chartLayout({xaxis:{title:'sample size n'}}),noBar());
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 4.8 Pseudo OOS */
+function widgetPseudoOOS(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>$\\beta_1$: <span class="val" id="po-bv">0.7</span></label><input type="range" id="po-b" min="-0.95" max="0.95" step=".01" value=".7"></div>
+    <div class="ctrl"><label>T: <span class="val" id="po-tv">300</span></label><input type="range" id="po-t" min="100" max="1000" step="50" value="300"></div>
+    <div class="ctrl"><label>P (oos window): <span class="val" id="po-pv">60</span></label><input type="range" id="po-p" min="20" max="200" step="5" value="60"></div>
+  </div><div class="plot" id="po-plot"></div><div class="stats" id="po-s"></div>`;
+  const draw=()=>{
+    const b1=+t.querySelector('#po-b').value, T=+t.querySelector('#po-t').value, P=+t.querySelector('#po-p').value;
+    t.querySelector('#po-bv').textContent=b1.toFixed(2);t.querySelector('#po-tv').textContent=T;t.querySelector('#po-pv').textContent=P;
+    const r=makePRNG(197);const y=[];let yt=0;
+    for(let i=0;i<T;i++){yt=b1*yt+normalDraw(r);y.push(yt);}
+    // In-sample residual variance
+    const ylag=y.slice(0,-1),yt2=y.slice(1);
+    const fit=olsSlope(ylag,yt2);
+    const inResid=ylag.map((x,i)=>yt2[i]-fit.b0-fit.b1*x);
+    const inMSE=mean(inResid.map(z=>z*z));
+    // Walk-forward OOS
+    const errs=[];
+    for(let s=T-P;s<T-1;s++){
+      const sub=y.slice(0,s+1);
+      const yl=sub.slice(0,-1),yc=sub.slice(1);
+      const f=olsSlope(yl,yc);
+      const fcst=f.b0+f.b1*y[s];
+      errs.push(y[s+1]-fcst);
+    }
+    const oosMSE=mean(errs.map(z=>z*z));
+    Plotly.newPlot(t.querySelector('#po-plot'),[
+      {x:rangeArr(0,T-1,1),y:y,type:'scatter',mode:'lines',line:{color:'#cbd5e0'},name:'$Y_t$'},
+      {x:[T-P,T-P],y:[Math.min(...y),Math.max(...y)],type:'scatter',mode:'lines',line:{color:'#c05621',dash:'dash'},name:'OOS start'}
+    ],chartLayout(),noBar());
+    t.querySelector('#po-s').innerHTML=`<div class="stat"><span class="stat-label">In-sample MSE (biased low)</span><span class="stat-value">${inMSE.toFixed(3)}</span></div><div class="stat"><span class="stat-label">Pseudo OOS $\\hat{MSFE}$</span><span class="stat-value">${oosMSE.toFixed(3)}</span></div><div class="stat"><span class="stat-label">Underestimation</span><span class="stat-value">${(((oosMSE-inMSE)/oosMSE)*100).toFixed(1)}%</span></div>`;
+    if(window.renderMathInElement)renderMathInElement(t.querySelector('#po-s'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  };
+  t.querySelectorAll('input').forEach(el=>el.addEventListener('input',draw));
+  draw();
+}
+
+/* 4.22 Super-consistency */
+function widgetSuperCons(t){
+  t.innerHTML=`<div class="controls">
+    <div class="ctrl"><label>Case</label><select id="sc-c"><option>Cointegrated I(1) (rate T)</option><option>Stationary (rate sqrt(T))</option><option>Spurious (no convergence)</option></select></div>
+    <div class="ctrl"><label>Replications: <span class="val" id="sc-rv">200</span></label><input type="range" id="sc-r" min="50" max="500" step="50" value="200"></div>
+  </div><div class="plot" id="sc-plot"></div>`;
+  const draw=()=>{
+    const c=t.querySelector('#sc-c').value, R=+t.querySelector('#sc-r').value;
+    t.querySelector('#sc-rv').textContent=R;
+    const r=makePRNG(199);const Ts=[50,100,200,500,1000];
+    const sds=[];
+    for(const T of Ts){
+      const slopes=[];
+      for(let rep=0;rep<R;rep++){
+        const X=[],Y=[];let xt=0,yt=0,xi=0;
+        for(let i=0;i<T;i++){
+          if(c.startsWith('Cointegrated')){xt+=normalDraw(r);xi=0.6*xi+normalDraw(r)*0.5;X.push(xt);Y.push(xt+xi);}
+          else if(c.startsWith('Stationary')){X.push(normalDraw(r));Y.push(X[i]+normalDraw(r));}
+          else {xt+=normalDraw(r);yt+=normalDraw(r);X.push(xt);Y.push(yt);}
+        }
+        slopes.push(olsSlope(X,Y).b1);
+      }
+      sds.push(Math.sqrt(variance(slopes)));
+    }
+    Plotly.newPlot(t.querySelector('#sc-plot'),[
+      {x:Ts,y:sds,type:'scatter',mode:'lines+markers',line:{color:'#dd6b20'},name:'sd of $\\hat\\theta$'},
+      {x:Ts,y:Ts.map(T=>1/Math.sqrt(T)),type:'scatter',mode:'lines',line:{color:'#cbd5e0',dash:'dash'},name:'$1/\\sqrt T$ rate'},
+      {x:Ts,y:Ts.map(T=>1/T),type:'scatter',mode:'lines',line:{color:'#1a202c',dash:'dot'},name:'$1/T$ rate'}
+    ],chartLayout({xaxis:{type:'log',title:'T'},yaxis:{type:'log',title:'sd'}}),noBar());
+  };
+  t.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',draw));
   draw();
 }
 
