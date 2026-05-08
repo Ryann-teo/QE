@@ -71,29 +71,30 @@ The first build takes about a minute. Subsequent builds take 30 seconds.
 
 ## Workflow: every time you update the dashboard
 
-After Claude updates `index.html` (or you do), run:
+**The easy way: double-click.**
 
-### Mac / Linux / Git Bash
+- **Windows**: double-click `UPDATE.bat` (or `push-updates.bat`) in this folder. It prompts for a commit message, pushes to GitHub, and waits at the end so you can read the output. Press any key to close the window.
+- **Mac**: double-click `UPDATE.command` (Finder treats it as a script). The Terminal window opens, runs the push, and waits.
+- **Git Bash / Terminal**: run `./push-updates.sh`.
 
-```bash
-./push-updates.sh
-```
+Each script:
+1. Checks that git is installed and the repo is initialised.
+2. Shows you what files have changed.
+3. Prompts for a commit message (press Enter for the default "Update QE dashboard").
+4. Stages, commits, and pushes.
+5. Prints the live URL and pauses so you can confirm.
 
-### Windows command prompt
+### Pinning to your taskbar / desktop (Windows)
 
-```cmd
-push-updates.bat
-```
+Right-click `UPDATE.bat` → **Send to** → **Desktop (create shortcut)**. You can rename the shortcut "Update QE Site" and pin it to the taskbar. Now updating the live site is one click from anywhere.
 
-### Or manually (any platform)
+### Manual fallback (any platform)
 
 ```bash
 git add .
 git commit -m "Update dashboard"
 git push origin main
 ```
-
-The `push-updates` scripts handle staging, commit message, and push in one step. They also print the live URL.
 
 ## Verifying the site
 

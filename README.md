@@ -27,8 +27,8 @@ Each lesson card has tabs for Idea, Formal definition, Full derivation, Intuitio
 ## Quick start
 
 1. Open `index.html` directly in a browser to use the dashboard locally.
-2. Run `./setup-website.sh` once to deploy to GitHub Pages.
-3. Run `./push-updates.sh` whenever you (or Claude) edit content.
+2. Run `setup-website.bat` (Windows) or `./setup-website.sh` (Mac/Linux) once to deploy to GitHub Pages.
+3. To push later edits, **double-click `UPDATE.bat` (Windows)** or `UPDATE.command` (Mac). Both prompt for a commit message, push, and pause so you can read the result. You can also right-click `UPDATE.bat` and "Send to → Desktop (create shortcut)" so the deploy button lives on your desktop.
 
 ## Sources
 
