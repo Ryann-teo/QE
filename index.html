@@ -13,6 +13,7 @@
 <script src="qt_data.js?v=2"></script>
 <script src="ws_data.js?v=1"></script>
 <script src="ws_qt_links.js?v=1"></script>
+<script src="derivations.js?v=1"></script>
 <style>
 :root{
   --bg:#fafbfc; --fg:#1a202c; --muted:#4a5568;
@@ -52,6 +53,8 @@ aside.nav .module-title.m1{background:var(--m1)}
 aside.nav .module-title.m2{background:var(--m2)}
 aside.nav .module-title.m3{background:var(--m3)}
 aside.nav .module-title.m4{background:var(--m4)}
+aside.nav .module-title.toc-extra-title{background:#4a5568;cursor:pointer}
+aside.nav .toc-extra{margin-top:.6rem;border-top:2px solid var(--border);padding-top:.6rem}
 aside.nav .module-title:hover{filter:brightness(1.1)}
 aside.nav ol{list-style:none;padding-left:.4rem}
 aside.nav li{font-size:.86rem;padding:.18rem .4rem;border-radius:3px;cursor:pointer;color:var(--fg);line-height:1.35}
@@ -90,7 +93,15 @@ main{padding:1.4rem 2rem 4rem;max-width:1100px}
 .tab{margin:1rem 0;background:#fbfdff;border:1px solid var(--border);border-left:4px solid var(--primary);border-radius:6px;padding:.85rem 1.1rem}
 .tab.idea{border-left-color:#3182ce}
 .tab.formal{border-left-color:#2c5282;background:var(--formula)}
-.tab.derivation{border-left-color:#2f855a;background:var(--derivation)}
+.tab.derivation{border-left-color:#2f855a;background:var(--derivation);font-size:.95rem;line-height:1.65}
+.tab.derivation .step{display:block;margin:1.2rem 0 .4rem;font-weight:700;color:#22543d;font-size:.95rem;border-left:3px solid #38a169;padding-left:.6rem}
+.tab.derivation .step:first-child{margin-top:.2rem}
+.tab.derivation .substep{display:block;margin-left:.8rem;font-style:italic;color:#2f855a;font-size:.88rem;margin-top:.3rem}
+.tab.derivation p{margin:.4rem 0}
+.tab.derivation .katex-display{margin:.7rem 0;padding:.3rem 0}
+.tab.derivation .assume{display:inline-block;background:#fefcbf;border:1px solid #ecc94b;color:#744210;padding:.05rem .4rem;border-radius:3px;font-size:.78rem;font-weight:600;margin:0 .15rem;font-style:normal}
+.tab.derivation .note{display:block;margin:.4rem 0;padding:.4rem .7rem;background:#ebf8ff;border-left:3px solid #4299e1;border-radius:0 4px 4px 0;font-size:.88rem;color:#2c5282}
+.tab.derivation .conclude{display:block;margin:.8rem 0;padding:.4rem .7rem;background:#c6f6d5;border:1px solid #38a169;border-radius:5px;font-weight:600;color:#22543d}
 .tab.intuition{border-left-color:#d69e2e;background:var(--insight)}
 .tab.visualise{border-left-color:#805ad5;background:#faf5ff}
 .tab.why{border-left-color:#718096;background:#f7fafc}
@@ -1064,6 +1075,30 @@ function renderSidebar(){
     }
     html += `</ol></div>`;
   }
+  // Append top-level sections 5 and 6 to the TOC
+  html += `<div class="module-block toc-extra">
+    <div class="module-title toc-extra-title" onclick="document.getElementById('qt-map').scrollIntoView({behavior:'smooth'})">5. Question Types</div>
+    <ol>`;
+  if(typeof QT_DATA !== 'undefined'){
+    QT_DATA.forEach((sec,i)=>{
+      const short = `QT${i+1}: ${sec.section.split(': ')[1]||sec.section}`;
+      html += `<li onclick="document.getElementById('qt-map').scrollIntoView({behavior:'smooth'})"><span class="lid">QT${i+1}</span> ${sec.section.split(': ')[1]||sec.section}</li>`;
+    });
+  } else {
+    html += `<li onclick="document.getElementById('qt-map').scrollIntoView({behavior:'smooth'})">All four QT sections</li>`;
+  }
+  html += `</ol></div>`;
+  html += `<div class="module-block toc-extra">
+    <div class="module-title toc-extra-title" onclick="document.getElementById('ws-map').scrollIntoView({behavior:'smooth'})">6. Worksheets</div>
+    <ol>`;
+  if(typeof WS_DATA !== 'undefined'){
+    for(const ws of WS_DATA){
+      html += `<li onclick="document.getElementById('ws-map').scrollIntoView({behavior:'smooth'})"><span class="lid">${ws.name}</span> ${ws.questions.length} questions</li>`;
+    }
+  } else {
+    html += `<li onclick="document.getElementById('ws-map').scrollIntoView({behavior:'smooth'})">WS2 to WS8</li>`;
+  }
+  html += `</ol></div>`;
   sb.innerHTML = html;
   document.getElementById('search').addEventListener('input', onSearch);
 }
@@ -1083,7 +1118,9 @@ function renderLessonBody(l){
   let body = '';
   if(l.idea) body += tab('idea','Idea','<p>'+l.idea+'</p>');
   if(l.formal) body += tab('formal','Formal','<p>'+l.formal+'</p>');
-  if(l.derivation) body += tab('derivation','Derivation','<div>'+l.derivation+'</div>');
+  // Use the rewritten step-by-step derivation if available, else the original inline one
+  const derivContent = (typeof DERIVATIONS !== 'undefined' && DERIVATIONS[l.id]) ? DERIVATIONS[l.id] : l.derivation;
+  if(derivContent) body += tab('derivation','Derivation','<div>'+derivContent+'</div>');
   if(l.intuition) body += tab('intuition','Intuition','<p>'+l.intuition+'</p>');
   if(l.visualise){
     let inner = '<p>'+l.visualise+'</p>';
