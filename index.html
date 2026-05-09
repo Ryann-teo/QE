@@ -11,6 +11,8 @@
         onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
 <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
 <script src="qt_data.js?v=2"></script>
+<script src="ws_data.js?v=1"></script>
+<script src="ws_qt_links.js?v=1"></script>
 <style>
 :root{
   --bg:#fafbfc; --fg:#1a202c; --muted:#4a5568;
@@ -159,6 +161,40 @@ main{padding:1.4rem 2rem 4rem;max-width:1100px}
 .qt-concepts{margin:.6rem 0;padding:.5rem .8rem;background:#fffaf0;border-radius:5px}
 .qt-appeared{margin-top:.5rem;padding:.3rem .6rem;font-size:.85rem}
 
+.ws-section{margin:1rem 0;border:1px solid var(--border);border-radius:8px;background:#fff}
+.ws-section-summary{padding:.7rem 1.1rem;font-size:1rem;font-weight:700;color:var(--m4);cursor:pointer;background:#f0fff4;border-radius:8px;list-style:none;display:flex;align-items:center;gap:.6rem}
+.ws-section-summary::after{content:"▶";font-size:.7rem;color:var(--muted);margin-left:auto;transition:transform .15s}
+.ws-section[open] .ws-section-summary::after{transform:rotate(90deg)}
+.ws-section-summary::-webkit-details-marker{display:none}
+.ws-section-body{padding:.5rem 1rem 1rem}
+
+.ws-q{margin:.4rem 0;border:1px solid var(--border);border-radius:5px;background:#fafafa;border-left:3px solid var(--m4)}
+.ws-q-summary{padding:.5rem .8rem;cursor:pointer;list-style:none;display:flex;align-items:center;gap:.5rem;font-size:.92rem}
+.ws-q-summary::-webkit-details-marker{display:none}
+.ws-q-summary::after{content:"▶";font-size:.65rem;color:var(--muted);margin-left:auto;transition:transform .15s}
+.ws-q[open] .ws-q-summary::after{transform:rotate(90deg)}
+.ws-q-summary:hover{background:#f0fff4}
+.ws-q-num{font-family:'JetBrains Mono',monospace;background:var(--m4);color:#fff;padding:.14rem .5rem;border-radius:3px;font-size:.7rem;font-weight:700}
+.ws-q-body{padding:.5rem .9rem;border-top:1px solid var(--border);background:#fff}
+.ws-sp{margin:.4rem 0;display:flex;align-items:flex-start;gap:.6rem;padding:.4rem .5rem;border-radius:4px}
+.ws-sp:hover{background:#f7fafc}
+.ws-sp-label{font-family:'JetBrains Mono',monospace;background:#1a202c;color:#fff;padding:.14rem .5rem;border-radius:3px;font-size:.72rem;flex-shrink:0;min-width:2.4rem;text-align:center}
+.ws-sp-status{padding:.12rem .45rem;border-radius:4px;font-size:.72rem;font-weight:600;flex-shrink:0}
+.ws-sp-status.excluded{background:#fed7d7;color:#742a2a}
+.ws-sp-status.outside{background:#fffaf0;color:#7b341e}
+.ws-sp-lessons{display:flex;flex-wrap:wrap;gap:.3rem;flex:1}
+.ws-sp .linkpill{font-size:.74rem;padding:.18rem .45rem}
+.ws-sp-block{display:flex;flex-direction:column;gap:.3rem;flex:1;min-width:0}
+.ws-sp-block .row{display:flex;flex-wrap:wrap;gap:.3rem;align-items:center}
+.ws-sp-block .row-label{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600;min-width:5rem;flex-shrink:0}
+.qt-pill{display:inline-flex;align-items:center;gap:.3rem;font-size:.74rem;padding:.18rem .5rem;border-radius:14px;background:#fef5e7;color:#7b341e;border:1px solid #f6ad55;cursor:pointer;line-height:1.25}
+.qt-pill:hover{background:#fbd38d;border-color:#dd6b20}
+.qt-pill .qt-pill-id{font-family:'JetBrains Mono','Courier New',monospace;color:#9c4221;font-weight:700;font-size:.7rem}
+.qt-pill .qt-pill-name{font-size:.74rem}
+.qt-pill-new{background:#fed7d7;color:#742a2a;border-color:#fc8181;cursor:default}
+.qt-pill-new:hover{background:#fed7d7;border-color:#fc8181}
+.qt-pill-excluded{background:#e2e8f0;color:#4a5568;border-color:#a0aec0;cursor:default;font-style:italic}
+
 footer{background:#1a202c;color:#cbd5e0;padding:2rem;margin-top:3rem;text-align:center;font-size:.88rem}
 footer a{color:#93c5fd}
 
@@ -197,6 +233,7 @@ footer a{color:#93c5fd}
     <button class="btn primary" onclick="openAll()">Expand all lessons</button>
     <button class="btn" onclick="closeAll()">Collapse all</button>
     <button class="btn" onclick="document.getElementById('qt-map').scrollIntoView({behavior:'smooth'})">Question Types</button>
+    <button class="btn" onclick="document.getElementById('ws-map').scrollIntoView({behavior:'smooth'})">Worksheets</button>
   </div>
 
   <div id="lessons"></div>
@@ -207,8 +244,17 @@ footer a{color:#93c5fd}
     <div id="qts"></div>
   </section>
 
+  <section class="section-extra" id="ws-map">
+    <h2>6. Worksheets: lessons + Question-Type sub-types per sub-part</h2>
+    <p>For every sub-part in worksheets 2 to 8, two pieces of guidance:<br>
+    <strong>lessons</strong> &mdash; the dashboard cards (Module 0 to 4) you need to answer it (blue pills, click to jump).<br>
+    <strong>QT type</strong> &mdash; the matching sub-question type from Section 5 (orange pills, click to jump and expand). Some sub-parts have NO existing QT match and are flagged <span style="background:#fed7d7;color:#742a2a;padding:.1rem .35rem;border-radius:4px;font-size:.78rem">⚠ NEW: ...</span> &mdash; candidates for adding a new sub-question type later. The full list of proposed new sub-types lives in <code>Study Guide/Proposed New QT Sub-question Types.md</code>.<br>
+    <span style="background:#fed7d7;color:#742a2a;padding:.1rem .35rem;border-radius:4px;font-size:.78rem">⛔ EXCLUDED</span>: no longer examinable. <span style="background:#fffaf0;color:#7b341e;padding:.1rem .35rem;border-radius:4px;font-size:.78rem">⚠ OUT-OF-SYLLABUS</span>: needs a tool the course doesn't cover.</p>
+    <div id="ws"></div>
+  </section>
+
   <section class="section-extra">
-    <h2>6. Sources</h2>
+    <h2>7. Sources</h2>
     <ul style="margin-left:1.4rem">
       <li>Notes: <code>notes-1 (1).pdf</code> through <code>notes-5-appendix.pdf</code></li>
       <li>Slides: <code>slides-1 (1).pdf</code> through <code>slides-4.pdf</code></li>
@@ -908,7 +954,7 @@ widget:"engle-granger",
 prereqs:["4.19","4.20"],forward:["4.22"],examRole:"QT4 §4.1, §4.2"},
 
 {id:"4.22",m:4,title:"Implications of cointegration for OLS",
-idea:"Regressing $Y$ on $X$ in levels is valid when they are cointegrated; the OLS estimator of $\\theta$ is super-consistent.",
+idea:"When $Y$ and $X$ are cointegrated I(1) series (lesson 4.20), the regression $Y_t=\\alpha+\\theta X_t+\\xi_t$ in <em>levels</em> is valid. This is in stark contrast to the spurious-regression case (lesson 4.17) where regressing two unrelated I(1) series gives garbage.<br><br><strong>Super-consistency</strong>: the OLS estimator of $\\theta$ converges to the true cointegrating coefficient at rate $T$, NOT $\\sqrt T$. So $T(\\hat\\theta-\\theta)$ converges in distribution; the estimator is much more precise for a given $n$ than ordinary OLS.<br><br><em>Why so fast?</em> Because the regressor $X_t$ is I(1), it has variance growing with $t$. The signal-to-noise ratio in the OLS formula explodes, dragging $\\hat\\theta$ to the truth at the unusually fast rate.<br><br><strong>Standard inference still doesn't work directly</strong>: even though $\\hat\\theta$ is super-consistent, standard t-statistics on it are NOT asymptotically Normal — they converge to non-standard distributions involving Brownian motion. Naive t-tests over-reject. Use Phillips-Hansen Fully-Modified OLS (FM-OLS), Stock-Watson Dynamic OLS (DOLS), or Johansen's likelihood-based approach if you want valid inference on $\\theta$.<br><br><strong>The pragmatic workflow when you suspect cointegration</strong>:<br>1. ADF-test $Y$ and $X$ separately to confirm both are I(1).<br>2. Engle-Granger (lesson 4.21) to test cointegration. If reject → cointegrated.<br>3. If cointegrated, regress $Y$ on $X$ in levels by OLS — the slope $\\hat\\theta$ is super-consistent for the long-run relationship.<br>4. Use FM-OLS or DOLS for valid CIs on $\\theta$ (or just report the point estimate).<br>5. Build a vector error correction model (VECM) to capture both the long-run relationship and short-run dynamics.<br><br><strong>If you reject cointegration</strong>: do NOT regress in levels (spurious risk). Difference both series and run the regression in differences instead. The cost: you lose long-run information; the slope on $\\Delta X$ measures only the contemporaneous short-run effect.<br><br><strong>Bottom line</strong>: cointegration is the lifeline that makes level-regression of macro variables ever defensible. Without it, the default is differences.",
 formal:"$\\hat\\theta\\to^p\\theta$ at rate $T$ (rather than $\\sqrt T$); standard t-stats not asymptotically Normal without adjustments.",
 intuition:"Cointegrated series share a stochastic trend; OLS picks up that trend rapidly; hence super-consistent.",
 visualise:"Replication panel comparing convergence rate of OLS slope under iid, stationary, and cointegrated cases.",
@@ -916,7 +962,7 @@ widget:"super-consistent",
 prereqs:["4.20"],forward:["4.23"],examRole:"QT4 §4.4, §4.5"},
 
 {id:"4.23",m:4,title:"Putting it together: the time-series workflow",
-idea:"A single decision tree for any applied series.",
+idea:"You have a time series. What do you do with it? This lesson is the integrated workflow that ties together everything in Module 4 into one decision tree.<br><br><strong>Step 1: plot the series</strong>. Look at it. Does it visibly trend? Does it have obvious breaks? Does it have seasonality? The plot determines almost every later choice.<br><br><strong>Step 2: test for unit roots and breaks</strong>.<br>- Run ADF (lesson 4.18-4.19) — constant only if no visible trend, constant + trend if there is.<br>- If you suspect a structural break, run Chow at the suspected date (lesson 4.12) or QLR over a candidate window (4.13).<br>- Outcome: classify the series as I(0), I(1), I(2), or trend-stationary.<br><br><strong>Step 3: choose the modelling approach based on the classification</strong>:<br>- <em>I(0) (stationary)</em>: fit AR(p) on levels (lesson 4.4-4.6). Use AIC/BIC for $p$.<br>- <em>I(1)</em>: difference once. Fit AR(p) on $\\Delta Y_t$. If you have a partner series $X_t$ that's also I(1), additionally test for cointegration (lesson 4.20-4.21). If cointegrated → regress in levels. If not → ADL on differences.<br>- <em>I(2)</em>: difference twice. Fit AR(p) on $\\Delta^2 Y_t$.<br>- <em>Trend-stationary</em>: detrend (regress on $t$) and fit AR(p) on residuals.<br><br><strong>Step 4: select lag order $p$</strong>. AIC for forecasting; BIC for inference. Check the residual ACF — it should be approximately white noise. If not, increase $p$.<br><br><strong>Step 5: residual diagnostics</strong>. Plot residuals; check ACF; test for normality (Jarque-Bera). If residuals have remaining structure, your model is mis-specified.<br><br><strong>Step 6: forecast and evaluate</strong>. Compute pseudo-out-of-sample MSFE (lesson 4.8). Compare to a benchmark (random walk, AR(1), historical mean). If your model beats the benchmark, it's useful.<br><br><strong>Common pitfalls</strong>:<br>- Regressing two non-stationary series in levels without checking cointegration → spurious regression.<br>- Using standard ADF critical values when you've estimated nuisance parameters → wrong critical values.<br>- Ignoring a structural break and getting a 'great fit' on average that's terrible at every point in time.<br>- Reporting in-sample MSE as if it's the forecast error — it under-states.<br><br>The widget is a clickable wizard walking through this decision tree.",
 formal:"(a) Plot. (b) Test for unit roots and structural breaks. (c) Choose AR(p) on levels (if $I(0)$), ADL on differences, or cointegrating regression. (d) Lag order via AIC/BIC. (e) Residual diagnostics (ACF, normality). (f) Forecast and evaluate by pseudo OOS MSFE.",
 visualise:"Guided wizard that walks through each step on a chosen real series (UK GDP growth, S&P 500 dividends, term spread, US industrial production).",
 widget:"ts-workflow",
@@ -1092,6 +1138,116 @@ function renderEdges(){
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.6rem;margin-top:.6rem">${LESSONS.filter(l=>l.forward&&l.forward.length).map(l=>`<div style="font-size:.85rem;line-height:1.9">${pill(l.id)} <span style="color:var(--muted)">→</span> ${l.forward.map(pill).join(' ')}</div>`).join('')}</div>
     </details>`;
   setTimeout(buildGraph, 50);
+}
+
+/* Build a quick lookup: QT_BY_ID[<section idx>][<sub-id>] -> {name, bigType} */
+function buildQTIndex(){
+  const idx={};
+  if(typeof QT_DATA==='undefined') return idx;
+  QT_DATA.forEach((sec,si)=>{
+    idx[si]={};
+    for(const bt of sec.bigTypes){
+      for(const st of bt.subTypes){
+        idx[si][st.id]={name:st.name,bigType:bt.n,bigName:bt.name};
+      }
+    }
+  });
+  return idx;
+}
+const QT_INDEX = buildQTIndex();
+
+/* Find the QT sub-type for a token like "QT2 1.1" */
+function qtPill(token){
+  // Token formats: "QT<sec> <bigid.subid>", "EXCLUDED", "NEW: <name>"
+  if(token === 'EXCLUDED'){
+    return `<span class="qt-pill qt-pill-excluded" title="Excluded topic; no QT sub-type maps here">⛔ excluded</span>`;
+  }
+  if(token.startsWith('NEW:')){
+    const name = token.replace(/^NEW:\s*/,'').trim();
+    return `<span class="qt-pill qt-pill-new" title="No existing QT sub-type matches this. Candidate for a new sub-question type.">⚠ NEW: ${name}</span>`;
+  }
+  const m = token.match(/^QT(\d+)\s+(\d+\.\d+)$/);
+  if(!m) return `<span class="qt-pill" title="${token}">${token}</span>`;
+  const sec = parseInt(m[1])-1;  // QT1 -> section 0
+  const sid = m[2];
+  const found = QT_INDEX[sec] && QT_INDEX[sec][sid];
+  if(!found) return `<span class="qt-pill" title="${token}">${token}</span>`;
+  // Click handler: scroll to QT section and try to expand
+  return `<span class="qt-pill" onclick="jumpToQT(${sec},'${sid}')" title="${found.name}"><span class="qt-pill-id">QT${sec+1} ${sid}</span> <span class="qt-pill-name">${found.name}</span></span>`;
+}
+
+/* Scroll to and expand the QT sub-type with the given id */
+function jumpToQT(secIdx, subId){
+  const c = document.getElementById('qts');
+  if(!c) return;
+  // Find the section, then within it find the matching sub-type details element
+  const sections = c.querySelectorAll('details.qt-section');
+  if(!sections[secIdx]) return;
+  sections[secIdx].open = true;
+  const subs = sections[secIdx].querySelectorAll('details.qt-sub');
+  for(const s of subs){
+    const num = s.querySelector('.qt-sub-num');
+    if(num && num.textContent.trim().endsWith(subId)){
+      // Open this and its parent big-type
+      const parentBig = s.closest('details.qt-big');
+      if(parentBig) parentBig.open = true;
+      s.open = true;
+      setTimeout(()=>s.scrollIntoView({behavior:'smooth',block:'center'}), 80);
+      // briefly highlight
+      s.style.transition='background-color .4s';
+      const orig = s.style.backgroundColor;
+      s.style.backgroundColor='#fffacd';
+      setTimeout(()=>{s.style.backgroundColor=orig;}, 1400);
+      return;
+    }
+  }
+  // Fall back to scrolling to the section
+  sections[secIdx].scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function renderWorksheets(){
+  const c = document.getElementById('ws');
+  if(!c) return;
+  if(typeof WS_DATA === 'undefined'){
+    c.innerHTML='<p style="color:#c05621">WS data file not loaded. Make sure ws_data.js is in the same folder as index.html.</p>';
+    return;
+  }
+  const qtLinks = (typeof WS_QT_LINKS !== 'undefined') ? WS_QT_LINKS : {};
+  let html='';
+  for(const ws of WS_DATA){
+    html += `<details class="ws-section">
+      <summary class="ws-section-summary">${ws.name} &nbsp;<span style="color:var(--muted);font-size:.78rem;font-weight:400">(${ws.questions.length} questions, ${ws.questions.reduce((s,q)=>s+q.subparts.length,0)} sub-parts)</span></summary>
+      <div class="ws-section-body">`;
+    for(const q of ws.questions){
+      html += `<details class="ws-q">
+        <summary class="ws-q-summary"><span class="ws-q-num">${q.id.split(' ')[1]||q.id}</span> ${q.title}</summary>
+        <div class="ws-q-body">`;
+      const qtForThisQ = qtLinks[q.id] || {};
+      for(const sp of q.subparts){
+        let statusBadge = '';
+        if(sp.status === 'EXCLUDED') statusBadge = `<span class="ws-sp-status excluded">⛔ EXCLUDED</span>`;
+        else if(sp.status === 'OUT-OF-SYLLABUS') statusBadge = `<span class="ws-sp-status outside">⚠ OUT-OF-SYLLABUS</span>`;
+        const lessonPills = sp.lessons.length
+          ? sp.lessons.map(lid => pill(lid)).join('')
+          : '<span style="color:var(--muted);font-size:.78rem;font-style:italic">no lesson tagged</span>';
+        const qtTokens = qtForThisQ[sp.label] || [];
+        const qtPills = qtTokens.length
+          ? qtTokens.map(qtPill).join('')
+          : '<span style="color:var(--muted);font-size:.78rem;font-style:italic">no QT sub-type tagged</span>';
+        html += `<div class="ws-sp">
+          <span class="ws-sp-label">(${sp.label})</span>
+          ${statusBadge}
+          <div class="ws-sp-block">
+            <div class="row"><span class="row-label">lessons</span>${lessonPills}</div>
+            <div class="row"><span class="row-label">QT type</span>${qtPills}</div>
+          </div>
+        </div>`;
+      }
+      html += `</div></details>`;
+    }
+    html += `</div></details>`;
+  }
+  c.innerHTML = html;
 }
 
 function buildGraph(){
@@ -4281,6 +4437,7 @@ function widgetTSWorkflow(t){
 renderSidebar();
 renderLessons();
 renderQTs();
+renderWorksheets();
 // re-render math after content insertion
 window.addEventListener('load',()=>{
   if(window.renderMathInElement){
